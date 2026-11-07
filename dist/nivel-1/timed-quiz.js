@@ -1,51 +1,84 @@
-/* Timed driving quiz: counts active driving seconds, not time spent paused or answering. */
+/* Pixel Drive quiz v35 — elapsed active-gameplay timer with a reliable queued popup.
+   Test: /nivel-1/?quizTest=1 -> 10s timer plus 'TEST ACUM' button. */
 (()=>{
- const S=DriveSimulation, bank=DriveQuizBank;
+ 'use strict';
+ const sim=window.DriveSimulation, bank=window.DriveQuizBank;
  const testMode=new URLSearchParams(location.search).get('quizTest')==='1';
  const INTERVAL=testMode?10:120;
- let remaining=INTERVAL,gameState=null,current=null,lastQuestionId=null,wasPaused=false,answered=false;
- const timer=document.createElement('div');
- timer.className='drive-quiz-timer';timer.setAttribute('role','timer');
- document.querySelector('.scene-wrap').append(timer);
- const dialog=document.createElement('dialog');dialog.className='drive-quiz-dialog';
- dialog.setAttribute('aria-label','Chestionar rutier de condus');document.body.append(dialog);
- function format(t){const n=Math.max(0,Math.ceil(t));return `${String(Math.floor(n/60)).padStart(2,'0')}:${String(n%60).padStart(2,'0')}`;}
- function paintTimer(){
-  timer.innerHTML=`<span class="drive-quiz-clock-icon">◷</span><span class="drive-quiz-clock-label">${testMode?'TEST · ':''}URMĂTORUL CHESTIONAR</span><strong>${format(remaining)}</strong>`;
+ if(!sim||!bank){console.error('[Pixel Drive Quiz] Missing DriveSimulation or DriveQuizBank');return;}
+ let gameState=null,remaining=INTERVAL,due=false,current=null,lastId=null,answered=false,previousTime=null;
+ let wasPaused=false,displayed='';
+ const timer=document.createElement('div');timer.className='drive-quiz-timer';timer.setAttribute('role','timer');
+ const scene=document.querySelector('.scene-wrap');(scene||document.body).appendChild(timer);
+ const dialog=document.createElement('dialog');dialog.className='drive-quiz-dialog';dialog.setAttribute('aria-label','Chestionar rutier');document.body.appendChild(dialog);
+ const clock=(seconds)=>{const s=Math.max(0,Math.ceil(seconds));return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;};
+ function renderClock(){
+  const value=clock(remaining);
+  const stamp=value+'-'+(due?'D':'')+'-'+(gameState?.paused?'P':'');
+  if(stamp!==displayed){
+   displayed=stamp;
+   timer.innerHTML=`<span class="drive-quiz-clock-icon" aria-hidden="true">◷</span><span class="drive-quiz-clock-label">${testMode?'TEST · ':''}CHESTIONAR ÎN</span><strong>${value}</strong>${testMode?'<button type="button" class="drive-quiz-test-now">TEST ACUM</button>':''}`;
+   if(testMode)timer.querySelector('.drive-quiz-test-now').addEventListener('click',()=>{due=true;remaining=0;renderClock();tryOpen();});
+  }
   timer.classList.toggle('urgent',remaining<=15);
  }
+ function attachImageFallback(root,q){
+  const img=root.querySelector('.quiz-question-image');
+  if(!img)return;
+  img.addEventListener('error',()=>{if(img.dataset.fallbackUsed)return;img.dataset.fallbackUsed='1';img.src=q.fallbackImage;});
+ }
+ function picture(q){
+  return `<figure class="quiz-visual"><img class="quiz-question-image" src="${q.imageUrl}" alt="${q.imageAlt}" loading="eager" referrerpolicy="no-referrer"><figcaption>${q.imageCredit} · <a href="${q.imagePage}" target="_blank" rel="noopener noreferrer">Wikimedia Commons ↗</a></figcaption></figure>`;
+ }
+ function resetCountdown(){remaining=INTERVAL;due=false;renderClock();}
  function finish(){
   if(dialog.open)dialog.close();
   if(gameState&&!gameState.failed)gameState.paused=wasPaused;
-  current=null;answered=false;remaining=INTERVAL;paintTimer();
+  current=null;answered=false;resetCountdown();
  }
- function skip(){if(!current)return;finish();}
- dialog.addEventListener('cancel',e=>{e.preventDefault();skip();});
- function showQuestion(){
-  if(!gameState||dialog.open||gameState.paused||gameState.failed||window.DriveTraining?.active()||document.querySelector('dialog[open]'))return;
-  current=bank.randomExcept(lastQuestionId);lastQuestionId=current.id;answered=false;
-  wasPaused=gameState.paused;gameState.paused=true;
-  const q=current;
-  dialog.innerHTML=`<div class="drive-quiz-top"><span class="drive-quiz-eyebrow">PIXEL DRIVE · CHESTIONAR RUTIER</span><span class="drive-quiz-reward">+50 CR</span></div><div class="drive-quiz-topic">${q.category} · România</div><h2>${q.question}</h2><p class="drive-quiz-sub">Alege un singur răspuns. Răspuns greșit = 0 credite, fără penalizare.</p><div class="drive-quiz-answers">${q.answers.map((a,i)=>`<button data-answer="${i}"><span>${String.fromCharCode(65+i)}</span>${a}</button>`).join('')}</div><button class="drive-quiz-skip" id="drive-quiz-skip">Sari peste · 0 CR</button>`;
-  dialog.showModal();
-  dialog.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{
-   if(answered)return;answered=true;
-   const chosen=Number(b.dataset.answer),right=chosen===q.correct;
-   if(right)DriveCareer.awardCredits(50);
-   dialog.innerHTML=`<div class="drive-quiz-result ${right?'good':'bad'}"><span>${right?'✓ CORECT · +50 CR':'✕ GREȘIT · +0 CR'}</span><h2>${right?'Ai câștigat 50 de credite!':'Nicio penalizare. Continuă să înveți.'}</h2><p><b>Răspunsul corect:</b> ${q.answers[q.correct]}</p><p>${q.explanation}</p><a href="${q.url}" rel="noopener" target="_blank">${q.source} ↗</a><button id="drive-quiz-continue">Continuă să conduci →</button></div>`;
-   dialog.querySelector('#drive-quiz-continue').onclick=finish;
-  });
-  dialog.querySelector('#drive-quiz-skip').onclick=skip;
-  dialog.querySelector('[data-answer]')?.focus();
+ dialog.addEventListener('cancel',e=>{e.preventDefault();if(current)finish();});
+ function tryOpen(){
+  if(!due||current||!gameState||gameState.failed||gameState.paused||window.DriveTraining?.active()||document.querySelector('dialog[open]')||document.querySelector('#lesson-modal')?.hidden===false)return;
+  const q=bank.randomExcept(lastId);if(!q)return;
+  try{
+   current=q;answered=false;lastId=q.id;wasPaused=gameState.paused;
+   dialog.innerHTML=`<div class="drive-quiz-top"><span class="drive-quiz-eyebrow">PIXEL DRIVE · TEST RUTIER</span><span class="drive-quiz-reward">+50 CR</span></div><div class="drive-quiz-topic">${q.category} · România</div>${picture(q)}<h2>${q.question}</h2><p class="drive-quiz-sub">Alege răspunsul corect. Greșit = 0 CR, fără penalizare.</p><div class="drive-quiz-answers">${q.answers.map((answer,i)=>`<button type="button" data-answer="${i}"><span>${String.fromCharCode(65+i)}</span>${answer}</button>`).join('')}</div><button type="button" class="drive-quiz-skip">Sari peste · 0 CR</button>`;
+   attachImageFallback(dialog,q);
+   gameState.paused=true;
+   dialog.showModal();
+   dialog.querySelectorAll('[data-answer]').forEach(btn=>btn.addEventListener('click',()=>{
+    if(answered)return;answered=true;
+    const chosen=Number(btn.dataset.answer),correct=chosen===q.correct;
+    if(correct)window.DriveCareer?.awardCredits(50);
+    dialog.innerHTML=`<div class="drive-quiz-result ${correct?'good':'bad'}"><span>${correct?'✓ CORECT · +50 CR':'✕ GREȘIT · +0 CR'}</span><h2>${correct?'Ai câștigat 50 de credite!':'Nicio penalizare. Continuă să înveți.'}</h2><p><b>Răspunsul corect:</b> ${q.answers[q.correct]}</p><p>${q.explanation}</p><a href="${q.url}" rel="noopener noreferrer" target="_blank">Sursă: ${q.source} ↗</a><button type="button" id="drive-quiz-continue">Continuă să conduci →</button></div>`;
+    dialog.querySelector('#drive-quiz-continue').addEventListener('click',finish);
+   }));
+   dialog.querySelector('.drive-quiz-skip').addEventListener('click',finish);
+   dialog.querySelector('[data-answer]')?.focus();
+   console.info('[Pixel Drive Quiz] Popup opened:',q.id);
+  }catch(e){console.error('[Pixel Drive Quiz] Could not open popup',e);current=null;if(gameState)gameState.paused=wasPaused;}
  }
- const update=S.update;
- S.update=(s,input,dt)=>{
-  if(s!==gameState){if(dialog.open)dialog.close();gameState=s;remaining=INTERVAL;current=null;answered=false;paintTimer();}
-  const counting=!s.failed&&!s.paused&&!window.DriveTraining?.active()&&!dialog.open&&Math.abs(s.player.speed)>.035;
-  update(s,input,dt);
-  if(counting&&!s.failed&&!s.paused){remaining=Math.max(0,remaining-Math.max(0,Math.min(.05,Number(dt)||0)));if(remaining===0)showQuestion();}
-  paintTimer();
+ // Read the actual game state, but keep timer independent of speed and of physics dt caps.
+ const originalUpdate=sim.update;
+ sim.update=function(s,input,dt){
+  if(gameState!==s){
+   gameState=s;remaining=INTERVAL;due=false;current=null;answered=false;
+   if(dialog.open)dialog.close();previousTime=null;
+   renderClock();
+  }
+  return originalUpdate.call(this,s,input,dt);
  };
- paintTimer();
- window.DriveTimedQuiz={remaining:()=>remaining,testMode,interval:INTERVAL};
+ function frame(now){
+  if(previousTime!==null&&gameState&&!document.hidden){
+   const elapsed=Math.min(0.25,Math.max(0,(now-previousTime)/1000));
+   const blocked=gameState.paused||gameState.failed||!!current||window.DriveTraining?.active()||!!document.querySelector('dialog[open]')||document.querySelector('#lesson-modal')?.hidden===false;
+   if(!blocked&&!due){remaining=Math.max(0,remaining-elapsed);if(remaining<=0.00001){remaining=0;due=true;console.info('[Pixel Drive Quiz] Timer reached zero');}}
+  }
+  previousTime=now;
+  if(due)tryOpen();
+  renderClock();
+  requestAnimationFrame(frame);
+ }
+ renderClock();requestAnimationFrame(frame);
+ window.DriveTimedQuiz={remaining:()=>remaining,interval:INTERVAL,testMode,isDue:()=>due,force:()=>{due=true;remaining=0;renderClock();tryOpen();}};
 })();

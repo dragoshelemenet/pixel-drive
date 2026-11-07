@@ -58,5 +58,17 @@ body[data-hud="off"] #hud-toggle{display:none!important}
 .drive-quiz-answers{display:grid;gap:9px}.drive-quiz-answers button{display:flex;align-items:center;gap:11px;text-align:left;width:100%;border:1px solid #c4cdc0;border-radius:8px;padding:12px;background:#fffefa;color:#26372b;cursor:pointer;font:600 14px/1.4 system-ui,sans-serif}.drive-quiz-answers button span{display:inline-grid;flex:0 0 29px;place-items:center;height:29px;border-radius:5px;background:#e5eadf;color:#35543b;font:700 12px ui-monospace,monospace}.drive-quiz-answers button:hover,.drive-quiz-answers button:focus-visible{border-color:#55865f;background:#ecf5e5;outline:2px solid #b0d5a8;outline-offset:1px}
 .drive-quiz-skip{display:block;margin:18px auto 0;color:#607266;background:none;border:0;text-decoration:underline;font:12px system-ui;cursor:pointer}.drive-quiz-result>span{display:inline-block;background:#d0ead0;color:#326542;padding:7px 10px;border-radius:5px;font:700 12px ui-monospace,monospace}.drive-quiz-result.bad>span{background:#f2e4ce;color:#986034}.drive-quiz-result p{line-height:1.55;color:#34443b;font-size:14px}.drive-quiz-result a{display:block;font:12px system-ui;color:#476c4f;text-decoration:underline;margin:8px 0 24px}.drive-quiz-result button{display:block;border:0;background:#25472e;color:white;border-radius:8px;padding:14px 18px;cursor:pointer;font:700 14px system-ui;width:100%}
 .school-quiz-question>span{font:700 12px ui-monospace,monospace;color:#627b61}.school-quiz-question h3{font:700 20px/1.3 system-ui,sans-serif;margin:12px 0 16px}.career-dialog .school-quiz-answer{display:flex;align-items:center;gap:9px;width:100%;margin:7px 0;text-align:left;line-height:1.35;background:#fdfcf5;color:#223429;border:1px solid #9fae94}.career-dialog .school-quiz-answer:hover{background:#d7ead0}.career-dialog .school-quiz-answer b{background:#dce8d5;padding:5px;border-radius:3px}.career-dialog p a{text-decoration:underline;color:#2c5939}
-body[data-hud="off"] .drive-quiz-timer{display:none!important}body[data-hud="essential"] .drive-quiz-timer{top:13px}
+body[data-hud="off"] .drive-quiz-timer{display:flex!important}body[data-hud="essential"] .drive-quiz-timer{top:13px}
 @media(max-width:700px){.drive-quiz-timer{top:18px;left:50%;padding:6px 9px;gap:6px}.drive-quiz-timer .drive-quiz-clock-label{font-size:9px}.drive-quiz-timer strong{font-size:14px}.drive-quiz-dialog{padding:20px}.drive-quiz-answers button{font-size:13px}}
+
+/* Quiz v35: visual questions, visible countdown even with minimal HUD, accessible test control. */
+.drive-quiz-timer{pointer-events:auto;z-index:30}
+.drive-quiz-timer .drive-quiz-test-now{background:#daf4b0;color:#20452a;border:0;border-radius:5px;font:700 10px ui-monospace,monospace;padding:7px 9px;cursor:pointer;margin-left:4px}
+.drive-quiz-dialog{z-index:1000;width:min(620px,calc(100vw - 28px))}
+.quiz-visual,.school-quiz-visual{margin:13px 0 15px;border:1px solid #d4dfce;border-radius:10px;background:#e8eee4;padding:12px;text-align:center}
+.quiz-visual img,.school-quiz-visual img{display:block;margin:0 auto;width:100%;max-width:280px;height:185px;object-fit:contain}
+.quiz-visual figcaption,.school-quiz-visual small{font:11px/1.5 system-ui,sans-serif;color:#677664;display:block;margin-top:5px}
+.quiz-visual a,.school-quiz-visual a{color:#426847;text-decoration:underline}
+.career-dialog{max-height:calc(100dvh - 32px);overflow-y:auto}
+.career-dialog .school-quiz-visual{margin-top:9px}
+@media(max-width:700px){.quiz-visual img,.school-quiz-visual img{height:125px}.quiz-visual,.school-quiz-visual{padding:7px;margin:9px 0}.drive-quiz-timer .drive-quiz-test-now{font-size:9px;padding:6px}.drive-quiz-dialog{padding:15px}.drive-quiz-topic{margin-top:11px}.drive-quiz-sub{margin-bottom:10px}}
