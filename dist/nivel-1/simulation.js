@@ -12,20 +12,45 @@
  {kind:'bump',x:40.78,z:101,title:'Drum cu denivelări',hint:'Studiază indicatorul cu I și încetinește înainte de denivelări.'},
  {kind:'noParking',x:85,z:39.22,angle:Math.PI,title:'Staționarea interzisă',hint:'Găsește indicatorul și apasă I pentru diferența dintre oprire și staționare.'}
  ];
+ // Extra repeated exercises at genuine unsignalled intersections.
+ const rightJunctions=W.junctions.filter(j=>j.type==='right'&&j.col>0&&j.col<6&&j.row>0&&j.row<6);
+ for(const j of rightJunctions.filter((_,i)=>i%3===0).slice(0,7))scenarios.push({
+  kind:'right',junctionId:j.id,x:j.x+W.LANE,z:j.z+6.3,angle:-Math.PI/2,
+  title:'Prioritate de dreapta',hint:'Intersecție nedirijată! Privește în dreapta și acordă prioritate înainte de a intra.'
+ });
  function create(options={}){
-  const s={player:{x:24.78,z:19,angle:-Math.PI/2,speed:0,indicator:0},time:0,score:1000,collisions:0,failed:false,paused:false,limit:50,message:'Obiectiv: mergi la punctul marcat și preia pasagerul.',messageUntil:7,lastPenalty:-10,ruleCooldown:{},stopMemory:{},passed:new Set(),learned:new Set(),distance:0,traffic:[],pedestrians:[],mission:{phase:'pickup'}};
-  for(let i=0;i<24;i++){
+  const s={player:{x:24.78,z:19,angle:-Math.PI/2,speed:0,indicator:0},time:0,score:1000,collisions:0,failed:false,paused:false,limit:50,message:'Obiectiv: mergi la punctul marcat și preia pasagerul.',messageUntil:7,lastPenalty:-10,ruleCooldown:{},stopMemory:{},passed:new Set(),learned:new Set(),distance:0,traffic:[],pedestrians:[],mission:{phase:'pickup'},violationEvent:null,violationSerial:0,retraining:null};
+  for(let i=0;i<46;i++){
    const j=W.junctions[(i*13+3)%W.junctions.length];let d=i%4;while(!W.neighbor(j,(d+2)%4))d=(d+1)%4;
-   const v=W.V[d],r=W.right(d);s.traffic.push({id:i,x:j.x-v.x*7+r.x*W.LANE,z:j.z-v.z*7+r.z*W.LANE,angle:Math.atan2(v.z,v.x),d,j,speed:0,cruise:1.7+(i%3)*.15,phase:'approach',stopTime:0,color:['#be6851','#a7b5bf','#d7bb76','#729a91','#797da2'][i%5]});
+   const v=W.V[d],r=W.right(d);s.traffic.push({id:i,x:j.x-v.x*7+r.x*W.LANE,z:j.z-v.z*7+r.z*W.LANE,angle:Math.atan2(v.z,v.x),d,j,speed:0,cruise:1.5+(i%5)*.16,phase:'approach',stopTime:0,color:['#be6851','#a7b5bf','#d7bb76','#729a91','#797da2'][i%5]});
   }
   for(const j of W.roundabouts)s.traffic.push({id:s.traffic.length,orbit:j,theta:0,x:j.x+2.9,z:j.z,angle:-Math.PI/2,speed:1.5,color:'#c19769'});
   for(let i=0;i<W.junctions.length;i++)if(i%3===1&&W.junctions[i].type!=='roundabout'){const j=W.junctions[i];s.pedestrians.push({id:i,j,x:j.x-2.1,z:j.z+1.62,crossing:false,t:0,wait:0,direction:1,color:['#c86d61','#6d99b4','#d3ae61'][i%3]});}
   s.studied=new Set();
-  if(options.vary){let index=attempt;try{index=Number(localStorage.getItem('pixel-route-attempt')||0);if(!Number.isFinite(index))index=0;localStorage.setItem('pixel-route-attempt',String(index+1));}catch{}attempt=index+1;const lesson=scenarios[index%scenarios.length];Object.assign(s.player,{x:lesson.x,z:lesson.z,angle:lesson.angle??-Math.PI/2});s.scenario={...lesson,startDistance:0,complete:false};s.message=lesson.title+' · '+lesson.hint;s.messageUntil=10;s.traffic=s.traffic.filter(t=>Math.hypot(t.x-s.player.x,t.z-s.player.z)>3);}
+  if(options.vary){let index=attempt;try{index=Number(localStorage.getItem('pixel-route-attempt')||0);if(!Number.isFinite(index))index=0;localStorage.setItem('pixel-route-attempt',String(index+1));}catch{}attempt=index+1;const lesson=scenarios[index%scenarios.length];Object.assign(s.player,{x:lesson.x,z:lesson.z,angle:lesson.angle??-Math.PI/2});s.scenario={...lesson,startDistance:0,complete:false};s.message=lesson.title+' · '+lesson.hint;s.messageUntil=10;s.traffic=s.traffic.filter(t=>Math.hypot(t.x-s.player.x,t.z-s.player.z)>3);
+   if(lesson.kind==='right'){
+    const j=W.junctions.find(q=>q.id===lesson.junctionId);
+    // Create a clearly visible car approaching from the player's RIGHT.
+    // Its heading 3 is west, so the car comes from the east side.
+    s.traffic=s.traffic.filter(t=>Math.hypot(t.x-j.x,t.z-j.z)>7.6);
+    s.traffic.push({id:999,x:j.x+6.5,z:j.z-W.LANE,angle:Math.PI,d:3,j,speed:0,
+      cruise:1.3,phase:'approach',stopTime:0,color:'#48a2d5',tutorial:true});
+   }
+  }
   return s;
  }
- function penalize(s,points,text,key,delay=3){if(s.failed||s.time-(s.ruleCooldown[key]??-100)<delay)return;s.ruleCooldown[key]=s.time;s.score=Math.max(0,s.score-points);s.message=`−${points} · ${text}`;s.messageUntil=s.time+4;if(s.score===0){s.failed=true;s.player.speed=0;}}
- function collision(s,kind){if(s.time-s.lastPenalty<2||s.failed)return;s.lastPenalty=s.time;s.collisions++;penalize(s,120,kind,'collision',0);s.player.speed=0;if(s.collisions>=4){s.failed=true;s.message='Patru coliziuni. Reîncearcă traseul cu viteză mai mică.';}}
+ function penalize(s,points,text,key,delay=3,meta=null){
+  if(s.failed||s.time-(s.ruleCooldown[key]??-100)<delay)return false;
+  s.ruleCooldown[key]=s.time;
+  s.score=Math.max(0,s.score-points);s.message=`−${points} · ${text}`;s.messageUntil=s.time+4;
+  // One report per physics frame; consumed after the actual screen is drawn.
+  if(!s.violationEvent)s.violationEvent={id:++s.violationSerial,kind:meta?.kind||key.split('-')[0],
+    key,points,text,junctionId:meta?.junctionId||null,direction:meta?.direction??null,
+    limit:s.limit,time:s.time,player:{...s.player}};
+  if(s.score===0){s.failed=true;s.player.speed=0;}
+  return true;
+ }
+ function collision(s,kind){if(s.time-s.lastPenalty<2||s.failed)return;s.lastPenalty=s.time;s.collisions++;penalize(s,120,kind,'collision',0,{kind:'collision'});s.player.speed=0;if(s.collisions>=4){s.failed=true;s.message='Patru coliziuni. Reîncearcă traseul cu viteză mai mică.';}}
  function trafficConflict(s,j,d,onlyRight=false,ignore=null){const r=W.right(d);return s.traffic.some(t=>t!==ignore&&Math.hypot(t.x-j.x,t.z-j.z)<4.8&&(t.speed>.05||t.phase==='cross')&&(onlyRight?(t.d===(d+3)%4&&((t.x-j.x)*r.x+(t.z-j.z)*r.z>.6)):(t.d%2!==d%2||t.orbit)));}
  function crossPath(j,d,out){
   const v=W.V[d],r=W.right(d),u=W.V[out],rr=W.right(out),distance=j.type==='roundabout'?4.3:3.0;
@@ -80,18 +105,18 @@
    const line=j.type==='roundabout'?4.35:2.55,key=j.id+'-'+d;
    if(lateral<1.6&&along>line&&along<line+1.8&&Math.abs(p.speed)<.015)s.stopMemory[key]=s.time;
    if(lateral<1.6&&before>line&&along<=line&&p.speed>0){
-    if(j.type==='signal'&&W.light(j,d,s.time)==='red')penalize(s,100,'Ai trecut pe roșu.','red-'+key,8);
-    if(j.type==='stop'&&d%2===0&&s.time-(s.stopMemory[key]??-100)>8)penalize(s,80,'STOP cere oprire completă.','stop-'+key,8);
-    if(j.type==='right'&&trafficConflict(s,j,d,true))penalize(s,80,'Nu ai acordat prioritate de dreapta.','right-'+key,8);
-    if((j.type==='yield'||j.type==='stop')&&d%2===0&&trafficConflict(s,j,d,false))penalize(s,80,'Acordă prioritate drumului transversal.','yield-'+key,8);
-    if(j.type==='roundabout'&&s.traffic.some(t=>Math.hypot(t.x-j.x,t.z-j.z)<3.7&&Math.hypot(t.x-p.x,t.z-p.z)<3.8))penalize(s,80,'Acordă prioritate celor din giratoriu.','round-'+key,8);
+    if(j.type==='signal'&&W.light(j,d,s.time)==='red')penalize(s,100,'Ai trecut pe roșu.','red-'+key,8,{kind:'red',junctionId:j.id,direction:d});
+    if(j.type==='stop'&&d%2===0&&s.time-(s.stopMemory[key]??-100)>8)penalize(s,80,'STOP cere oprire completă.','stop-'+key,8,{kind:'stop',junctionId:j.id,direction:d});
+    if(j.type==='right'&&trafficConflict(s,j,d,true))penalize(s,80,'Nu ai acordat prioritate de dreapta.','right-'+key,8,{kind:'right',junctionId:j.id,direction:d});
+    if((j.type==='yield'||j.type==='stop')&&d%2===0&&trafficConflict(s,j,d,false))penalize(s,80,'Acordă prioritate drumului transversal.','yield-'+key,8,{kind:'yield',junctionId:j.id,direction:d});
+    if(j.type==='roundabout'&&s.traffic.some(t=>Math.hypot(t.x-j.x,t.z-j.z)<3.7&&Math.hypot(t.x-p.x,t.z-p.z)<3.8))penalize(s,80,'Acordă prioritate celor din giratoriu.','round-'+key,8,{kind:'round',junctionId:j.id,direction:d});
     s.passed.add(key);
    }
   }
   for(const sign of W.signs)if(sign.d===d&&sign.kind.startsWith('limit')){
    const a=(sign.x-p.x)*v.x+(sign.z-p.z)*v.z,b=(sign.x-old.x)*v.x+(sign.z-old.z)*v.z;if(b>0&&a<=0&&Math.hypot(sign.x-p.x,sign.z-p.z)<3)s.limit=Number(sign.kind.slice(5));
   }
-  const speed=Math.abs(p.speed)*21.6;if(speed>s.limit+2)penalize(s,20,`Ai depășit limita de ${s.limit} km/h.`,'speed',5);
+  const speed=Math.abs(p.speed)*21.6;if(speed>s.limit+2)penalize(s,20,`Ai depășit limita de ${s.limit} km/h.`,'speed',5,{kind:'speed'});
  }
  function update(s,input,dt){
   if(s.failed||s.paused)return;dt=Math.min(dt,.05);s.time+=dt;
@@ -108,11 +133,34 @@
   for(const t of s.traffic)if(Math.hypot(t.x-p.x,t.z-p.z)<.75){p.x=old.x;p.z=old.z;collision(s,'Coliziune cu un vehicul.');}
   for(const ped of s.pedestrians)if(ped.crossing&&Math.hypot(ped.x-p.x,ped.z-p.z)<.43){s.failed=true;s.score=0;p.speed=0;s.message='Ai lovit un pieton. Oprește înainte de trecere și acordă prioritate.';}
   checkRules(s,old);
-  if(s.scenario&&!s.scenario.complete&&s.studied.has(s.scenario.kind)&&s.distance>8){s.scenario.complete=true;s.score+=100;s.message='Situație studiată · +100 puncte. Continuă explorarea orașului.';s.messageUntil=s.time+6;}
+  // A failed lesson stays active until the driver repeats it correctly.
+  const retry=s.retraining;
+  if(retry&&!s.violationEvent){
+   let success=false;
+   if(retry.junctionId){
+    const j=W.junctions.find(q=>q.id===retry.junctionId);
+    if(j){
+     const v=W.V[retry.direction],line=retry.kind==='round'?4.35:2.55;
+     const before=(j.x-old.x)*v.x+(j.z-old.z)*v.z;
+     const after=(j.x-p.x)*v.x+(j.z-p.z)*v.z;
+     const lateral=Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x);
+     success=lateral<1.6&&before>line&&after<=line&&p.speed>0;
+    }
+   }else success=s.distance>=retry.startDistance+4&&
+    Math.abs(p.speed)*21.6<=s.limit+1&&s.collisions===retry.collisions;
+   if(success){s.retraining=null;s.message='✓ Corect! Ai repetat manevra regulamentar. Continuă traseul.';s.messageUntil=s.time+7;}
+  }
+  if(s.scenario&&!s.scenario.complete&&(s.scenario.kind==='right'?s.learned.has('right'):s.studied.has(s.scenario.kind))&&s.distance>8){s.scenario.complete=true;s.score+=100;s.message='Situație studiată · +100 puncte. Continuă explorarea orașului.';s.messageUntil=s.time+6;}
   const c=R.context(s);if(c.key!=='drive')s.learned.add(c.key);
  }
  function objective(s){
-  if(s.scenario&&!s.scenario.complete){const l=s.scenario,sign=W.signs.filter(q=>q.kind===l.kind).sort((a,b)=>Math.hypot(a.x-l.x,a.z-l.z)-Math.hypot(b.x-l.x,b.z-l.z))[0];return {title:l.title,text:s.studied.has(l.kind)?'Semn studiat. Continuă prudent traseul pentru a încheia exercițiul.':l.hint,target:sign,distance:sign?Math.hypot(sign.x-s.player.x,sign.z-s.player.z):null,lesson:true};}
+  if(s.scenario&&!s.scenario.complete){
+   const l=s.scenario;
+   if(l.kind==='right'){
+    const j=W.junctions.find(q=>q.id===l.junctionId),dist=j?Math.hypot(j.x-s.player.x,j.z-s.player.z):null;
+    return {title:l.title,text:l.hint+' Privește după vehiculul albastru care vine din dreapta.',target:j||null,distance:dist,lesson:true};
+   }
+   const sign=W.signs.filter(q=>q.kind===l.kind).sort((a,b)=>Math.hypot(a.x-l.x,a.z-l.z)-Math.hypot(b.x-l.x,b.z-l.z))[0];return {title:l.title,text:s.studied.has(l.kind)?'Semn studiat. Continuă prudent traseul pentru a încheia exercițiul.':l.hint,target:sign,distance:sign?Math.hypot(sign.x-s.player.x,sign.z-s.player.z):null,lesson:true};}
   const id={pickup:'pickup',dropoff:'dropoff',park:'parking'}[s.mission.phase];
   const target=W.landmarks.find(l=>l.id===id);
   if(!target)return{phase:'complete',title:'Cursă completă',text:'Ai dus pasagerul la destinație și ai parcat în locul marcat.',target:null,distance:null};

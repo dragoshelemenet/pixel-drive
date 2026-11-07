@@ -74,6 +74,14 @@
  document.querySelectorAll('[data-indicator]').forEach(b=>b.addEventListener('click',()=>signal(Number(b.dataset.indicator))));
  $('learn').addEventListener('click',interact);$('lesson-close').addEventListener('click',closeLesson);$('lesson-done').addEventListener('click',closeLesson);$('lesson-modal').addEventListener('click',e=>{if(e.target===$('lesson-modal'))closeLesson();});
  $('pause').addEventListener('click',pause);$('restart').addEventListener('click',reset);$('restart-fail').addEventListener('click',reset);
- function frame(now){const dt=last?Math.min((now-last)/1000,.05):0;last=now;Sim.update(state,keys,dt);Render.draw(canvas,state,dt);if(now-lastUI>100||state.failed){ui();lastUI=now;}requestAnimationFrame(frame);}
+ function frame(now){
+  const dt=last?Math.min((now-last)/1000,.05):0;last=now;
+  Sim.update(state,keys,dt);
+  Render.draw(canvas,state,dt);
+  // Actual game-camera recording and mandatory lessons after violations.
+  window.DriveReplay?.onFrame(state,canvas,now);
+  if(now-lastUI>100||state.failed){ui();lastUI=now;}
+  requestAnimationFrame(frame);
+ }
  ui();requestAnimationFrame(frame);
 })();

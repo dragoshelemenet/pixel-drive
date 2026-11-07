@@ -4,7 +4,10 @@
   const roundKeys=new Set(['2,2','4,4','1,5']);
   const junctions=[];
   for(let row=0;row<7;row++)for(let col=0;col<7;col++){
-    let type=roundKeys.has(`${col},${row}`)?'roundabout':(col+row)%5===0?'signal':(col+row)%5===1?'stop':(col+row)%5===2?'yield':'right';
+    // Undirected intersections dominate the neighbourhood: the real Romanian
+    // right-hand-priority rule applies here (OUG 195/2002 art. 57).
+    const pattern=(col*7+row*11)%10;
+    let type=roundKeys.has(`${col},${row}`)?'roundabout':pattern===0?'signal':(pattern===1||pattern===2)?'stop':pattern===3?'yield':'right';
     if(col===1&&row===0)type='stop';if(col===1&&row===1)type='signal';
     junctions.push({id:`j${col}-${row}`,col,row,x:AXES[col],z:AXES[row],type,offset:(col*3+row*5)%16});
   }
