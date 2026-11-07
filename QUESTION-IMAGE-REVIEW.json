@@ -1,0 +1,3101 @@
+{
+  "total": 1208,
+  "visual_questions_for_manual_review": [
+    {
+      "position": 1,
+      "rodrive_id": "0",
+      "sourceQuestion": "Dacă ați selectat banda de circulație conform imaginii prezentate, vă este permis:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/1.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0001.svg",
+      "reviewed": false
+    },
+    {
+      "position": 2,
+      "rodrive_id": "1",
+      "sourceQuestion": "Care este regula de trecere la întâlnirea acestui indicator?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/2.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0002.svg",
+      "reviewed": false
+    },
+    {
+      "position": 3,
+      "rodrive_id": "2",
+      "sourceQuestion": "Vă este permis să executați depășirea în situația prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_3.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0003.svg",
+      "reviewed": false
+    },
+    {
+      "position": 5,
+      "rodrive_id": "4",
+      "sourceQuestion": "Ce traseu trebuie să urmați pentru a vira la stânga în intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_5.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0005.svg",
+      "reviewed": false
+    },
+    {
+      "position": 6,
+      "rodrive_id": "5",
+      "sourceQuestion": "Indicatorul interzice accesul:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_6.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0006.svg",
+      "reviewed": false
+    },
+    {
+      "position": 7,
+      "rodrive_id": "6",
+      "sourceQuestion": "Indicatorul vă avertizează că urmează:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_7.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0007.svg",
+      "reviewed": false
+    },
+    {
+      "position": 8,
+      "rodrive_id": "7",
+      "sourceQuestion": "Este permisă oprirea în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_8.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0008.svg",
+      "reviewed": false
+    },
+    {
+      "position": 9,
+      "rodrive_id": "8",
+      "sourceQuestion": "Puteți depăși în situatia dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_9.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0009.svg",
+      "reviewed": false
+    },
+    {
+      "position": 10,
+      "rodrive_id": "9",
+      "sourceQuestion": "Cum procedați în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_10.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0010.svg",
+      "reviewed": false
+    },
+    {
+      "position": 11,
+      "rodrive_id": "10",
+      "sourceQuestion": "În ce ordine vor circula autovehiculele prin intersecția prezentată, dacă semafoarele nu funcționează?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_11.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0011.svg",
+      "reviewed": false
+    },
+    {
+      "position": 12,
+      "rodrive_id": "11",
+      "sourceQuestion": "Cum este corect să procedați, dacă vă aflați la volanul autoturismului roșu?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_12.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0012.svg",
+      "reviewed": false
+    },
+    {
+      "position": 14,
+      "rodrive_id": "13",
+      "sourceQuestion": "Ce semnifică indicatorul împreună cu panoul adițional?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_14.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0014.svg",
+      "reviewed": false
+    },
+    {
+      "position": 15,
+      "rodrive_id": "14",
+      "sourceQuestion": "Virați la stânga în intersecție. Cum procedați?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_15.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0015.svg",
+      "reviewed": false
+    },
+    {
+      "position": 42,
+      "rodrive_id": "41",
+      "sourceQuestion": "Ce semnifică indicatorul din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_43.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0042.svg",
+      "reviewed": false
+    },
+    {
+      "position": 43,
+      "rodrive_id": "42",
+      "sourceQuestion": "Cum trebuie să procedați în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_44.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0043.svg",
+      "reviewed": false
+    },
+    {
+      "position": 44,
+      "rodrive_id": "43",
+      "sourceQuestion": "Care este traseul optim pentru a întoarce în intersecția prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_45.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0044.svg",
+      "reviewed": false
+    },
+    {
+      "position": 45,
+      "rodrive_id": "44",
+      "sourceQuestion": "Cum veți proceda în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_46.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0045.svg",
+      "reviewed": false
+    },
+    {
+      "position": 46,
+      "rodrive_id": "45",
+      "sourceQuestion": "Cum trebuie să procedați dacă virați la stânga?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_47.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0046.svg",
+      "reviewed": false
+    },
+    {
+      "position": 47,
+      "rodrive_id": "46",
+      "sourceQuestion": "Care este ordinea de trecere prin intersecție a autoturismelor?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_48.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0047.svg",
+      "reviewed": false
+    },
+    {
+      "position": 59,
+      "rodrive_id": "58",
+      "sourceQuestion": "Cum procedați în prima intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_60.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0059.svg",
+      "reviewed": false
+    },
+    {
+      "position": 60,
+      "rodrive_id": "59",
+      "sourceQuestion": "Aveți posibilitatea de a trece pe sensul opus de mers, la întâlnirea unui astfel de marcaj rutier?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_61.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0060.svg",
+      "reviewed": false
+    },
+    {
+      "position": 61,
+      "rodrive_id": "60",
+      "sourceQuestion": "Care dintre autovehicule va trece al doilea prin intersecția prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_62.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0061.svg",
+      "reviewed": false
+    },
+    {
+      "position": 62,
+      "rodrive_id": "61",
+      "sourceQuestion": "Indicatorul vă avertizează că urmează:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_63.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0062.svg",
+      "reviewed": false
+    },
+    {
+      "position": 63,
+      "rodrive_id": "62",
+      "sourceQuestion": "Autovehiculul din fața dvs. traversează intersecția. Cum veți proceda?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_64.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0063.svg",
+      "reviewed": false
+    },
+    {
+      "position": 64,
+      "rodrive_id": "63",
+      "sourceQuestion": "Vă este permis să claxonați un biciclist înainte de a-l depăși?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_65.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0064.svg",
+      "reviewed": false
+    },
+    {
+      "position": 65,
+      "rodrive_id": "64",
+      "sourceQuestion": "În ce ordine vor trece prin intersecție cele patru autovehicule?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_66.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0065.svg",
+      "reviewed": false
+    },
+    {
+      "position": 89,
+      "rodrive_id": "88",
+      "sourceQuestion": "În această situație, pe lângă luminile de întâlnire trebuie să folosiți:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_90.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0089.svg",
+      "reviewed": false
+    },
+    {
+      "position": 90,
+      "rodrive_id": "89",
+      "sourceQuestion": "Ce este bine să aveți în vedere pentru evitarea unui pericol, în situația din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_91.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0090.svg",
+      "reviewed": false
+    },
+    {
+      "position": 91,
+      "rodrive_id": "90",
+      "sourceQuestion": "În ce ordine vor intra autovehiculele în intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_92.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0091.svg",
+      "reviewed": false
+    },
+    {
+      "position": 97,
+      "rodrive_id": "96",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_98.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0097.svg",
+      "reviewed": false
+    },
+    {
+      "position": 98,
+      "rodrive_id": "97",
+      "sourceQuestion": "Autoturismul staționează regulamentar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_99.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0098.svg",
+      "reviewed": false
+    },
+    {
+      "position": 99,
+      "rodrive_id": "98",
+      "sourceQuestion": "Se poate efectua depășirea în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_100.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0099.svg",
+      "reviewed": false
+    },
+    {
+      "position": 100,
+      "rodrive_id": "99",
+      "sourceQuestion": "Cum procedați în intersecția care urmează?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_101.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0100.svg",
+      "reviewed": false
+    },
+    {
+      "position": 111,
+      "rodrive_id": "110",
+      "sourceQuestion": "Indicatorul interzice:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_112.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0111.svg",
+      "reviewed": false
+    },
+    {
+      "position": 112,
+      "rodrive_id": "111",
+      "sourceQuestion": "Care este semnificația indicatorului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_113.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0112.svg",
+      "reviewed": false
+    },
+    {
+      "position": 113,
+      "rodrive_id": "112",
+      "sourceQuestion": "Este interzisă staționarea pe un drum public prevăzut cu marcaj longitudinal continuu aplicat între sensurile de circulație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_114.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0113.svg",
+      "reviewed": false
+    },
+    {
+      "position": 120,
+      "rodrive_id": "119",
+      "sourceQuestion": "Indicatorul din imagine vă avertizează că urmează:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_121.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0120.svg",
+      "reviewed": false
+    },
+    {
+      "position": 121,
+      "rodrive_id": "120",
+      "sourceQuestion": "Semnalul verde al semaforului vă permite:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_122.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0121.svg",
+      "reviewed": false
+    },
+    {
+      "position": 122,
+      "rodrive_id": "121",
+      "sourceQuestion": "Este permisă folosirea luminilor de ceață noaptea, dacă cerul este senin?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_123.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0122.svg",
+      "reviewed": false
+    },
+    {
+      "position": 123,
+      "rodrive_id": "122",
+      "sourceQuestion": "Cum trebuie să procedați corect, dacă vă aflați la volanul autoturismului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_124.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0123.svg",
+      "reviewed": false
+    },
+    {
+      "position": 135,
+      "rodrive_id": "134",
+      "sourceQuestion": "Ce semnificație are marcajul rutier din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_137.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0135.svg",
+      "reviewed": false
+    },
+    {
+      "position": 137,
+      "rodrive_id": "136",
+      "sourceQuestion": "Ce obligații aveți în situația prezentată în imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_139.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0137.svg",
+      "reviewed": false
+    },
+    {
+      "position": 138,
+      "rodrive_id": "137",
+      "sourceQuestion": "Cum procedați în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_140.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0138.svg",
+      "reviewed": false
+    },
+    {
+      "position": 148,
+      "rodrive_id": "147",
+      "sourceQuestion": "Indicatorul din imagine semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_150.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0148.svg",
+      "reviewed": false
+    },
+    {
+      "position": 149,
+      "rodrive_id": "148",
+      "sourceQuestion": "Cum veți proceda la întâlnirea indicatorului „Oprire“?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_151.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0149.svg",
+      "reviewed": false
+    },
+    {
+      "position": 150,
+      "rodrive_id": "149",
+      "sourceQuestion": "Cum procedați dacă vă aflați la volanul autoturismului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_152.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0150.svg",
+      "reviewed": false
+    },
+    {
+      "position": 159,
+      "rodrive_id": "158",
+      "sourceQuestion": "Panoul adițional semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_162.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0159.svg",
+      "reviewed": false
+    },
+    {
+      "position": 160,
+      "rodrive_id": "159",
+      "sourceQuestion": "Semnificația indicatorului și a panoului adițional este:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_163.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0160.svg",
+      "reviewed": false
+    },
+    {
+      "position": 161,
+      "rodrive_id": "160",
+      "sourceQuestion": "Autoturismul semnalizează intenția de a se pune în mișcare. Puteți efectua depășirea?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_164.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0161.svg",
+      "reviewed": false
+    },
+    {
+      "position": 173,
+      "rodrive_id": "172",
+      "sourceQuestion": "Polițistul nu permite trecerea:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_176.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0173.svg",
+      "reviewed": false
+    },
+    {
+      "position": 174,
+      "rodrive_id": "173",
+      "sourceQuestion": "Care dintre cele trei vehicule va trece al doilea prin intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_177.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0174.svg",
+      "reviewed": false
+    },
+    {
+      "position": 175,
+      "rodrive_id": "174",
+      "sourceQuestion": "Semnalul polițistului indică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_178.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0175.svg",
+      "reviewed": false
+    },
+    {
+      "position": 183,
+      "rodrive_id": "182",
+      "sourceQuestion": "Cum trebuie să procedați la întâlnirea indicatorului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_186.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0183.svg",
+      "reviewed": false
+    },
+    {
+      "position": 184,
+      "rodrive_id": "183",
+      "sourceQuestion": "Ce semnificație are un astfel de marcaj rutier?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_187.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0184.svg",
+      "reviewed": false
+    },
+    {
+      "position": 185,
+      "rodrive_id": "184",
+      "sourceQuestion": "Cu ce viteză veți putea rula dacă sunteți la volan?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_188.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0185.svg",
+      "reviewed": false
+    },
+    {
+      "position": 186,
+      "rodrive_id": "185",
+      "sourceQuestion": "Cum veți proceda dacă intenționați să schimbați direcția de mers spre dreapta?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_189.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0186.svg",
+      "reviewed": false
+    },
+    {
+      "position": 187,
+      "rodrive_id": "186",
+      "sourceQuestion": "Cum este corect să procedați dacă părăsiți drumul prioritar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_190.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0187.svg",
+      "reviewed": false
+    },
+    {
+      "position": 188,
+      "rodrive_id": "187",
+      "sourceQuestion": "În ce ordine vor trece autovehiculele prin intersecția prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_191.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0188.svg",
+      "reviewed": false
+    },
+    {
+      "position": 189,
+      "rodrive_id": "188",
+      "sourceQuestion": "Care dintre indicatoarele alăturate creează obligații pentru conducătorii de vehicule?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_192.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0189.svg",
+      "reviewed": false
+    },
+    {
+      "position": 204,
+      "rodrive_id": "203",
+      "sourceQuestion": "Care dintre vehicule trebuie să oprească la semnalul polițistului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_212.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0204.svg",
+      "reviewed": false
+    },
+    {
+      "position": 205,
+      "rodrive_id": "204",
+      "sourceQuestion": "Care este traseul de urmat pentru autoturismul din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_213.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0205.svg",
+      "reviewed": false
+    },
+    {
+      "position": 208,
+      "rodrive_id": "207",
+      "sourceQuestion": "În situația dată sunteți obligat:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_215.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0208.svg",
+      "reviewed": false
+    },
+    {
+      "position": 209,
+      "rodrive_id": "208",
+      "sourceQuestion": "Cum trebuie să procedați în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_216.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0209.svg",
+      "reviewed": false
+    },
+    {
+      "position": 210,
+      "rodrive_id": "209",
+      "sourceQuestion": "Care dintre cele trei autoturisme este parcat regulamentar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_217.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0210.svg",
+      "reviewed": false
+    },
+    {
+      "position": 216,
+      "rodrive_id": "215",
+      "sourceQuestion": "Puteți depăși tramvaiul oprit în stație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_223.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0216.svg",
+      "reviewed": false
+    },
+    {
+      "position": 220,
+      "rodrive_id": "219",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_227.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0220.svg",
+      "reviewed": false
+    },
+    {
+      "position": 221,
+      "rodrive_id": "220",
+      "sourceQuestion": "În ce ordine vor trece autovehiculele prin intersecția prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_228.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0221.svg",
+      "reviewed": false
+    },
+    {
+      "position": 224,
+      "rodrive_id": "223",
+      "sourceQuestion": "Ce semnifică indicatorul?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_231.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0224.svg",
+      "reviewed": false
+    },
+    {
+      "position": 225,
+      "rodrive_id": "224",
+      "sourceQuestion": "Principala cauză a exploziei pneului în timpul mersului este:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_232.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0225.svg",
+      "reviewed": false
+    },
+    {
+      "position": 226,
+      "rodrive_id": "225",
+      "sourceQuestion": "Pentru a folosi telefonul mobil, atunci când nu aveți un sistem de tip „mâini libere“:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_233.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0226.svg",
+      "reviewed": false
+    },
+    {
+      "position": 227,
+      "rodrive_id": "226",
+      "sourceQuestion": "În ce ordine trec prin intersecția prezentată cele trei autovehicule?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_234.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0227.svg",
+      "reviewed": false
+    },
+    {
+      "position": 235,
+      "rodrive_id": "234",
+      "sourceQuestion": "Ce vă este interzis în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_242.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0235.svg",
+      "reviewed": false
+    },
+    {
+      "position": 236,
+      "rodrive_id": "235",
+      "sourceQuestion": "Autoturismul din imagine a parcat regulamentar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_243.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0236.svg",
+      "reviewed": false
+    },
+    {
+      "position": 237,
+      "rodrive_id": "236",
+      "sourceQuestion": "Polițistul din intersecție semnalizează conducătorul auto să mărească viteza. Cum trebuie să procedeze acesta?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_244.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0237.svg",
+      "reviewed": false
+    },
+    {
+      "position": 238,
+      "rodrive_id": "237",
+      "sourceQuestion": "Ce indică această poziție a polițistului rutier?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_245.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0238.svg",
+      "reviewed": false
+    },
+    {
+      "position": 239,
+      "rodrive_id": "238",
+      "sourceQuestion": "Vă este permisă trecerea peste marcajul longitudinal din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_246.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0239.svg",
+      "reviewed": false
+    },
+    {
+      "position": 259,
+      "rodrive_id": "258",
+      "sourceQuestion": "La întâlnirea indicatorului aveți obligația:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_266.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0259.svg",
+      "reviewed": false
+    },
+    {
+      "position": 260,
+      "rodrive_id": "259",
+      "sourceQuestion": "Indicatorul nu permite schimbarea direcţiei de mers spre stânga:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_267.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0260.svg",
+      "reviewed": false
+    },
+    {
+      "position": 261,
+      "rodrive_id": "260",
+      "sourceQuestion": "Indicatorul vă obligă:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_268.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0261.svg",
+      "reviewed": false
+    },
+    {
+      "position": 262,
+      "rodrive_id": "261",
+      "sourceQuestion": "Acest indicator vă avertizează că urmează:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_269.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0262.svg",
+      "reviewed": false
+    },
+    {
+      "position": 263,
+      "rodrive_id": "262",
+      "sourceQuestion": "Conducătorul autoturismului din imagine va circula cu:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_270.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0263.svg",
+      "reviewed": false
+    },
+    {
+      "position": 264,
+      "rodrive_id": "263",
+      "sourceQuestion": "Care dintre autovehicule staționează greșit?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_271.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0264.svg",
+      "reviewed": false
+    },
+    {
+      "position": 265,
+      "rodrive_id": "264",
+      "sourceQuestion": "În situația dată, veți circula:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_272.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0265.svg",
+      "reviewed": false
+    },
+    {
+      "position": 283,
+      "rodrive_id": "282",
+      "sourceQuestion": "Ce obligații aveți la întâlnirea indicatorului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_290.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0283.svg",
+      "reviewed": false
+    },
+    {
+      "position": 284,
+      "rodrive_id": "283",
+      "sourceQuestion": "Ce obligații aveți la întâlnirea indicatorului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_291.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0284.svg",
+      "reviewed": false
+    },
+    {
+      "position": 285,
+      "rodrive_id": "284",
+      "sourceQuestion": "Indicatorul precizează:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_292.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0285.svg",
+      "reviewed": false
+    },
+    {
+      "position": 286,
+      "rodrive_id": "285",
+      "sourceQuestion": "Ați selectat corect banda de circulație pentru a vira la stânga în intersecția care urmează?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_293.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0286.svg",
+      "reviewed": false
+    },
+    {
+      "position": 287,
+      "rodrive_id": "286",
+      "sourceQuestion": "Care este traseul recomandat pentru a vira la stânga?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_294.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0287.svg",
+      "reviewed": false
+    },
+    {
+      "position": 288,
+      "rodrive_id": "287",
+      "sourceQuestion": "Din punct de vedere al conduitei preventive, cum trebuie să procedați în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_295.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0288.svg",
+      "reviewed": false
+    },
+    {
+      "position": 289,
+      "rodrive_id": "288",
+      "sourceQuestion": "Care dintre cele trei vehicule va trece ultimul prin intersecția din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_296.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0289.svg",
+      "reviewed": false
+    },
+    {
+      "position": 290,
+      "rodrive_id": "289",
+      "sourceQuestion": "Puteți depăși în această situație, dacă vă aflați la volanul autoturismului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_298.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0290.svg",
+      "reviewed": false
+    },
+    {
+      "position": 291,
+      "rodrive_id": "290",
+      "sourceQuestion": "Cum procedați la întâlnirea panoului și a indicatorului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_299.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0291.svg",
+      "reviewed": false
+    },
+    {
+      "position": 292,
+      "rodrive_id": "291",
+      "sourceQuestion": "Dacă virați la stânga:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_300.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0292.svg",
+      "reviewed": false
+    },
+    {
+      "position": 307,
+      "rodrive_id": "306",
+      "sourceQuestion": "Sfârșitul zonei în care oprirea a fost interzisă este anunțată de:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_315.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0307.svg",
+      "reviewed": false
+    },
+    {
+      "position": 308,
+      "rodrive_id": "307",
+      "sourceQuestion": "Care dintre cele două indicatoare obligă la schimbarea direcției de mers spre dreapta, după depășirea locului unde este instalat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_316.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0308.svg",
+      "reviewed": false
+    },
+    {
+      "position": 322,
+      "rodrive_id": "321",
+      "sourceQuestion": "La întâlnirea panoului de pe stâlp aveți obligația:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_331.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0322.svg",
+      "reviewed": false
+    },
+    {
+      "position": 323,
+      "rodrive_id": "322",
+      "sourceQuestion": "Camionul este staționat. Cine încalcă legea dacă încercați să-l depășiți?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_332.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0323.svg",
+      "reviewed": false
+    },
+    {
+      "position": 324,
+      "rodrive_id": "323",
+      "sourceQuestion": "Cărui autoturism trebuie să-i acordați prioritate?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_333.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0324.svg",
+      "reviewed": false
+    },
+    {
+      "position": 325,
+      "rodrive_id": "324",
+      "sourceQuestion": "Care dintre autovehicule va intra ultimul în intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_334.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0325.svg",
+      "reviewed": false
+    },
+    {
+      "position": 330,
+      "rodrive_id": "329",
+      "sourceQuestion": "Care dintre indicatoare anunţă sfârşitul drumului cu prioritate?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_339.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0330.svg",
+      "reviewed": false
+    },
+    {
+      "position": 333,
+      "rodrive_id": "332",
+      "sourceQuestion": "În ce ordine vor circula autovehiculele prin intersecția prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_342.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0333.svg",
+      "reviewed": false
+    },
+    {
+      "position": 334,
+      "rodrive_id": "333",
+      "sourceQuestion": "Autocamionul s-a pus în mișcare. Cum este corect să procedați?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_343.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0334.svg",
+      "reviewed": false
+    },
+    {
+      "position": 337,
+      "rodrive_id": "336",
+      "sourceQuestion": "Cum veți proceda în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_346.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0337.svg",
+      "reviewed": false
+    },
+    {
+      "position": 341,
+      "rodrive_id": "340",
+      "sourceQuestion": "Care dintre vehiculele din imagine va intra primul în intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_350.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0341.svg",
+      "reviewed": false
+    },
+    {
+      "position": 348,
+      "rodrive_id": "347",
+      "sourceQuestion": "În această situație constatați că părăsiți autostrada în mod eronat. Cum procedați?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_357.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0348.svg",
+      "reviewed": false
+    },
+    {
+      "position": 351,
+      "rodrive_id": "350",
+      "sourceQuestion": "Care dintre autoturisme s-a încadrat corect pentru a schimba direcția de mers?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_360.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0351.svg",
+      "reviewed": false
+    },
+    {
+      "position": 357,
+      "rodrive_id": "356",
+      "sourceQuestion": "Unde se întâlnește acest indicator?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_367.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0357.svg",
+      "reviewed": false
+    },
+    {
+      "position": 358,
+      "rodrive_id": "357",
+      "sourceQuestion": "Ce autovehicul își poate continua deplasarea în imaginea prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_368.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0358.svg",
+      "reviewed": false
+    },
+    {
+      "position": 359,
+      "rodrive_id": "358",
+      "sourceQuestion": "Ce vehicule aveți permisiunea de a depăși în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_369.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0359.svg",
+      "reviewed": false
+    },
+    {
+      "position": 361,
+      "rodrive_id": "360",
+      "sourceQuestion": "Care dintre indicatoare obligă la schimbarea direcției de mers pe prima stradă la dreapta?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_371.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0361.svg",
+      "reviewed": false
+    },
+    {
+      "position": 364,
+      "rodrive_id": "363",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_374.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0364.svg",
+      "reviewed": false
+    },
+    {
+      "position": 365,
+      "rodrive_id": "364",
+      "sourceQuestion": "În situația dată:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_375.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0365.svg",
+      "reviewed": false
+    },
+    {
+      "position": 370,
+      "rodrive_id": "369",
+      "sourceQuestion": "Semnalul polițistului indică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_380.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0370.svg",
+      "reviewed": false
+    },
+    {
+      "position": 371,
+      "rodrive_id": "370",
+      "sourceQuestion": "Care dintre cele trei vehicule va trece ultimul prin intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_381.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0371.svg",
+      "reviewed": false
+    },
+    {
+      "position": 373,
+      "rodrive_id": "372",
+      "sourceQuestion": "În această situație opriți:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_383.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0373.svg",
+      "reviewed": false
+    },
+    {
+      "position": 378,
+      "rodrive_id": "377",
+      "sourceQuestion": "Ce semnifică indicatorul?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_388.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0378.svg",
+      "reviewed": false
+    },
+    {
+      "position": 379,
+      "rodrive_id": "378",
+      "sourceQuestion": "În ce ordine vor trece prin intersecție cele trei autoturisme?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_389.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0379.svg",
+      "reviewed": false
+    },
+    {
+      "position": 382,
+      "rodrive_id": "381",
+      "sourceQuestion": "Indicatorul vă avertizează că:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_392.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0382.svg",
+      "reviewed": false
+    },
+    {
+      "position": 385,
+      "rodrive_id": "384",
+      "sourceQuestion": "Ce semnificație are indicatorul din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_395.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0385.svg",
+      "reviewed": false
+    },
+    {
+      "position": 386,
+      "rodrive_id": "385",
+      "sourceQuestion": "Ce obligații aveți în situația prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_396.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0386.svg",
+      "reviewed": false
+    },
+    {
+      "position": 387,
+      "rodrive_id": "386",
+      "sourceQuestion": "Unde opriți în situația prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_397.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0387.svg",
+      "reviewed": false
+    },
+    {
+      "position": 388,
+      "rodrive_id": "387",
+      "sourceQuestion": "Ați executat corect oprirea în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_398.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0388.svg",
+      "reviewed": false
+    },
+    {
+      "position": 390,
+      "rodrive_id": "389",
+      "sourceQuestion": "Cum procedați corect dacă circulați înainte și semaforul indică lumină galbenă intermitentă?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_400.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0390.svg",
+      "reviewed": false
+    },
+    {
+      "position": 394,
+      "rodrive_id": "393",
+      "sourceQuestion": "Pentru a circula pe un drum cu polei, se recomandă să echipați autoturismul cu:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_404.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0394.svg",
+      "reviewed": false
+    },
+    {
+      "position": 402,
+      "rodrive_id": "401",
+      "sourceQuestion": "Ce vă este interzis în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_412.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0402.svg",
+      "reviewed": false
+    },
+    {
+      "position": 405,
+      "rodrive_id": "404",
+      "sourceQuestion": "Care dintre autovehicule își poate continua deplasarea?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_415.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0405.svg",
+      "reviewed": false
+    },
+    {
+      "position": 406,
+      "rodrive_id": "405",
+      "sourceQuestion": "Cum procedați în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_417.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0406.svg",
+      "reviewed": false
+    },
+    {
+      "position": 408,
+      "rodrive_id": "407",
+      "sourceQuestion": "Dacă vreți să părăsiți autostrada:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_419.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0408.svg",
+      "reviewed": false
+    },
+    {
+      "position": 412,
+      "rodrive_id": "411",
+      "sourceQuestion": "Care dintre autoturisme staționează regulamentar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_423.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0412.svg",
+      "reviewed": false
+    },
+    {
+      "position": 415,
+      "rodrive_id": "414",
+      "sourceQuestion": "Cum trebuie să procedați corect la trecerea de pe o bandă pe alta?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_426.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0415.svg",
+      "reviewed": false
+    },
+    {
+      "position": 418,
+      "rodrive_id": "417",
+      "sourceQuestion": "Pe ploaie veți aprinde luminile de ceață din spate?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_430.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0418.svg",
+      "reviewed": false
+    },
+    {
+      "position": 421,
+      "rodrive_id": "420",
+      "sourceQuestion": "Care dintre autovehiculele din imagine au prioritate de trecere?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_433.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0421.svg",
+      "reviewed": false
+    },
+    {
+      "position": 423,
+      "rodrive_id": "422",
+      "sourceQuestion": "În această situație, intenționați să virați pe prima stradă la dreapta. Ce obligații aveți?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_435.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0423.svg",
+      "reviewed": false
+    },
+    {
+      "position": 424,
+      "rodrive_id": "423",
+      "sourceQuestion": "Care este ordinea de trecere prin intersecția din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_436.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0424.svg",
+      "reviewed": false
+    },
+    {
+      "position": 425,
+      "rodrive_id": "424",
+      "sourceQuestion": "Cum procedați în această situație, dacă semafoarele nu funcționează?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_437.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0425.svg",
+      "reviewed": false
+    },
+    {
+      "position": 428,
+      "rodrive_id": "427",
+      "sourceQuestion": "Ce semnifică indicatorul?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_440.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0428.svg",
+      "reviewed": false
+    },
+    {
+      "position": 431,
+      "rodrive_id": "430",
+      "sourceQuestion": "Unde veți parca vehiculul la întâlnirea acestui indicator?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_443.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0431.svg",
+      "reviewed": false
+    },
+    {
+      "position": 432,
+      "rodrive_id": "431",
+      "sourceQuestion": "Ce indică semnalul agentului de circulație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1175.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0432.svg",
+      "reviewed": false
+    },
+    {
+      "position": 440,
+      "rodrive_id": "439",
+      "sourceQuestion": "În situația dată, aveți prioritate față de vehiculele care circulă din sens opus?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_452.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0440.svg",
+      "reviewed": false
+    },
+    {
+      "position": 442,
+      "rodrive_id": "441",
+      "sourceQuestion": "Cui îi permite trecerea polițistul din intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_454.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0442.svg",
+      "reviewed": false
+    },
+    {
+      "position": 443,
+      "rodrive_id": "442",
+      "sourceQuestion": "Cum trebuie să procedeze conducătorul autoturismului verde în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_455.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0443.svg",
+      "reviewed": false
+    },
+    {
+      "position": 444,
+      "rodrive_id": "443",
+      "sourceQuestion": "Care dintre autovehicule este parcat regulamentar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_456.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0444.svg",
+      "reviewed": false
+    },
+    {
+      "position": 448,
+      "rodrive_id": "447",
+      "sourceQuestion": "Ce semnificație are marcajul rutier alăturat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_460.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0448.svg",
+      "reviewed": false
+    },
+    {
+      "position": 449,
+      "rodrive_id": "448",
+      "sourceQuestion": "În ce ordine vor trece prin intersecție autovehiculele din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_461.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0449.svg",
+      "reviewed": false
+    },
+    {
+      "position": 454,
+      "rodrive_id": "453",
+      "sourceQuestion": "Cum veți proceda corect în această intersecție, dacă semaforul este instalat deasupra intersecției?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_466.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0454.svg",
+      "reviewed": false
+    },
+    {
+      "position": 458,
+      "rodrive_id": "457",
+      "sourceQuestion": "Care este denumirea indicatorului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_470.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0458.svg",
+      "reviewed": false
+    },
+    {
+      "position": 459,
+      "rodrive_id": "458",
+      "sourceQuestion": "Autoturismul poate pătrunde în intersecția prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_471.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0459.svg",
+      "reviewed": false
+    },
+    {
+      "position": 463,
+      "rodrive_id": "462",
+      "sourceQuestion": "După o ploaie torențială, este necesar să se păstreze o distanță considerabil mai mare față de vehiculul care circulă în față?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_475.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0463.svg",
+      "reviewed": false
+    },
+    {
+      "position": 464,
+      "rodrive_id": "463",
+      "sourceQuestion": "Din punct de vedere al conduitei preventive, la ce vă puteți aștepta în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_476.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0464.svg",
+      "reviewed": false
+    },
+    {
+      "position": 465,
+      "rodrive_id": "464",
+      "sourceQuestion": "Intenționați să virați la dreapta. Cum procedați cu pietonii care traversează regulamentar strada?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_477.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0465.svg",
+      "reviewed": false
+    },
+    {
+      "position": 469,
+      "rodrive_id": "468",
+      "sourceQuestion": "Care autovehicul va trece primul prin intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_481.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0469.svg",
+      "reviewed": false
+    },
+    {
+      "position": 471,
+      "rodrive_id": "470",
+      "sourceQuestion": "Cum trebuie să procedați în situația prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_483.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0471.svg",
+      "reviewed": false
+    },
+    {
+      "position": 472,
+      "rodrive_id": "471",
+      "sourceQuestion": "Cum vă comportați dacă intenționați să părăsiți autostrada în acest loc?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_484.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0472.svg",
+      "reviewed": false
+    },
+    {
+      "position": 473,
+      "rodrive_id": "472",
+      "sourceQuestion": "Cum procedați în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_485.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0473.svg",
+      "reviewed": false
+    },
+    {
+      "position": 474,
+      "rodrive_id": "473",
+      "sourceQuestion": "Autoturismul a oprit regulamentar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_486.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0474.svg",
+      "reviewed": false
+    },
+    {
+      "position": 476,
+      "rodrive_id": "475",
+      "sourceQuestion": "Care este semnificația indicatorului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_488.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0476.svg",
+      "reviewed": false
+    },
+    {
+      "position": 477,
+      "rodrive_id": "476",
+      "sourceQuestion": "Ce indicator urmează să fie întâlnit în intersecția aflată la 100 m de indicatorul 1?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_489.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0477.svg",
+      "reviewed": false
+    },
+    {
+      "position": 480,
+      "rodrive_id": "479",
+      "sourceQuestion": "Cum procedați dacă vă aflați în autoturismul roșu și observați că de pe drumul fără prioritate se apropie o coloană cu regim prioritar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_492.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0480.svg",
+      "reviewed": false
+    },
+    {
+      "position": 486,
+      "rodrive_id": "485",
+      "sourceQuestion": "În această situație veți circula cu:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_498.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0486.svg",
+      "reviewed": false
+    },
+    {
+      "position": 487,
+      "rodrive_id": "486",
+      "sourceQuestion": "Precizați dacă presiunea din pneuri are efect asupra consumului de carburant:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_499.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0487.svg",
+      "reviewed": false
+    },
+    {
+      "position": 494,
+      "rodrive_id": "493",
+      "sourceQuestion": "Ce semnifică panoul adițional?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_506.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0494.svg",
+      "reviewed": false
+    },
+    {
+      "position": 495,
+      "rodrive_id": "494",
+      "sourceQuestion": "În situația dată, pentru a vă semnaliza prezența, veți schimba alternativ luminile de drum cu luminile de întâlnire?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_805.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0495.svg",
+      "reviewed": false
+    },
+    {
+      "position": 499,
+      "rodrive_id": "498",
+      "sourceQuestion": "În situația dată, aveți obligația:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_511.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0499.svg",
+      "reviewed": false
+    },
+    {
+      "position": 500,
+      "rodrive_id": "499",
+      "sourceQuestion": "Autobuzul din față semnalizează ieșirea din stația prevăzută cu alveolă. Cum trebuie să procedați?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_512.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0500.svg",
+      "reviewed": false
+    },
+    {
+      "position": 501,
+      "rodrive_id": "500",
+      "sourceQuestion": "Autoturismul alb din dreapta dvs. a oprit regulamentar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_513.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0501.svg",
+      "reviewed": false
+    },
+    {
+      "position": 504,
+      "rodrive_id": "503",
+      "sourceQuestion": "În ce ordine vor trece autovehiculele prin intersecția prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_516.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0504.svg",
+      "reviewed": false
+    },
+    {
+      "position": 513,
+      "rodrive_id": "512",
+      "sourceQuestion": "Care dintre vehicule va trece primul prin intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_526.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0513.svg",
+      "reviewed": false
+    },
+    {
+      "position": 517,
+      "rodrive_id": "516",
+      "sourceQuestion": "Scoaterea pe partea laterală a bastonului de către polițistul care însoțește o coloană oficială obligă conducătorul:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_530.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0517.svg",
+      "reviewed": false
+    },
+    {
+      "position": 518,
+      "rodrive_id": "517",
+      "sourceQuestion": "În această situație executați corect depășirea autoturismului alb?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_531.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0518.svg",
+      "reviewed": false
+    },
+    {
+      "position": 519,
+      "rodrive_id": "518",
+      "sourceQuestion": "Care este ordinea de trecere prin intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_532.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0519.svg",
+      "reviewed": false
+    },
+    {
+      "position": 525,
+      "rodrive_id": "524",
+      "sourceQuestion": "Care dintre cele trei vehicule trece primul prin intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/314.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0525.svg",
+      "reviewed": false
+    },
+    {
+      "position": 528,
+      "rodrive_id": "527",
+      "sourceQuestion": "Este corectă depășirea autocamionului din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_541.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0528.svg",
+      "reviewed": false
+    },
+    {
+      "position": 529,
+      "rodrive_id": "528",
+      "sourceQuestion": "Conduceți autoturismul albastru. V-ați angajat corect în depășirea motocicletei?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_542.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0529.svg",
+      "reviewed": false
+    },
+    {
+      "position": 530,
+      "rodrive_id": "529",
+      "sourceQuestion": "Cum se recomandă să vă comportați în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_543.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0530.svg",
+      "reviewed": false
+    },
+    {
+      "position": 531,
+      "rodrive_id": "530",
+      "sourceQuestion": "Cum veți proceda corect în intersecția care urmează, dacă întâlniți indicatorul „Oprire“?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_544.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0531.svg",
+      "reviewed": false
+    },
+    {
+      "position": 533,
+      "rodrive_id": "532",
+      "sourceQuestion": "Prin intersecția prezentată pot trece:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_546.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0533.svg",
+      "reviewed": false
+    },
+    {
+      "position": 541,
+      "rodrive_id": "540",
+      "sourceQuestion": "În ce ordine vor trece prin intersecție cele trei autovehicule?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_554.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0541.svg",
+      "reviewed": false
+    },
+    {
+      "position": 544,
+      "rodrive_id": "543",
+      "sourceQuestion": "Cum procedați în situația dată, dacă vă aflați la volanul autoturismului roșu?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_557.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0544.svg",
+      "reviewed": false
+    },
+    {
+      "position": 547,
+      "rodrive_id": "546",
+      "sourceQuestion": "La semnalul polițistului trebuie să oprească:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_560.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0547.svg",
+      "reviewed": false
+    },
+    {
+      "position": 548,
+      "rodrive_id": "547",
+      "sourceQuestion": "Intenționați să virați la dreapta. Cum procedați?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_561.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0548.svg",
+      "reviewed": false
+    },
+    {
+      "position": 549,
+      "rodrive_id": "548",
+      "sourceQuestion": "Cum procedați dacă v-ați încadrat pe banda din stânga, deși intenționați să virați la dreapta?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_562.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0549.svg",
+      "reviewed": false
+    },
+    {
+      "position": 554,
+      "rodrive_id": "553",
+      "sourceQuestion": "Autobuzul este staționat. Care dintre cei doi conducători procedează neregulamentar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_567.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0554.svg",
+      "reviewed": false
+    },
+    {
+      "position": 555,
+      "rodrive_id": "554",
+      "sourceQuestion": "Cum veți proceda la semnalul polițistului, atunci când conduceți autoturismul din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_568.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0555.svg",
+      "reviewed": false
+    },
+    {
+      "position": 556,
+      "rodrive_id": "555",
+      "sourceQuestion": "Cum veți proceda în intersecția care urmează?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_569.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0556.svg",
+      "reviewed": false
+    },
+    {
+      "position": 562,
+      "rodrive_id": "561",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_576.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0562.svg",
+      "reviewed": false
+    },
+    {
+      "position": 566,
+      "rodrive_id": "565",
+      "sourceQuestion": "Ce indică semnalul polițistului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_580.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0566.svg",
+      "reviewed": false
+    },
+    {
+      "position": 569,
+      "rodrive_id": "568",
+      "sourceQuestion": "Care este ordinea de trecere a autovehiculelor prin intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_583.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0569.svg",
+      "reviewed": false
+    },
+    {
+      "position": 576,
+      "rodrive_id": "575",
+      "sourceQuestion": "Cum procedați în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_590.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0576.svg",
+      "reviewed": false
+    },
+    {
+      "position": 578,
+      "rodrive_id": "577",
+      "sourceQuestion": "Semnalul polițistului din autovehiculul de poliție semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_592.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0578.svg",
+      "reviewed": false
+    },
+    {
+      "position": 583,
+      "rodrive_id": "582",
+      "sourceQuestion": "Ce interdicție aveți în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_597.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0583.svg",
+      "reviewed": false
+    },
+    {
+      "position": 585,
+      "rodrive_id": "584",
+      "sourceQuestion": "La întâlnirea acestui indicator, aveți obligația:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_599.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0585.svg",
+      "reviewed": false
+    },
+    {
+      "position": 586,
+      "rodrive_id": "585",
+      "sourceQuestion": "În ce ordine vor circula autoturismele prin intersecțiile prezentate?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_600.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0586.svg",
+      "reviewed": false
+    },
+    {
+      "position": 590,
+      "rodrive_id": "589",
+      "sourceQuestion": "Indicatorul vă interzice depășirea?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_604.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0590.svg",
+      "reviewed": false
+    },
+    {
+      "position": 592,
+      "rodrive_id": "591",
+      "sourceQuestion": "Intenționați să consultați o hartă rutieră. Cum este recomandat să procedați?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_606.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0592.svg",
+      "reviewed": false
+    },
+    {
+      "position": 593,
+      "rodrive_id": "592",
+      "sourceQuestion": "Ce trebuie să aveți în vedere dacă intenționați să circulați spre dreapta, după taxi?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_607.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0593.svg",
+      "reviewed": false
+    },
+    {
+      "position": 595,
+      "rodrive_id": "594",
+      "sourceQuestion": "Cui trebuie să acordați prioritate dacă vă aflați în autoturismul albastru?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_609.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0595.svg",
+      "reviewed": false
+    },
+    {
+      "position": 597,
+      "rodrive_id": "596",
+      "sourceQuestion": "Care dintre cele trei autovehicule a parcat regulamentar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_611.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0597.svg",
+      "reviewed": false
+    },
+    {
+      "position": 598,
+      "rodrive_id": "597",
+      "sourceQuestion": "Ce veți respecta în intersecția prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_612.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0598.svg",
+      "reviewed": false
+    },
+    {
+      "position": 599,
+      "rodrive_id": "598",
+      "sourceQuestion": "Cum veți proceda în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_613.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0599.svg",
+      "reviewed": false
+    },
+    {
+      "position": 608,
+      "rodrive_id": "607",
+      "sourceQuestion": "Puteți depăși mai multe vehicule în situația de față?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_623.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0608.svg",
+      "reviewed": false
+    },
+    {
+      "position": 610,
+      "rodrive_id": "609",
+      "sourceQuestion": "În situația dată puteți continua depășirea?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_625.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0610.svg",
+      "reviewed": false
+    },
+    {
+      "position": 613,
+      "rodrive_id": "612",
+      "sourceQuestion": "Ce semnifică indicatorul?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_628.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0613.svg",
+      "reviewed": false
+    },
+    {
+      "position": 616,
+      "rodrive_id": "615",
+      "sourceQuestion": "În acest caz:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_631.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0616.svg",
+      "reviewed": false
+    },
+    {
+      "position": 617,
+      "rodrive_id": "616",
+      "sourceQuestion": "Indicatorul din imagine vă avertizează că:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_632.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0617.svg",
+      "reviewed": false
+    },
+    {
+      "position": 619,
+      "rodrive_id": "618",
+      "sourceQuestion": "Care autoturism își continuă deplasarea prin intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_634.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0619.svg",
+      "reviewed": false
+    },
+    {
+      "position": 620,
+      "rodrive_id": "619",
+      "sourceQuestion": "Puteți depăși în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_635.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0620.svg",
+      "reviewed": false
+    },
+    {
+      "position": 625,
+      "rodrive_id": "624",
+      "sourceQuestion": "Pentru a vira la stânga:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_640.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0625.svg",
+      "reviewed": false
+    },
+    {
+      "position": 626,
+      "rodrive_id": "625",
+      "sourceQuestion": "Care este ordinea de trecere a autovehiculelor, dacă ajung simultan în intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_641.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0626.svg",
+      "reviewed": false
+    },
+    {
+      "position": 647,
+      "rodrive_id": "646",
+      "sourceQuestion": "Ce semnificație au panourile alăturate?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_688.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0647.svg",
+      "reviewed": false
+    },
+    {
+      "position": 657,
+      "rodrive_id": "656",
+      "sourceQuestion": "Ce semnifică această poziție a polițistului rutier?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_678.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0657.svg",
+      "reviewed": false
+    },
+    {
+      "position": 674,
+      "rodrive_id": "673",
+      "sourceQuestion": "Pe ce bandă de circulație vă încadrați pentru a vira la stânga, într-o intersecție semnalizată cu astfel de marcaje?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_695.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0674.svg",
+      "reviewed": false
+    },
+    {
+      "position": 676,
+      "rodrive_id": "675",
+      "sourceQuestion": "Care este semnificația indicatorului din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_698.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0676.svg",
+      "reviewed": false
+    },
+    {
+      "position": 677,
+      "rodrive_id": "676",
+      "sourceQuestion": "Indicatorul interzice:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_699.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0677.svg",
+      "reviewed": false
+    },
+    {
+      "position": 679,
+      "rodrive_id": "678",
+      "sourceQuestion": "Indicatorul următor vă arată că:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_701.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0679.svg",
+      "reviewed": false
+    },
+    {
+      "position": 686,
+      "rodrive_id": "685",
+      "sourceQuestion": "Ce trebuie să faceți la întâlnirea indicatorului din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_708.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0686.svg",
+      "reviewed": false
+    },
+    {
+      "position": 688,
+      "rodrive_id": "687",
+      "sourceQuestion": "Ce semnificație are indicatorul alăturat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_710.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0688.svg",
+      "reviewed": false
+    },
+    {
+      "position": 692,
+      "rodrive_id": "691",
+      "sourceQuestion": "Ce trebuie să faceți când întâlniți indicatorul din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_714.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0692.svg",
+      "reviewed": false
+    },
+    {
+      "position": 699,
+      "rodrive_id": "698",
+      "sourceQuestion": "Precizați care dintre indicatoarele de mai jos indică o cale rutieră cu sens unic:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_722.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0699.svg",
+      "reviewed": false
+    },
+    {
+      "position": 713,
+      "rodrive_id": "712",
+      "sourceQuestion": "Care este semnificația indicatorului însoțit de panoul adițional?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_736.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0713.svg",
+      "reviewed": false
+    },
+    {
+      "position": 716,
+      "rodrive_id": "715",
+      "sourceQuestion": "Indicatorul interzice accesul:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_739.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0716.svg",
+      "reviewed": false
+    },
+    {
+      "position": 729,
+      "rodrive_id": "728",
+      "sourceQuestion": "Ce semnifică indicatorul?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_753.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0729.svg",
+      "reviewed": false
+    },
+    {
+      "position": 731,
+      "rodrive_id": "730",
+      "sourceQuestion": "Care dintre cele trei vehicule va trece ultimul prin intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_755.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0731.svg",
+      "reviewed": false
+    },
+    {
+      "position": 734,
+      "rodrive_id": "733",
+      "sourceQuestion": "În prima intersecție veți acorda prioritate:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_758.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0734.svg",
+      "reviewed": false
+    },
+    {
+      "position": 750,
+      "rodrive_id": "749",
+      "sourceQuestion": "În situația dată, sunteți avertizat că:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_774.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0750.svg",
+      "reviewed": false
+    },
+    {
+      "position": 751,
+      "rodrive_id": "750",
+      "sourceQuestion": "În această situație, cui trebuie să acordați prioritate?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_775.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0751.svg",
+      "reviewed": false
+    },
+    {
+      "position": 752,
+      "rodrive_id": "751",
+      "sourceQuestion": "Indicatorul semnifică o viteză:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_776.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0752.svg",
+      "reviewed": false
+    },
+    {
+      "position": 753,
+      "rodrive_id": "752",
+      "sourceQuestion": "Care dintre autoturismele din imagine circulă corect în intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_777.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0753.svg",
+      "reviewed": false
+    },
+    {
+      "position": 755,
+      "rodrive_id": "754",
+      "sourceQuestion": "Care dintre indicatoare conferă prioritatea de trecere?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_779.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0755.svg",
+      "reviewed": false
+    },
+    {
+      "position": 777,
+      "rodrive_id": "776",
+      "sourceQuestion": "Indicatorul vă avertizează că urmează:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_801.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0777.svg",
+      "reviewed": false
+    },
+    {
+      "position": 778,
+      "rodrive_id": "777",
+      "sourceQuestion": "Interdicția impusă de indicatorul din imagine se adresează:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_802.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0778.svg",
+      "reviewed": false
+    },
+    {
+      "position": 781,
+      "rodrive_id": "780",
+      "sourceQuestion": "În ce ordine vor trece autovehiculele prin intersecția prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_507.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0781.svg",
+      "reviewed": false
+    },
+    {
+      "position": 782,
+      "rodrive_id": "781",
+      "sourceQuestion": "Cum procedați în intersecția care urmează?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_806.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0782.svg",
+      "reviewed": false
+    },
+    {
+      "position": 783,
+      "rodrive_id": "782",
+      "sourceQuestion": "Indicatorul din imagine vă avertizează că:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_807.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0783.svg",
+      "reviewed": false
+    },
+    {
+      "position": 785,
+      "rodrive_id": "784",
+      "sourceQuestion": "Cum veți proceda în intersecție, dacă circulați pe drumul prioritar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_809.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0785.svg",
+      "reviewed": false
+    },
+    {
+      "position": 788,
+      "rodrive_id": "787",
+      "sourceQuestion": "Ce obligații aveți în situația prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_812.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0788.svg",
+      "reviewed": false
+    },
+    {
+      "position": 790,
+      "rodrive_id": "789",
+      "sourceQuestion": "Ce semnificație are indicatorul din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_814.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0790.svg",
+      "reviewed": false
+    },
+    {
+      "position": 791,
+      "rodrive_id": "790",
+      "sourceQuestion": "Indicatorul din imagine semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_815.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0791.svg",
+      "reviewed": false
+    },
+    {
+      "position": 792,
+      "rodrive_id": "791",
+      "sourceQuestion": "Este permisă întoarcerea pe autostradă?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_816.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0792.svg",
+      "reviewed": false
+    },
+    {
+      "position": 793,
+      "rodrive_id": "792",
+      "sourceQuestion": "Când ninge abundent veți folosi:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_817.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0793.svg",
+      "reviewed": false
+    },
+    {
+      "position": 794,
+      "rodrive_id": "793",
+      "sourceQuestion": "Care dintre vehicule trebuie să acorde prioritate pietonilor?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_818.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0794.svg",
+      "reviewed": false
+    },
+    {
+      "position": 795,
+      "rodrive_id": "794",
+      "sourceQuestion": "Dacă virați la stânga:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_819.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0795.svg",
+      "reviewed": false
+    },
+    {
+      "position": 796,
+      "rodrive_id": "795",
+      "sourceQuestion": "Care este ordinea de trecere prin intersecție a celor trei vehicule?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_820.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0796.svg",
+      "reviewed": false
+    },
+    {
+      "position": 816,
+      "rodrive_id": "815",
+      "sourceQuestion": "Ce obligații aveți la întâlnirea indicatorului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_840.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0816.svg",
+      "reviewed": false
+    },
+    {
+      "position": 817,
+      "rodrive_id": "816",
+      "sourceQuestion": "Cum trebuie să procedați în acest caz?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_841.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0817.svg",
+      "reviewed": false
+    },
+    {
+      "position": 818,
+      "rodrive_id": "817",
+      "sourceQuestion": "Cum procedați în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_842.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0818.svg",
+      "reviewed": false
+    },
+    {
+      "position": 819,
+      "rodrive_id": "818",
+      "sourceQuestion": "Cine are prioritate pe sectorul de drum îngustat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_843.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0819.svg",
+      "reviewed": false
+    },
+    {
+      "position": 828,
+      "rodrive_id": "827",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_853.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0828.svg",
+      "reviewed": false
+    },
+    {
+      "position": 829,
+      "rodrive_id": "828",
+      "sourceQuestion": "Ce obligații revin conducătorilor la întâlnirea indicatorului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_854.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0829.svg",
+      "reviewed": false
+    },
+    {
+      "position": 830,
+      "rodrive_id": "829",
+      "sourceQuestion": "Ce semnificație are indicatorul alăturat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_855.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0830.svg",
+      "reviewed": false
+    },
+    {
+      "position": 831,
+      "rodrive_id": "830",
+      "sourceQuestion": "Motociclistul depășește corect autocamionul?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_856.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0831.svg",
+      "reviewed": false
+    },
+    {
+      "position": 832,
+      "rodrive_id": "831",
+      "sourceQuestion": "Care dintre cele două vehicule va intra primul în intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_857.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0832.svg",
+      "reviewed": false
+    },
+    {
+      "position": 843,
+      "rodrive_id": "842",
+      "sourceQuestion": "Ce măsuri trebuie să luați în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_868.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0843.svg",
+      "reviewed": false
+    },
+    {
+      "position": 844,
+      "rodrive_id": "843",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_869.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0844.svg",
+      "reviewed": false
+    },
+    {
+      "position": 845,
+      "rodrive_id": "844",
+      "sourceQuestion": "Ce semnificație are un astfel de marcaj rutier?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_870.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0845.svg",
+      "reviewed": false
+    },
+    {
+      "position": 846,
+      "rodrive_id": "845",
+      "sourceQuestion": "Viteza maximă autorizată pe autostrăzi pentru autovehiculele din categoriile A și B este de:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_871.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0846.svg",
+      "reviewed": false
+    },
+    {
+      "position": 847,
+      "rodrive_id": "846",
+      "sourceQuestion": "Care dintre autoturisme staționează greșit?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_872.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0847.svg",
+      "reviewed": false
+    },
+    {
+      "position": 848,
+      "rodrive_id": "847",
+      "sourceQuestion": "Cum este corect să procedați dacă semafoarele funcționează cu lumina galbenă intermitentă?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_873.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0848.svg",
+      "reviewed": false
+    },
+    {
+      "position": 849,
+      "rodrive_id": "848",
+      "sourceQuestion": "Vă este permis să depășiți bicicliștii?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_874.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0849.svg",
+      "reviewed": false
+    },
+    {
+      "position": 850,
+      "rodrive_id": "849",
+      "sourceQuestion": "Este permisă depășirea în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_875.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0850.svg",
+      "reviewed": false
+    },
+    {
+      "position": 851,
+      "rodrive_id": "850",
+      "sourceQuestion": "În ce ordine vor trece autovehiculele prin intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_876.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0851.svg",
+      "reviewed": false
+    },
+    {
+      "position": 852,
+      "rodrive_id": "851",
+      "sourceQuestion": "Indicatorul vă avertizează că:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_877.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0852.svg",
+      "reviewed": false
+    },
+    {
+      "position": 853,
+      "rodrive_id": "852",
+      "sourceQuestion": "Indicatorul permite accesul:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_878.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0853.svg",
+      "reviewed": false
+    },
+    {
+      "position": 854,
+      "rodrive_id": "853",
+      "sourceQuestion": "Este permisă depășirea în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_879.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0854.svg",
+      "reviewed": false
+    },
+    {
+      "position": 861,
+      "rodrive_id": "860",
+      "sourceQuestion": "Indicatorul interzice:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_886.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0861.svg",
+      "reviewed": false
+    },
+    {
+      "position": 862,
+      "rodrive_id": "861",
+      "sourceQuestion": "Ce semnifică indicatorul?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_887.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0862.svg",
+      "reviewed": false
+    },
+    {
+      "position": 877,
+      "rodrive_id": "876",
+      "sourceQuestion": "În situația dată, vă este interzis:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_902.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0877.svg",
+      "reviewed": false
+    },
+    {
+      "position": 878,
+      "rodrive_id": "877",
+      "sourceQuestion": "Camionul execută corect depășirea autoturismului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_903.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0878.svg",
+      "reviewed": false
+    },
+    {
+      "position": 879,
+      "rodrive_id": "878",
+      "sourceQuestion": "Vă puteți apropia de vehiculul din față?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_904.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0879.svg",
+      "reviewed": false
+    },
+    {
+      "position": 880,
+      "rodrive_id": "879",
+      "sourceQuestion": "Trebuie să acordați prioritate autoturismului gri dacă acesta virează la stânga?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_905.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0880.svg",
+      "reviewed": false
+    },
+    {
+      "position": 881,
+      "rodrive_id": "880",
+      "sourceQuestion": "Cum procedați corect în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_906.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0881.svg",
+      "reviewed": false
+    },
+    {
+      "position": 890,
+      "rodrive_id": "889",
+      "sourceQuestion": "Indicatorul din imagine semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_915.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0890.svg",
+      "reviewed": false
+    },
+    {
+      "position": 904,
+      "rodrive_id": "903",
+      "sourceQuestion": "Care dintre cele două indicatoare îți conferă prioritate?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_929.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0904.svg",
+      "reviewed": false
+    },
+    {
+      "position": 911,
+      "rodrive_id": "910",
+      "sourceQuestion": "Care dintre cele două indicatoare interzice oprirea?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_936.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0911.svg",
+      "reviewed": false
+    },
+    {
+      "position": 914,
+      "rodrive_id": "913",
+      "sourceQuestion": "Care dintre indicatoarele alăturate te obligă să execuți virajul la stânga?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_939.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0914.svg",
+      "reviewed": false
+    },
+    {
+      "position": 915,
+      "rodrive_id": "914",
+      "sourceQuestion": "Ce semnifică indicatorul?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_940.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0915.svg",
+      "reviewed": false
+    },
+    {
+      "position": 916,
+      "rodrive_id": "915",
+      "sourceQuestion": "Panoul adițional semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_941.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0916.svg",
+      "reviewed": false
+    },
+    {
+      "position": 918,
+      "rodrive_id": "917",
+      "sourceQuestion": "Indicatorul informează că:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_943.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0918.svg",
+      "reviewed": false
+    },
+    {
+      "position": 921,
+      "rodrive_id": "920",
+      "sourceQuestion": "Indicatorul alăturat reprezintă:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_946.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0921.svg",
+      "reviewed": false
+    },
+    {
+      "position": 922,
+      "rodrive_id": "921",
+      "sourceQuestion": "Indicatorul alăturat interzice:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_947.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0922.svg",
+      "reviewed": false
+    },
+    {
+      "position": 923,
+      "rodrive_id": "922",
+      "sourceQuestion": "Indicatorul alăturat reprezintă:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/3689.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0923.svg",
+      "reviewed": false
+    },
+    {
+      "position": 926,
+      "rodrive_id": "925",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_951.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0926.svg",
+      "reviewed": false
+    },
+    {
+      "position": 927,
+      "rodrive_id": "926",
+      "sourceQuestion": "Indicatorul alăturat semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_9511.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0927.svg",
+      "reviewed": false
+    },
+    {
+      "position": 928,
+      "rodrive_id": "927",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_952.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0928.svg",
+      "reviewed": false
+    },
+    {
+      "position": 929,
+      "rodrive_id": "928",
+      "sourceQuestion": "Cui trebuie să acorzi prioritate în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_953.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0929.svg",
+      "reviewed": false
+    },
+    {
+      "position": 930,
+      "rodrive_id": "929",
+      "sourceQuestion": "Oprirea voluntară este interzisă în raza de acțiune:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_955.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0930.svg",
+      "reviewed": false
+    },
+    {
+      "position": 931,
+      "rodrive_id": "930",
+      "sourceQuestion": "Care dintre panourile adiționale alăturate indică distanța între indicator și începutul unui loc periculos?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_956.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0931.svg",
+      "reviewed": false
+    },
+    {
+      "position": 932,
+      "rodrive_id": "931",
+      "sourceQuestion": "Este permisă oprirea în zona de acțiune a indicatorului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_957.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0932.svg",
+      "reviewed": false
+    },
+    {
+      "position": 934,
+      "rodrive_id": "933",
+      "sourceQuestion": "Care dintre cei doi conducători nu circulă corect?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_959.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0934.svg",
+      "reviewed": false
+    },
+    {
+      "position": 939,
+      "rodrive_id": "938",
+      "sourceQuestion": "Care dintre cele două indicatoare te obligă să oprești?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_964.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0939.svg",
+      "reviewed": false
+    },
+    {
+      "position": 940,
+      "rodrive_id": "939",
+      "sourceQuestion": "Indicatorul alăturat reprezintă:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_965.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0940.svg",
+      "reviewed": false
+    },
+    {
+      "position": 941,
+      "rodrive_id": "940",
+      "sourceQuestion": "Indicatorul rutier alăturat semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_964_(2).jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0941.svg",
+      "reviewed": false
+    },
+    {
+      "position": 942,
+      "rodrive_id": "941",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_967.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0942.svg",
+      "reviewed": false
+    },
+    {
+      "position": 943,
+      "rodrive_id": "942",
+      "sourceQuestion": "Care este semnificația indicatorului și a panoului adițional alăturate?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_967_(2).jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0943.svg",
+      "reviewed": false
+    },
+    {
+      "position": 949,
+      "rodrive_id": "948",
+      "sourceQuestion": "Indicatorul următor vă informează despre:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_974.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0949.svg",
+      "reviewed": false
+    },
+    {
+      "position": 953,
+      "rodrive_id": "952",
+      "sourceQuestion": "Care dintre indicatoare te avertizează că urmează să intersectezi un drum fără prioritate?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_978.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0953.svg",
+      "reviewed": false
+    },
+    {
+      "position": 954,
+      "rodrive_id": "953",
+      "sourceQuestion": "Este corect să depășești motocicleta din fața ta?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_979.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0954.svg",
+      "reviewed": false
+    },
+    {
+      "position": 956,
+      "rodrive_id": "955",
+      "sourceQuestion": "Pe drumurile publice marcate cu simbolul alăturat, limita maximă de viteză în afara localităților, pentru autoturisme, este de:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_981.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0956.svg",
+      "reviewed": false
+    },
+    {
+      "position": 959,
+      "rodrive_id": "958",
+      "sourceQuestion": "Ce semnifică panourile adiționale?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_984.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0959.svg",
+      "reviewed": false
+    },
+    {
+      "position": 961,
+      "rodrive_id": "960",
+      "sourceQuestion": "Cum trebuie să procedezi la întâlnirea panoului alăturat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_986.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0961.svg",
+      "reviewed": false
+    },
+    {
+      "position": 962,
+      "rodrive_id": "961",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_987.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0962.svg",
+      "reviewed": false
+    },
+    {
+      "position": 965,
+      "rodrive_id": "964",
+      "sourceQuestion": "Care dintre vehicule își pot continua deplasarea în intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_990.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0965.svg",
+      "reviewed": false
+    },
+    {
+      "position": 967,
+      "rodrive_id": "966",
+      "sourceQuestion": "Este permis virajul la stânga în acest loc?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_992.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0967.svg",
+      "reviewed": false
+    },
+    {
+      "position": 968,
+      "rodrive_id": "967",
+      "sourceQuestion": "Ce interzice indicatorul următor?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_993.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0968.svg",
+      "reviewed": false
+    },
+    {
+      "position": 970,
+      "rodrive_id": "969",
+      "sourceQuestion": "Indicatorul din imagine se referă la:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_995.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0970.svg",
+      "reviewed": false
+    },
+    {
+      "position": 971,
+      "rodrive_id": "970",
+      "sourceQuestion": "Autoturismul alb execută manevra de întoarcere. Cum vei proceda corect?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_996.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0971.svg",
+      "reviewed": false
+    },
+    {
+      "position": 974,
+      "rodrive_id": "973",
+      "sourceQuestion": "Ce interzice indicatorul alăturat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_999.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0974.svg",
+      "reviewed": false
+    },
+    {
+      "position": 977,
+      "rodrive_id": "976",
+      "sourceQuestion": "Indicatorul alăturat semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1002.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0977.svg",
+      "reviewed": false
+    },
+    {
+      "position": 978,
+      "rodrive_id": "977",
+      "sourceQuestion": "Indicatorul arată:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1003.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0978.svg",
+      "reviewed": false
+    },
+    {
+      "position": 980,
+      "rodrive_id": "979",
+      "sourceQuestion": "Dacă autovehiculul de poliție transmite mesajul „coloană oficială”, ai voie să te atașezi la o astfel de coloană?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1005.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0980.svg",
+      "reviewed": false
+    },
+    {
+      "position": 981,
+      "rodrive_id": "980",
+      "sourceQuestion": "Panourile alăturate semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1006.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0981.svg",
+      "reviewed": false
+    },
+    {
+      "position": 983,
+      "rodrive_id": "982",
+      "sourceQuestion": "Ce semnifică indicatorul din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1008.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0983.svg",
+      "reviewed": false
+    },
+    {
+      "position": 984,
+      "rodrive_id": "983",
+      "sourceQuestion": "Cum trebuie să procedeze conducătorul auto la semnalul polițistului din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1009.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0984.svg",
+      "reviewed": false
+    },
+    {
+      "position": 985,
+      "rodrive_id": "984",
+      "sourceQuestion": "Indicatorul alăturat te atenționează că:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1010.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0985.svg",
+      "reviewed": false
+    },
+    {
+      "position": 991,
+      "rodrive_id": "990",
+      "sourceQuestion": "Execută corect autoturismul manevra de depășire?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1016.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0991.svg",
+      "reviewed": false
+    },
+    {
+      "position": 996,
+      "rodrive_id": "995",
+      "sourceQuestion": "Schimbarea direcției de mers la dreapta sau la stânga nu este permisă la întâlnirea:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1021.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0996.svg",
+      "reviewed": false
+    },
+    {
+      "position": 999,
+      "rodrive_id": "998",
+      "sourceQuestion": "Care dintre vehicule au prioritate de trecere?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1025.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/0999.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1003,
+      "rodrive_id": "1002",
+      "sourceQuestion": "Cum este corect să procedați în situația prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1029.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1003.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1005,
+      "rodrive_id": "1004",
+      "sourceQuestion": "Puteți executa depășirea în această situație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1031.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1005.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1006,
+      "rodrive_id": "1005",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1032.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1006.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1008,
+      "rodrive_id": "1007",
+      "sourceQuestion": "În această situație, cum puteți staționa regulamentar?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1034.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1008.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1010,
+      "rodrive_id": "1009",
+      "sourceQuestion": "Panoul de sub indicator permite:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1035.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1010.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1014,
+      "rodrive_id": "1013",
+      "sourceQuestion": "Care dintre vehicule au prioritate de trecere prin intersecția prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1041.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1014.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1016,
+      "rodrive_id": "1015",
+      "sourceQuestion": "În situația dată, sunteți obligat:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1043.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1016.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1019,
+      "rodrive_id": "1018",
+      "sourceQuestion": "Ce trebuie să facă conducătorul auto în situația prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1046.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1019.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1020,
+      "rodrive_id": "1019",
+      "sourceQuestion": "Care dintre cele trei vehicule nu au prioritate de trecere?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1047.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1020.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1027,
+      "rodrive_id": "1026",
+      "sourceQuestion": "Care dintre autovehicule va intra primul în intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/569.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1027.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1029,
+      "rodrive_id": "1028",
+      "sourceQuestion": "Care este ordinea de trecere prin intersecție a autovehiculelor?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1056.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1029.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1032,
+      "rodrive_id": "1031",
+      "sourceQuestion": "În ce ordine vor trece prin intersecție autovehiculele?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1060.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1032.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1034,
+      "rodrive_id": "1033",
+      "sourceQuestion": "În această situație trebuie să cedați trecerea vehiculului din dreapta?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1062.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1034.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1035,
+      "rodrive_id": "1034",
+      "sourceQuestion": "Care dintre conducătorii autovehiculelor execută corect depășirea tramvaiului aflat în mers?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1063.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1035.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1043,
+      "rodrive_id": "1042",
+      "sourceQuestion": "Este regulamentar să depășiți autobuzul oprit în stație?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1071.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1043.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1046,
+      "rodrive_id": "1045",
+      "sourceQuestion": "Cum trebuie să procedați în situația dată, dacă semnalele luminoase și sonore nu funcționează?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1074.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1046.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1060,
+      "rodrive_id": "1059",
+      "sourceQuestion": "Care este ordinea de trecere prin intersecția prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1088.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1060.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1061,
+      "rodrive_id": "1060",
+      "sourceQuestion": "Ce comportament este corect în situația prezentată, dacă vă aflați la volanul autoturismului verde?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1089.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1061.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1063,
+      "rodrive_id": "1062",
+      "sourceQuestion": "Sunteți corespunzător încadrat pentru a folosi prima ieșire de pe autostradă?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1091.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1063.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1064,
+      "rodrive_id": "1063",
+      "sourceQuestion": "Conducătorul autocamionului poate pătrunde în intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1092.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1064.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1066,
+      "rodrive_id": "1065",
+      "sourceQuestion": "Ce autovehicule pot pătrunde în intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1095.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1066.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1069,
+      "rodrive_id": "1068",
+      "sourceQuestion": "Care dintre autovehicule pot traversa intersecția din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1098.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1069.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1071,
+      "rodrive_id": "1070",
+      "sourceQuestion": "În prima intersecție:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1100.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1071.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1073,
+      "rodrive_id": "1072",
+      "sourceQuestion": "Conducătorul autoturismului roșu s-a angajat corect în depășirea autocamionului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1102.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1073.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1076,
+      "rodrive_id": "1075",
+      "sourceQuestion": "Ce semnifică semnalul roșu al semaforului, care funcționează concomitent cu cel galben?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1104.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1076.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1078,
+      "rodrive_id": "1077",
+      "sourceQuestion": "Cum veți proceda corect în intersecția dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1107.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1078.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1079,
+      "rodrive_id": "1078",
+      "sourceQuestion": "În ce ordine vor trece prin intersecție autoturismele la culoarea galbenă intermitentă a semaforului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1108.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1079.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1083,
+      "rodrive_id": "1082",
+      "sourceQuestion": "Care autoturisme s-au încadrat corect pentru a traversa intersecția prezentată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1112.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1083.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1084,
+      "rodrive_id": "1083",
+      "sourceQuestion": "Ce obligații aveți dacă luminile roșii se aprind și se sting alternativ?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1113.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1084.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1086,
+      "rodrive_id": "1085",
+      "sourceQuestion": "Cum veți proceda la întâlnirea indicatorului alăturat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1115.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1086.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1091,
+      "rodrive_id": "1090",
+      "sourceQuestion": "Puteți efectua depășirea camionului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1120.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1091.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1094,
+      "rodrive_id": "1093",
+      "sourceQuestion": "Ce informație oferă indicatorul?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1123.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1094.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1099,
+      "rodrive_id": "1098",
+      "sourceQuestion": "Ce semnifică indicatorul din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1129.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1099.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1100,
+      "rodrive_id": "1099",
+      "sourceQuestion": "În acest sens giratoriu, sunteți încadrat corespunzător pentru:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1130.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1100.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1109,
+      "rodrive_id": "1108",
+      "sourceQuestion": "Indicatorul vă avertizează că urmează:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1140.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1109.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1111,
+      "rodrive_id": "1110",
+      "sourceQuestion": "Ce obligații aveți dacă vă aflați la volanul autoturismului albastru?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1141.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1111.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1117,
+      "rodrive_id": "1116",
+      "sourceQuestion": "Trebuie să acordați prioritate autoturismului negru dacă acesta virează la stânga?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1147.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1117.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1119,
+      "rodrive_id": "1118",
+      "sourceQuestion": "Cum procedați în situația dată:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1149.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1119.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1120,
+      "rodrive_id": "1119",
+      "sourceQuestion": "Ce semnifică indicatoarele de semnalizare din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1151_(1).jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1120.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1121,
+      "rodrive_id": "1120",
+      "sourceQuestion": "Cum procedați în această situație, dacă circulația este blocată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1153.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1121.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1125,
+      "rodrive_id": "1124",
+      "sourceQuestion": "Care dintre autovehicule au dreptul să intre în intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1157.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1125.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1126,
+      "rodrive_id": "1125",
+      "sourceQuestion": "Cum veți proceda dacă intersecția care urmează este blocată din cauza aglomerației?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1158.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1126.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1128,
+      "rodrive_id": "1127",
+      "sourceQuestion": "Aveți obligația de a respecta semnificația unui indicator amplasat pe partea stângă a drumului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1160.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1128.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1133,
+      "rodrive_id": "1132",
+      "sourceQuestion": "Indicatorul pe care îl întâlniți vă informează că urmează:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1166.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1133.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1137,
+      "rodrive_id": "1136",
+      "sourceQuestion": "Puteți efectua depășirea în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1169.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1137.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1138,
+      "rodrive_id": "1137",
+      "sourceQuestion": "Ce semnificație are indicatorul alăturat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1170.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1138.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1140,
+      "rodrive_id": "1139",
+      "sourceQuestion": "Puteți efectua depășirea în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1173.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1140.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1142,
+      "rodrive_id": "1141",
+      "sourceQuestion": "Care dintre cele trei autovehicule va trece ultimul prin intersecția din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_444.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1142.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1144,
+      "rodrive_id": "1143",
+      "sourceQuestion": "Autoturismul roșu poate depăși în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1178.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1144.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1145,
+      "rodrive_id": "1144",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1179.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1145.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1146,
+      "rodrive_id": "1145",
+      "sourceQuestion": "Ce semnificație are indicatorul?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1180.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1146.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1155,
+      "rodrive_id": "1154",
+      "sourceQuestion": "Marcajul rutier alăturat semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1186.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1155.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1156,
+      "rodrive_id": "1155",
+      "sourceQuestion": "Ce obligații aveți în situația dată?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1214.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1156.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1158,
+      "rodrive_id": "1157",
+      "sourceQuestion": "Ce semnifică indicatorul?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1188.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1158.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1159,
+      "rodrive_id": "1158",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1189.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1159.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1160,
+      "rodrive_id": "1159",
+      "sourceQuestion": "Cum procedezi la întâlnirea indicatorului pe un drum național european?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1190.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1160.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1161,
+      "rodrive_id": "1160",
+      "sourceQuestion": "Cum procedezi la întâlnirea indicatorului?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1191.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1161.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1167,
+      "rodrive_id": "1166",
+      "sourceQuestion": "Indicatorul semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1197.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1167.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1169,
+      "rodrive_id": "1168",
+      "sourceQuestion": "Ce obligații îți revin atunci când întâlnești indicatorul alăturat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1199.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1169.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1171,
+      "rodrive_id": "1170",
+      "sourceQuestion": "Pentru a depăși acești bicicliști poți trece peste linia continuă?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1201.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1171.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1174,
+      "rodrive_id": "1173",
+      "sourceQuestion": "Ce semnifică indicatorul alăturat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1204.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1174.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1175,
+      "rodrive_id": "1174",
+      "sourceQuestion": "Care dintre indicatoarele alăturate interzice staționarea în zilele impare?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1205.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1175.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1177,
+      "rodrive_id": "1176",
+      "sourceQuestion": "Panoul adițional semnifică:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1207.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1177.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1178,
+      "rodrive_id": "1177",
+      "sourceQuestion": "Grupajul de indicatoare se referă la:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1208.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1178.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1179,
+      "rodrive_id": "1178",
+      "sourceQuestion": "Indicatoarele alăturate te avertizează:",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1209.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1179.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1180,
+      "rodrive_id": "1179",
+      "sourceQuestion": "Ce semnifică indicatorul alăturat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1210.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1180.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1181,
+      "rodrive_id": "1180",
+      "sourceQuestion": "Ce indică panoul alăturat?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1211.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1181.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1183,
+      "rodrive_id": "1182",
+      "sourceQuestion": "În ce ordine vor trece autovehiculele prin intersecție?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1213.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1183.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1200,
+      "rodrive_id": "1199",
+      "sourceQuestion": "Care este ordinea de trecere prin intersecție a celor trei vehicule?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1236.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1200.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1203,
+      "rodrive_id": "1202",
+      "sourceQuestion": "Ce informații oferă indicatorul din imagine?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1215.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1203.svg",
+      "reviewed": false
+    },
+    {
+      "position": 1205,
+      "rodrive_id": "1204",
+      "sourceQuestion": "Cum procedați la întâlnirea indicatorului și a panoului adițional?",
+      "referenceImageUrl": "https://huggingface.co/datasets/AnonymousDrive/RoDriveImages/resolve/main/Cat_B_poz_1237.jpg",
+      "localImage": "/nivel-1/quiz-images/rodrive-all/1205.svg",
+      "reviewed": false
+    }
+  ]
+}

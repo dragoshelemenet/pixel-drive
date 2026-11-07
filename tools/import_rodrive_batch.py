@@ -5,6 +5,7 @@ No original reference images are copied. Each question receives an original SVG
 illustrative aid generated using its image description/topic. Visually complex
 questions must be reviewed by a human before using as official-exam preparation.
 """
+import re
 import argparse, html, json, os, re, sys, tempfile, urllib.error, urllib.request
 from pathlib import Path
 from collections import Counter
@@ -122,6 +123,15 @@ def write_atomic(path,text):
     temp.write_text(text,encoding='utf-8')
     temp.replace(path)
 
+
+def school_slug(value):
+    # ScoalaRutiera full-text search URL; direct IDs require a verified mapping.
+    import unicodedata
+    value=unicodedata.normalize('NFKD',str(value or '').lower())
+    value=''.join(ch for ch in value if not unicodedata.combining(ch))
+    value=value.translate(str.maketrans({'ș':'s','ț':'t','ă':'a'}))
+    return re.sub(r'[^a-z0-9]+','-',value).strip('-')[:140]
+
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument('--start',type=int,default=1,help='1-based row start')
@@ -130,6 +140,7 @@ def main():
     ap.add_argument('--test-data-dir',type=Path,default=None,help='Use local JSON files instead of network')
     args=ap.parse_args()
     if args.start<1 or args.count<1 or args.count>200:ap.error('Invalid start/count')
+    if args.start!=1 and (args.start-1)%50!=0:ap.error('Batches must begin at 1, 51, 101, 151...')
     folder=args.test_data_dir if args.test_data_dir else args.cache_dir
     print('RoDrive: încarc fișierele CC BY-SA 4.0...')
     try:rows=[dict(q,_sourceFile=name) for name in NAMES for q in get_file(name,folder)]
@@ -140,8 +151,13 @@ def main():
     subset=merged[args.start-1:args.start-1+args.count]
     if len(subset)!=args.count:
         print(f'EROARE: numai {len(subset)} din {args.count} întrebări disponibile; nimic modificat.',file=sys.stderr);return 2
+    if args.start>1:
+        first_batch=ROOT/'dist'/'nivel-1'/'quiz-batches'/'batch-01.js'
+        if not first_batch.is_file() or 'rodrive-b-0001' not in first_batch.read_text(encoding='utf-8'):
+            print('EROARE: lotul 1–50 nu este instalat. Instalează mai întâi v45 (sau păstrează banca existentă).',file=sys.stderr)
+            return 3
     out=[];pics={}
-    batch_no=(args.start-1)//args.count+1
+    batch_no=(args.start-1)//50+1
     batch_key=f'{batch_no:02d}'
     img_folder=f'rodrive-b{batch_no:02d}'
     for pos,r in enumerate(subset,start=args.start):
@@ -153,7 +169,7 @@ def main():
                  correct=r['_idx'][0],explanation=exp[:800],imageUrl=img,imagePage='',fallbackImage=img,
                  imageAlt=f'Ilustrație proprie Pixel Drive pentru situația rutieră #{pos}. Verifică referința originală la sursă.',
                  imageCredit='Ilustrație originală Pixel Drive · schematică, verifică sursa',
-                 source=f'RoDrive · ID {refid} · CC BY-SA 4.0',url=SOURCE,sourceUrl=f'{SOURCE}/blob/main/{r["_sourceFile"]}',sourceLabel=f'Vezi întrebarea sursă · RoDrive ID {refid}',
+                 source=f'RoDrive · ID {refid} · CC BY-SA 4.0',url=SOURCE,sourceUrl='https://www.scoalarutiera.ro/cautare/'+school_slug(r['question']),sourceLabel='Caută întrebarea pe Școala Rutieră',originalDatasetUrl=f'{SOURCE}/blob/main/{r["_sourceFile"]}',
                  sourceQuestionId=str(refid),referenceImageUrl=r.get('image_path') or None,
                  license='CC BY-SA 4.0',licenseUrl=LICENSE)
         out.append(obj)
@@ -169,12 +185,18 @@ def main():
         index=game/'index.html'
         if not index.is_file():raise RuntimeError('Nu există index.html pentru a adăuga lotul următor.')
         h=index.read_text(encoding='utf-8')
-        script=f'<script src="/nivel-1/quiz-batches/{batch_file}?v=45"></script>'
-        if script not in h:
-            anchor='<script src="/nivel-1/career.js?v=45"></script>'
-            if anchor not in h:raise RuntimeError('Nu am găsit scriptul career.js în index.html.')
-            h=h.replace(anchor,script+anchor)
-            write_atomic(index,h)
+        script=f'<script src="/nivel-1/quiz-batches/{batch_file}?v=47"></script>'
+        # Remove any older inclusion, then insert in a stable position BEFORE
+        # the ScoalaRutiera link overlay (which must see all 100 questions).
+        h=re.sub(r'<script src="/nivel-1/quiz-batches/'+re.escape(batch_file)+r'\?v=\d+"></script>','',h)
+        after=re.search(r'<script src="/nivel-1/quiz-scoalarutiera-links\.js\?v=\d+"></script>',h)
+        if after:
+            h=h[:after.start()]+script+h[after.start():]
+        else:
+            before=re.search(r'<script src="/nivel-1/career\.js\?v=\d+"></script>',h)
+            if not before:raise RuntimeError('Nu am găsit scriptul career.js în index.html.')
+            h=h[:before.start()]+script+h[before.start():]
+        write_atomic(index,h)
     total=len(merged)
     old_state={}
     sf=ROOT/'QUESTION-IMPORT-STATUS.json'
@@ -187,9 +209,28 @@ def main():
                reference_total_reported_by_scoalarutiera=1208,imported_exact_count=sum(len(x.get('ids',[])) for x in all_batches),imported_exact_source='RoDrive; ordering by numeric RoDrive ID, NOT ScoalaRutiera ordering',
                batches=all_batches,
                next_range=dict(start=args.start+args.count,end=args.start+args.count+args.count-1),
-               images='50 original vector illustrations generated; must be visually reviewed before exam-like use')
+               images=f"{sum(len(b.get('ids',[])) for b in all_batches)} original vector illustrations across completed batches; visual review required")
     write_atomic(ROOT/'QUESTION-IMPORT-STATUS.json',json.dumps(state,ensure_ascii=False,indent=2)+'\n')
-    doc=f'''# Pixel Drive – banca de întrebări, lotul 01\n\n**Import realizat:** {args.start}-{args.start+args.count-1}: {args.count} întrebări. Total importat: {state['imported_exact_count']}; următoarele: {args.start+args.count}-{args.start+args.count+args.count-1}.\n\nSursa: [RoDrive]({SOURCE}) – University of Bucharest dataset, licență [CC BY-SA 4.0]({LICENSE}). Autorii și contribuțiile sunt listați în pagina datasetului. Pentru text și răspunsuri s-a păstrat ordinea variantelor; este posibil ca unele întrebări să aibă mai multe răspunsuri corecte.\n\n**Atenție:** acestea sunt primele {args.count} de înregistrări RoDrive sortate după ID, nu neapărat primele {args.count} din mediul Școala Rutieră. Datasetul RoDrive are {total} intrări valide combinate; totalul de 1.208 este reperul site-ului de referință și nu dovedește echivalența exactă a ordinii sau a versiunilor.\n\nToate imaginile sunt **ilustrații originale schematice create pentru Pixel Drive**, nu fotografii extrase din site-uri. Pentru situațiile vizuale complexe verifică referința originală (câmpul `referenceImageUrl` în `batch-01.js`); o diagramă generică poate omite un detaliu esențial al întrebării. Astfel de itemi trebuie validați înainte de folosire la pregătire reală.\n\nActele normative principale pentru verificare: [OUG 195/2002]({OUG}) și [HG 1391/2006]({HG}). Unele explicații din RoDrive pot fi depășite; nu sunt certificate oficial.\n'''
+    doc=f"""# Pixel Drive — Registrul surselor (RoDrive)
+
+## Progres
+
+- Total întrebări importate: **{state['imported_exact_count']}** din reperul de 1.208.
+- Loturi finalizate: {', '.join(b['range'] for b in all_batches)}.
+- Următorul lot: **{state['next_range']['start']}–{state['next_range']['end']}**.
+- Ordinea este cea a datasetului RoDrive după ID, **nu** ordinea Școala Rutieră.
+
+## Proveniență și utilizare
+
+- Date (întrebări, răspunsuri și explicații): RoDrive — {SOURCE}, sub licența {LICENSE} (CC BY-SA 4.0). Numele autorilor se găsesc în dataset. Această atribuire trebuie păstrată.
+- Linkurile vizibile în joc: Școala Rutieră, pentru identificarea întrebării; unele sunt URL-uri directe verificate, altele deschid căutarea pe site.
+- Imaginile: {state['imported_exact_count']} scheme SVG realizate de Pixel Drive. **Nu sunt reproduceri fidele ale imaginilor de examen**; verifică indicatoarele, benzile și vehiculele în întrebările vizuale.
+- Referințe normative de verificat: OUG 195/2002 — {OUG}; HG 1391/2006 — {HG}.
+
+## Limitări
+
+Unele răspunsuri din sursele terțe pot fi neactualizate. Proiectul nu pretinde certificarea oficială a fiecărui item. Fiecare link se verifică individual înainte de a fi considerat o corespondență exactă.
+"""
     write_atomic(ROOT/'QUESTION-SOURCES.md',doc)
     print(f'OK: {len(out)} întrebări exacte din RoDrive, {len(pics)} SVG-uri originale. Total dataset combinat valid: {total}. Urmează: {args.start+args.count}-{args.start+args.count+args.count-1}.')
     print('Am înlocuit întrebările demo și vechi numai după un import reușit.')
