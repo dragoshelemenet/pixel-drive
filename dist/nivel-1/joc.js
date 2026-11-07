@@ -2,6 +2,7 @@
  const Sim=window.DriveSimulation,Rules=window.DriveRules,Render=window.DriveRender,W=window.DriveWorld;
  let state=Sim.create({vary:true}),keys={},last=0,lastUI=0,modalOpen=false,pauseBeforeModal=false,autoPaused=false;const canvas=document.querySelector('#scene');
  const $=id=>document.getElementById(id);
+ window.DriveTimedQuiz?.register(state);
  const symbols={drive:'↑',stop:'STOP',yield:'▽',priority:'◆',roundabout:'↺',crossing:'🚶',red:'●',yellow:'●',green:'●',right:'→',limit30:'30',limit50:'50',parking:'P',noStopping:'×',noParking:'P̸',busStop:'BUS',pickup:'↗',dropoff:'●'};
  const examples={
   stop:'Exemplu: oprește înainte de marcaj, asigură-te, apoi pornește când drumul e liber.',
@@ -13,7 +14,7 @@
   pickup:'Obiectiv: oprește complet în refugiul albastru și apasă I.',
   dropoff:'Obiectiv: oprește în zona albastră, verifică împrejurimile și apasă I.'
  };
- function reset(){autoPaused=false;state=Sim.create({vary:true});keys={};last=0;modalOpen=false;$('lesson-modal').hidden=true;$('fail').hidden=true;document.body.classList.remove('paused');$('pause').textContent='Pauză';ui();}
+ function reset(){autoPaused=false;state=Sim.create({vary:true});window.DriveTimedQuiz?.register(state);keys={};last=0;modalOpen=false;$('lesson-modal').hidden=true;$('fail').hidden=true;document.body.classList.remove('paused');$('pause').textContent='Pauză';ui();}
  function pause(){autoPaused=false;if(state.failed||modalOpen)return;state.paused=!state.paused;keys={};document.body.classList.toggle('paused',state.paused);$('pause').textContent=state.paused?'Continuă':'Pauză';ui();}
  function signal(dir){state.player.indicator=state.player.indicator===dir?0:dir;ui();}
  function nearestSign(){return W.signs.map(sign=>({sign,distance:Math.hypot(sign.x-state.player.x,sign.z-state.player.z)})).filter(item=>item.distance<4.5).sort((a,b)=>a.distance-b.distance)[0]||null;}

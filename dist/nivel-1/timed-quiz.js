@@ -5,11 +5,11 @@
  const sim=window.DriveSimulation, bank=window.DriveQuizBank;
  const testMode=new URLSearchParams(location.search).get('quizTest')==='1';
  const INTERVAL=testMode?10:120;
- if(!sim||!bank){console.error('[Pixel Drive Quiz] Missing DriveSimulation or DriveQuizBank');return;}
+ if(!sim||!bank){console.error('[Pixel Drive Quiz] Missing DriveSimulation or DriveQuizBank');const el=document.getElementById('drive-quiz-timer');if(el)el.querySelector('.drive-quiz-clock-label').textContent='CHESTIONAR: EROARE';return;}
  let gameState=null,remaining=INTERVAL,due=false,current=null,lastId=null,answered=false,previousTime=null;
  let wasPaused=false,displayed='';
- const timer=document.createElement('div');timer.className='drive-quiz-timer';timer.setAttribute('role','timer');
- const scene=document.querySelector('.scene-wrap');(scene||document.body).appendChild(timer);
+ const timer=document.getElementById('drive-quiz-timer') || document.createElement('div');timer.className='drive-quiz-timer';timer.setAttribute('role','timer');
+ if(!timer.isConnected)(document.querySelector('.scene-wrap')||document.body).appendChild(timer);
  const dialog=document.createElement('dialog');dialog.className='drive-quiz-dialog';dialog.setAttribute('aria-label','Chestionar rutier');document.body.appendChild(dialog);
  const clock=(seconds)=>{const s=Math.max(0,Math.ceil(seconds));return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;};
  function renderClock(){
@@ -17,8 +17,10 @@
   const stamp=value+'-'+(due?'D':'')+'-'+(gameState?.paused?'P':'');
   if(stamp!==displayed){
    displayed=stamp;
-   timer.innerHTML=`<span class="drive-quiz-clock-icon" aria-hidden="true">◷</span><span class="drive-quiz-clock-label">${testMode?'TEST · ':''}CHESTIONAR ÎN</span><strong>${value}</strong>${testMode?'<button type="button" class="drive-quiz-test-now">TEST ACUM</button>':''}`;
-   if(testMode)timer.querySelector('.drive-quiz-test-now').addEventListener('click',()=>{due=true;remaining=0;renderClock();tryOpen();});
+   timer.querySelector('.drive-quiz-clock-label').textContent=(testMode?'TEST · ':'')+'CHESTIONAR ÎN';
+   timer.querySelector('strong').textContent=value;
+   const force=timer.querySelector('#drive-quiz-force');
+   if(force){force.hidden=!testMode;force.onclick=()=>{due=true;remaining=0;renderClock();tryOpen();};}
   }
   timer.classList.toggle('urgent',remaining<=15);
  }
@@ -38,7 +40,7 @@
  }
  dialog.addEventListener('cancel',e=>{e.preventDefault();if(current)finish();});
  function tryOpen(){
-  if(!due||current||!gameState||gameState.failed||gameState.paused||window.DriveTraining?.active()||document.querySelector('dialog[open]')||document.querySelector('#lesson-modal')?.hidden===false)return;
+  if(!due||current||!gameState||gameState.failed||gameState.paused||document.querySelector('dialog[open]')||document.querySelector('#lesson-modal')?.hidden===false)return;
   const q=bank.randomExcept(lastId);if(!q)return;
   try{
    current=q;answered=false;lastId=q.id;wasPaused=gameState.paused;
@@ -70,8 +72,8 @@
  };
  function frame(now){
   if(previousTime!==null&&gameState&&!document.hidden){
-   const elapsed=Math.min(0.25,Math.max(0,(now-previousTime)/1000));
-   const blocked=gameState.paused||gameState.failed||!!current||window.DriveTraining?.active()||!!document.querySelector('dialog[open]')||document.querySelector('#lesson-modal')?.hidden===false;
+   const elapsed=Math.max(0,(now-previousTime)/1000);
+   const blocked=gameState.paused||gameState.failed||!!current||!!document.querySelector('dialog[open]')||document.querySelector('#lesson-modal')?.hidden===false;
    if(!blocked&&!due){remaining=Math.max(0,remaining-elapsed);if(remaining<=0.00001){remaining=0;due=true;console.info('[Pixel Drive Quiz] Timer reached zero');}}
   }
   previousTime=now;
@@ -80,5 +82,5 @@
   requestAnimationFrame(frame);
  }
  renderClock();requestAnimationFrame(frame);
- window.DriveTimedQuiz={remaining:()=>remaining,interval:INTERVAL,testMode,isDue:()=>due,force:()=>{due=true;remaining=0;renderClock();tryOpen();}};
+ window.DriveTimedQuiz={register:(s)=>{if(s&&gameState!==s){gameState=s;remaining=INTERVAL;due=false;current=null;previousTime=performance.now();renderClock();}},remaining:()=>remaining,interval:INTERVAL,testMode,isDue:()=>due,force:()=>{due=true;remaining=0;renderClock();tryOpen();}};
 })();
