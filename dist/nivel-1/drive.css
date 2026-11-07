@@ -77,3 +77,7 @@ body[data-hud="off"] .drive-quiz-timer{display:flex!important}body[data-hud="ess
 #drive-quiz-timer{position:fixed!important;z-index:10000!important;top:12px!important;left:50%!important;transform:translateX(-50%)!important;display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;max-width:calc(100vw - 20px)}
 #drive-quiz-timer .drive-quiz-test-now[hidden]{display:none!important}
 @media(max-width:700px){#drive-quiz-timer{top:6px!important;gap:5px;padding:6px 8px}#drive-quiz-timer .drive-quiz-clock-label{font-size:9px}}
+
+/* Quiz batch 01: counter sits below credit/fuel ribbon instead of overlapping it. */
+#drive-quiz-timer{top:74px!important}
+@media(max-width:700px){#drive-quiz-timer{top:136px!important;left:50%!important}}

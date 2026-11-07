@@ -29,7 +29,7 @@
   img.addEventListener('error',()=>{if(img.dataset.fallbackUsed)return;img.dataset.fallbackUsed='1';img.src=q.fallbackImage;});
  }
  function picture(q){
-  return `<figure class="quiz-visual"><img class="quiz-question-image" src="${q.imageUrl}" alt="${q.imageAlt}" loading="eager" referrerpolicy="no-referrer"><figcaption>${q.imageCredit} · <a href="${q.imagePage}" target="_blank" rel="noopener noreferrer">Wikimedia Commons ↗</a></figcaption></figure>`;
+  return `<figure class="quiz-visual"><img class="quiz-question-image" src="${q.imageUrl}" alt="${q.imageAlt}" loading="eager" referrerpolicy="no-referrer"><figcaption>${q.imageCredit}${q.imagePage?` · <a href="${q.imagePage}" target="_blank" rel="noopener noreferrer">Sursa imaginii ↗</a>`:""}</figcaption></figure>`;
  }
  function resetCountdown(){remaining=INTERVAL;due=false;renderClock();}
  function finish(){
