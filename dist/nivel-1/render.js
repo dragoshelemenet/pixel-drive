@@ -93,6 +93,9 @@
    polygon([[-4,-8],[4,-8],[8,-4],[8,4],[4,8],[-4,8],[-8,4],[-8,-4]].map(([x,y])=>({x,y})),'#ede9d9','#262d2b');polygon([[-3,-6],[3,-6],[6,-3],[6,3],[3,6],[-3,6],[-6,3],[-6,-3]].map(([x,y])=>({x,y})),'#c43b35');ctx.font='bold 4px monospace';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText('STOP',0,1.5);
   }else if(kind==='yield'){
    polygon([{x:-8,y:-7},{x:8,y:-7},{x:0,y:8}],'#df493d','#202c29');polygon([{x:-5,y:-5},{x:5,y:-5},{x:0,y:4}],'#fff8df');
+  }else if(kind==='priorityIntersection'){
+   polygon([{x:0,y:-10},{x:10,y:8},{x:-10,y:8}],'#d53e33','#fff3dc');
+   ctx.strokeStyle='#202923';ctx.lineWidth=2.4;ctx.beginPath();ctx.moveTo(0,-5);ctx.lineTo(0,5);ctx.moveTo(-6,1);ctx.lineTo(6,1);ctx.stroke();
   }else if(kind==='priority'){
    polygon([{x:0,y:-9},{x:9,y:0},{x:0,y:9},{x:-9,y:0}],'#f7efdc','#343c2d');polygon([{x:0,y:-6},{x:6,y:0},{x:0,y:6},{x:-6,y:0}],'#e7bd4c');
   }else if(kind.startsWith('limit')){

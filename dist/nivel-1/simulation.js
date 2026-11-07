@@ -19,7 +19,7 @@
   title:'Prioritate de dreapta',hint:'Intersecție nedirijată! Privește în dreapta și acordă prioritate înainte de a intra.'
  });
  function create(options={}){
-  const s={player:{x:24.78,z:19,angle:-Math.PI/2,speed:0,indicator:0},time:0,score:1000,collisions:0,failed:false,paused:false,limit:50,message:'Obiectiv: mergi la punctul marcat și preia pasagerul.',messageUntil:7,lastPenalty:-10,ruleCooldown:{},stopMemory:{},passed:new Set(),learned:new Set(),distance:0,traffic:[],pedestrians:[],mission:{phase:'pickup'},violationEvent:null,violationSerial:0,retraining:null,turnWatch:null,reverseDistanceM:0,forwardRecoveryM:0};
+  const s={player:{x:24.78,z:19,angle:-Math.PI/2,speed:0,indicator:0},time:0,score:1000,collisions:0,failed:false,paused:false,limit:50,message:'Obiectiv: mergi la punctul marcat și preia pasagerul.',messageUntil:7,lastPenalty:-10,ruleCooldown:{},stopMemory:{},passed:new Set(),learned:new Set(),distance:0,traffic:[],pedestrians:[],mission:{phase:'pickup'},violationEvent:null,violationSerial:0,retraining:null,turnWatch:null,reverseDistanceM:0,forwardRecoveryM:0,brakeKeyHeld:false,brakeKeyMode:null,aiIncidentAt:-100};
   for(let i=0;i<46;i++){
    const j=W.junctions[(i*13+3)%W.junctions.length];let d=i%4;while(!W.neighbor(j,(d+2)%4))d=(d+1)%4;
    const v=W.V[d],r=W.right(d);s.traffic.push({id:i,x:j.x-v.x*7+r.x*W.LANE,z:j.z-v.z*7+r.z*W.LANE,angle:Math.atan2(v.z,v.x),d,j,speed:0,cruise:1.5+(i%5)*.16,phase:'approach',stopTime:0,color:['#be6851','#a7b5bf','#d7bb76','#729a91','#797da2'][i%5]});
@@ -66,6 +66,58 @@
   return true;
  }
  function collision(s,kind){if(s.time-s.lastPenalty<2||s.failed)return;const impactKmh=Math.round(Math.abs(s.player.speed)*21.6);s.lastPenalty=s.time;s.collisions++;penalize(s,120,kind,'collision',0,{kind:'collision',speedKmh:impactKmh});s.player.speed=0;if(s.collisions>=4){s.failed=true;s.message='Patru coliziuni. Reîncearcă traseul cu viteză mai mică.';}}
+ // Collision attribution is a SIMULATION heuristic, not a legal finding.
+ // It compares both agents' movements and the local traffic priority.
+ // If uncertain, do not blame/punish the player automatically.
+ function aiCollisionResponsibility(s,car,old,now){
+  const from={x:car.prevX??car.x,z:car.prevZ??car.z};
+  const dx=from.x-old.x,dz=from.z-old.z;
+  const dist=Math.max(.001,Math.hypot(dx,dz)),ux=dx/dist,uz=dz/dist;
+  const playerToward=(now.x-old.x)*ux+(now.z-old.z)*uz;
+  const aiToward=(from.x-car.x)*ux+(from.z-car.z)*uz;
+  const playerMotion=Math.hypot(now.x-old.x,now.z-old.z);
+  const aiMotion=Math.hypot(car.x-from.x,car.z-from.z);
+  const j=car.j;
+  if(j&&Math.hypot(j.x-old.x,j.z-old.z)<5.4){
+    const pDir=W.heading(s.player.angle),v=W.V[pDir];
+    const along=(j.x-old.x)*v.x+(j.z-old.z)*v.z;
+    const lateral=Math.abs((j.x-old.x)*v.z-(j.z-old.z)*v.x);
+    const nearEntry=along>-1.6&&along<5.4&&lateral<1.9;
+    if(nearEntry){
+      if((j.type==='stop'||j.type==='yield')&&car.d%2===0&&pDir%2===1)
+        return 'ai'; // AI entered from the marked minor road.
+      if(j.type==='signal'&&W.light(j,car.d,s.time)==='red'&&W.light(j,pDir,s.time)==='green')
+        return 'ai';
+      if(j.type==='right'&&car.d!==undefined){
+        const r=W.right(car.d),side=(old.x-j.x)*r.x+(old.z-j.z)*r.z;
+        if(side>1.2&&pDir%2!==car.d%2)return 'ai';
+      }
+    }
+  }
+  if(playerMotion<.012&&aiMotion>.009)return 'ai'; // Stationary driver was struck.
+  if(playerToward>Math.max(.025,aiToward*1.8)&&playerMotion>.035)return 'player';
+  if(aiToward>Math.max(.015,playerToward*1.25)&&aiMotion>.01)return 'ai';
+  if(aiMotion<.008&&playerToward>.015)return 'player';
+  return 'uncertain';
+ }
+ function handleAICollision(s,car,old){
+  const p=s.player;
+  const blame=aiCollisionResponsibility(s,car,old,{x:p.x,z:p.z});
+  // Keep physics bodies separated, independently of fault.
+  p.x=old.x;p.z=old.z;
+  if(blame==='player'){
+    collision(s,'Ai intrat într-un vehicul din trafic.');
+    return;
+  }
+  // The offending car is returned to its prior position to avoid trapping the player.
+  car.x=car.prevX??car.x;car.z=car.prevZ??car.z;car.speed=0;
+  if(s.time-s.aiIncidentAt>2.5){
+   s.aiIncidentAt=s.time;
+   s.message=blame==='ai'?'Accident provocat de vehiculul AI · fără penalizare sau replay.':
+     'Coliziune cu responsabilitate neclară · fără penalizare sau replay.';
+   s.messageUntil=s.time+4;
+  }
+ }
  function trafficConflict(s,j,d,onlyRight=false,ignore=null){const r=W.right(d);return s.traffic.some(t=>t!==ignore&&Math.hypot(t.x-j.x,t.z-j.z)<4.8&&(t.speed>.05||t.phase==='cross')&&(onlyRight?(t.d===(d+3)%4&&((t.x-j.x)*r.x+(t.z-j.z)*r.z>.6)):(t.d%2!==d%2||t.orbit)));}
  function crossPath(j,d,out){
   const v=W.V[d],r=W.right(d),u=W.V[out],rr=W.right(out),distance=j.type==='roundabout'?4.3:3.0;
@@ -105,6 +157,19 @@
     else if(t.j.type==='yield'&&t.d%2===0)wait=trafficConflict(s,t.j,t.d,false,t);
     else if(t.j.type==='right')wait=trafficConflict(s,t.j,t.d,true,t);
     else if(t.j.type==='roundabout')wait=s.traffic.some(o=>o!==t&&Math.hypot(o.x-t.x,o.z-t.z)<2.8);
+   }
+   if(dist<entry+2.4){
+    const player=s.player,pd=W.heading(player.angle),pv=W.V[pd];
+    const ahead=(t.j.x-player.x)*pv.x+(t.j.z-player.z)*pv.z;
+    const side=Math.abs((t.j.x-player.x)*pv.z-(t.j.z-player.z)*pv.x);
+    const atJunction=ahead>-1.6&&ahead<5.6&&side<1.8;
+    if(atJunction&&pd%2!==t.d%2){
+     if((t.j.type==='stop'||t.j.type==='yield')&&t.d%2===0&&pd%2===1)wait=true;
+     if(t.j.type==='right'){
+      const r=W.right(t.d),onRight=(player.x-t.j.x)*r.x+(player.z-t.j.z)*r.z;
+      if(onRight>1.2)wait=true;
+     }
+    }
    }
    if(s.pedestrians.some(p=>p.crossing&&(p.x-t.x)*v.x+(p.z-t.z)*v.z>0&&Math.hypot(p.x-t.x,p.z-t.z)<3))wait=true;
    const obstacles=[...s.traffic.filter(o=>o!==t),s.player];
@@ -240,18 +305,32 @@
  }
  function update(s,input,dt){
   if(s.failed||s.paused)return;dt=Math.min(dt,.05);s.time+=dt;
-  pedestrians(s,dt);traffic(s,dt);
+  pedestrians(s,dt);
+  for(const car of s.traffic){car.prevX=car.x;car.prevZ=car.z;}
+  traffic(s,dt);
   const p=s.player,old={x:p.x,z:p.z};
   // v42: mild launch and distinct resistance near the posted speed limit.
   // Never cap speed automatically: speeding remains possible (and educationally penalised).
   const speedKmh=Math.abs(p.speed)*21.6;
   const fraction=speedKmh/Math.max(15,s.limit||50);
   const accel=0.22*(fraction>.90?.30:fraction>.72?.55:1);
+  // Brake and reverse are different gestures on the same S key.
+  // Holding S while decelerating to zero MUST NOT put the vehicle in reverse.
+  // Release S and press it again to intentionally engage reverse.
+  const brakeDown=!!input.s;
+  if(brakeDown&&!s.brakeKeyHeld){
+    s.brakeKeyMode=p.speed>.018?'brake':'reverse';
+  }
+  if(!brakeDown)s.brakeKeyMode=null;
+  s.brakeKeyHeld=brakeDown;
   if(input.w){
    p.speed=Math.min(2.8,Math.max(0,p.speed)+accel*dt);
-  }else if(input.s){
-   // Braking stays strong, while reverse acceleration is gradual.
-   p.speed=p.speed>0?Math.max(0,p.speed-3.5*dt):Math.max(-1.1,p.speed-0.28*dt);
+  }else if(brakeDown){
+   if(s.brakeKeyMode==='brake'||p.speed>.018){
+    p.speed=Math.max(0,p.speed-3.5*dt);
+   }else if(!input.space){
+    p.speed=Math.max(-1.1,Math.min(0,p.speed)-0.28*dt);
+   }
   }else{
    p.speed=p.speed>0?Math.max(0,p.speed-.7*dt):Math.min(0,p.speed+1.2*dt);
   }
@@ -262,7 +341,7 @@
   const forward={x:Math.cos(p.angle),z:Math.sin(p.angle)},right={x:-forward.z,z:forward.x};
   let valid=true;for(const a of [-.45,.45])for(const b of [-.22,.22])if(!W.roadAt(nx+forward.x*a+right.x*b,nz+forward.z*a+right.z*b,.02))valid=false;
   if(valid){p.x=nx;p.z=nz;s.distance+=Math.hypot(nx-old.x,nz-old.z);}else if(Math.abs(p.speed)>.08)collision(s,'Coliziune cu bordura sau un obstacol.');
-  for(const t of s.traffic)if(Math.hypot(t.x-p.x,t.z-p.z)<.75){p.x=old.x;p.z=old.z;collision(s,'Coliziune cu un vehicul.');}
+  for(const t of s.traffic)if(Math.hypot(t.x-p.x,t.z-p.z)<.75){handleAICollision(s,t,old);break;}
   for(const ped of s.pedestrians)if(ped.crossing&&Math.hypot(ped.x-p.x,ped.z-p.z)<.43){s.failed=true;s.score=0;p.speed=0;s.message='Ai lovit un pieton. Oprește înainte de trecere și acordă prioritate.';}
   if(!s.violationEvent)checkReverse(s,old);
   if(!s.violationEvent)checkRules(s,old);

@@ -31,7 +31,7 @@
   function add(kind,x,z,d,j=null){signs.push({id:`s${signs.length}`,kind,x,z,d,j});}
   for(const j of junctions)for(let d=0;d<4;d++)if(neighbor(j,(d+2)%4)){
     const v=V[d],r=right(d),dist=j.type==='roundabout'?4.7:j.type==='signal'?4.6:3.1;
-    const kind=j.type==='right'?'crossing':j.type==='signal'?'crossing':d%2===0?j.type:j.type==='roundabout'?'roundabout':'priority';
+    const kind=j.type==='right'?'crossing':j.type==='signal'?'crossing':d%2===0?j.type:j.type==='roundabout'?'roundabout':((j.col+j.row)%2===0?'priorityIntersection':'priority');
     add(kind,j.x-v.x*dist+r.x*2.05,j.z-v.z*dist+r.z*2.05,d,j.id);
   }
   for(let i=0;i<6;i++){

@@ -11,6 +11,7 @@
   right:{title:'Intersecție nedirijată · prioritate de dreapta',text:'În această intersecție, drumurile au aceeași categorie. Redu viteza la cel mult 30 km/h și acordă prioritate vehiculelor din dreapta. Nu intra dacă blochezi intersecția.',source:'OUG 195/2002 · art. 56–59; HG 1391/2006 · art. 123(a)',url:REG},
   stop:{title:'STOP · oprire completă',text:'Oprește complet înainte de linia STOP. Asigură-te și acordă prioritate traficului de pe drumul transversal. Încetinirea singură nu este suficientă.',source:'HG 1391/2006 · art. 129',url:REG},
   yield:{title:'Cedează trecerea',text:'Redu viteza și lasă să treacă vehiculele de pe drumul prioritar. Oprește când este necesar; dacă drumul este liber, poți continua în siguranță.',source:'HG 1391/2006 · art. 129',url:REG},
+  priorityIntersection:{title:'Intersecție cu drum fără prioritate',text:'Indicatorul triunghiular avertizează că urmează un drum secundar. Vehiculele de pe drumul secundar au STOP sau Cedează trecerea. Rămâi atent și asigură-te chiar când ai prioritate.',source:'Regulamentul semnalizării rutiere · indicatoare de prioritate',url:REG},
   priority:{title:'Drum cu prioritate',text:'Ai prioritate față de drumurile semnalizate cu STOP sau Cedează. Asigură-te totuși. La viraj la stânga, acordă prioritate traficului din sens opus cu care te intersectezi.',source:'OUG 195/2002 · art. 54, 59',url:ROAD},
   roundabout:{title:'Sens giratoriu · cedează la intrare',text:'Acordă prioritate vehiculelor aflate deja în giratoriu. Urmează sensul săgeților. La ieșire, semnalizează dreapta și asigură-te. Aici este o singură bandă.',source:'OUG 195/2002 · art. 57(4); HG 1391/2006 · art. 107(1¹)',url:REG},
   crossing:{title:'Trecere pentru pietoni',text:'Acordă prioritate pietonilor care traversează regulamentar pe sensul tău de mers. Încetinește și fii pregătit să oprești când cineva intenționează să traverseze.',source:'HG 1391/2006 · art. 123(h), 135(h)',url:REG},
@@ -36,7 +37,7 @@
   const ped=s.pedestrians.find(t=>t.crossing&&(t.x-p.x)*v.x+(t.z-p.z)*v.z>0&&Math.hypot(t.x-p.x,t.z-p.z)<5);
   if(ped)return {...topics.crossing,key:'crossing',distance:Math.hypot(ped.x-p.x,ped.z-p.z)};
   const near=aheadJunction(p);
-  if(near){let key=near.j.type;if(key==='signal')key=W.light(near.j,near.d,s.time);else if((key==='stop'||key==='yield')&&d%2)key='priority';return {...topics[key],key,j:near.j,d,distance:Math.max(0,near.a-2.5)};}
+  if(near){let key=near.j.type;if(key==='signal')key=W.light(near.j,near.d,s.time);else if((key==='stop'||key==='yield')&&d%2)key=W.signs.some(q=>q.kind==='priorityIntersection'&&q.j===near.j.id&&q.d===d)?'priorityIntersection':'priority';return {...topics[key],key,j:near.j,d,distance:Math.max(0,near.a-2.5)};}
   const sign=W.signs.filter(t=>t.d===d&&(t.x-p.x)*v.x+(t.z-p.z)*v.z>0&&Math.hypot(t.x-p.x,t.z-p.z)<8).sort((a,b)=>Math.hypot(a.x-p.x,a.z-p.z)-Math.hypot(b.x-p.x,b.z-p.z))[0];
   if(sign)return {...topics[sign.kind],key:sign.kind,distance:Math.hypot(sign.x-p.x,sign.z-p.z)};
   return {...topics.drive,key:'drive',distance:null};
