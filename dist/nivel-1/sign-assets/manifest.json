@@ -1,0 +1,142 @@
+{
+  "yield": {
+    "file": "yield.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_B01.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/9/9f/RO_road_sign_B01.svg",
+    "author": "Alex:D",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 1516
+  },
+  "priority": {
+    "file": "priority.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_B03.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/f0/RO_road_sign_B03.svg",
+    "author": "Alex:D",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 1139
+  },
+  "stop": {
+    "file": "stop.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_B02.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/3c/RO_road_sign_B02.svg",
+    "author": "Alex:D",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 3847
+  },
+  "limit30": {
+    "file": "limit30.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_C29_%2830%29.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/f7/RO_road_sign_C29_%2830%29.svg",
+    "author": "Alex:D",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 2928
+  },
+  "roundabout": {
+    "file": "roundabout.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_D07.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/1/18/RO_road_sign_D07.svg",
+    "author": "Gigillo83",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 9828
+  },
+  "crossing": {
+    "file": "crossing.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_G01.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/34/RO_road_sign_G01.svg",
+    "author": "Gigillo83",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 131959
+  },
+  "noStopping": {
+    "file": "noStopping.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_C39.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/5/54/RO_road_sign_C39.svg",
+    "author": "Alex:D",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 2174
+  },
+  "limit50": {
+    "file": "limit50.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_C29_%2850%29.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/47/RO_road_sign_C29_%2850%29.svg",
+    "author": "Alex:D",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 2455
+  },
+  "parking": {
+    "file": "parking.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_G34.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/33/RO_road_sign_G34.svg",
+    "author": "Gigillo83",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 155731
+  },
+  "noParking": {
+    "file": "noParking.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_C38.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/3f/RO_road_sign_C38.svg",
+    "author": "Alex:D",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 1874
+  },
+  "children": {
+    "file": "children.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_A23.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/6/6d/RO_road_sign_A23.svg",
+    "author": "Gigillo83",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 12155
+  },
+  "roadworks": {
+    "file": "roadworks.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_A27.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/5/5e/RO_road_sign_A27.svg",
+    "author": "Gigillo83",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 10895
+  },
+  "bump": {
+    "file": "bump.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_A17.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/6/62/RO_road_sign_A17.svg",
+    "author": "Gigillo83",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 8231
+  },
+  "slippery": {
+    "file": "slippery.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:RO_road_sign_A19.svg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/3f/RO_road_sign_A19.svg",
+    "author": "Gigillo83",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "changes": "Unmodified SVG source",
+    "bytes": 10654
+  }
+}

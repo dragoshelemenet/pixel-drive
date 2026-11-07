@@ -1,0 +1,5 @@
+Modern Car Interior — Grab3D
+https://grab3d.com/models/vehicles/modern-car-interior/
+CC0 1.0 https://creativecommons.org/publicdomain/zero/1.0/
+Downloaded 2026-11-05. Original GLB embedded locally; no external runtime requests.
+Three.js GLTFLoader r160 — MIT, https://github.com/mrdoob/three.js
