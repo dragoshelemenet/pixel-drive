@@ -12,9 +12,15 @@ if(p.type==='cars'){show(p.name,cars.map(([n,c,r],i)=>`<p><b>${n}</b> · ${c} cr
 if(p.type==='custom'){show(p.name,'<p>Vopsea nouă · 100 credite</p>'+['#e1e1d8','#b83f3b','#315c89','#d3ad52','#303a35','#7b536b'].map(c=>`<button data-paint="${c}" style="background:${c};width:48px;height:48px" aria-label="Vopsea ${c}"></button>`).join(''));panel.querySelectorAll('[data-paint]').forEach(b=>b.onclick=()=>{if(data.money<100)return;data.money-=100;data.paint=b.dataset.paint;save();open(p);});}
 if(p.type==='school'){
  schoolResult=null;
- show(p.name,'<p><b>Chestionare pentru permis (exercițiu, nu examen oficial)</b></p><p>Test de probă: 10 întrebări aleatorii din banca de chestionare; minimum 8 din 10 corecte pentru promovare și +150 credite.</p><button id="start-driving">Învață pornirea și conducerea · POV în poligon</button><button id="start-quiz">Începe chestionarul · 10 întrebări</button>');
+ show(p.name,'<p><b>Chestionare pentru permis (exercițiu, nu examen oficial)</b></p><p>Test de probă: 10 întrebări aleatorii din banca de chestionare; minimum 8 din 10 corecte pentru promovare și +150 credite.</p><button id="start-driving">Învață pornirea și conducerea · POV în poligon</button><button id="start-quiz">Teste • Învățare și chestionare ↗</button>');
  panel.querySelector('#start-driving').onclick=()=>{close();DriveTraining.start(state);};
- panel.querySelector('#start-quiz').onclick=()=>{quiz={index:0,right:0,questions:DriveQuizBank.shuffled().slice(0,10)};question();};
+ panel.querySelector('#start-quiz').onclick=()=>{
+  if(window.PixelSchoolHub?.open){window.PixelSchoolHub.open({onResult:result=>{
+    schoolResult=result;
+    if(result.pass){data.money+=150;data.passes++;save();lastHudText='';}
+  }});}
+  else {quiz={index:0,right:0,questions:DriveQuizBank.shuffled().slice(0,10)};question();}
+ };
 }
 if(p.type==='training'){close();DriveTraining.start(state);}}
 function question(){
