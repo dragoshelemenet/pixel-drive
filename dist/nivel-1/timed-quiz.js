@@ -1,10 +1,9 @@
-/* Pixel Drive quiz v37 — elapsed active-gameplay timer with a reliable queued popup.
-   Test: /nivel-1/?quizTest=1 -> 10s timer plus 'TEST ACUM' button. */
+/* Pixel Drive quiz v38 — 60 seconds in all modes, automatic question popup.
+   The regular Level 1 page always counts 01:00 -> 00:00; no test URL override. */
 (()=>{
  'use strict';
  const sim=window.DriveSimulation, bank=window.DriveQuizBank;
- const testMode=new URLSearchParams(location.search).get('quizTest')==='1';
- const INTERVAL=testMode?10:60;
+ const INTERVAL=60; // Always 1 minute, including ?quizTest=1 saved browser URLs.
  if(!sim||!bank){console.error('[Pixel Drive Quiz] Missing DriveSimulation or DriveQuizBank');const el=document.getElementById('drive-quiz-timer');if(el)el.querySelector('.drive-quiz-clock-label').textContent='CHESTIONAR: EROARE';return;}
  let gameState=null,remaining=INTERVAL,due=false,current=null,lastId=null,answered=false,previousTime=null;
  let wasPaused=false,displayed='';
@@ -17,10 +16,10 @@
   const stamp=value+'-'+(due?'D':'')+'-'+(gameState?.paused?'P':'');
   if(stamp!==displayed){
    displayed=stamp;
-   timer.querySelector('.drive-quiz-clock-label').textContent=(testMode?'TEST · ':'')+'CHESTIONAR ÎN';
+   timer.querySelector('.drive-quiz-clock-label').textContent='CHESTIONAR ÎN';
    timer.querySelector('strong').textContent=value;
    const force=timer.querySelector('#drive-quiz-force');
-   if(force){force.hidden=!testMode;force.onclick=()=>{due=true;remaining=0;renderClock();tryOpen();};}
+   if(force){force.hidden=true;force.onclick=null;}
   }
   timer.classList.toggle('urgent',remaining<=15);
  }
@@ -82,5 +81,5 @@
   requestAnimationFrame(frame);
  }
  renderClock();requestAnimationFrame(frame);
- window.DriveTimedQuiz={register:(s)=>{if(s&&gameState!==s){gameState=s;remaining=INTERVAL;due=false;current=null;previousTime=performance.now();renderClock();}},remaining:()=>remaining,interval:INTERVAL,testMode,isDue:()=>due,force:()=>{due=true;remaining=0;renderClock();tryOpen();}};
+ window.DriveTimedQuiz={register:(s)=>{if(s&&gameState!==s){gameState=s;remaining=INTERVAL;due=false;current=null;previousTime=performance.now();renderClock();}},remaining:()=>remaining,interval:INTERVAL,testMode:false,isDue:()=>due,force:()=>{due=true;remaining=0;renderClock();tryOpen();}};
 })();
