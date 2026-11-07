@@ -13,6 +13,7 @@
   round:{title:'NU AI ACORDAT PRIORITATE ÎN GIRATORIU',why:'Ai intrat în sensul giratoriu în fața unui vehicul care circula deja în interior.',how:'Apropie-te încet, lasă să treacă vehiculele din giratoriu, apoi intră într-un spațiu sigur.',law:'OUG 195/2002, art. 57 alin. (4)'},
   speed:{title:'AI DEPĂȘIT LIMITA DE VITEZĂ',why:'Ai circulat peste limita indicată în zona respectivă.',how:'Eliberează accelerația, frânează progresiv și păstrează o viteză sub limita afișată.',law:'OUG 195/2002, art. 48–49'},
   collision:{title:'AI PROVOCAT O COLIZIUNE',why:'Ai atins un vehicul sau un obstacol din traseu.',how:'Redu viteza, păstrează distanța de siguranță și verifică spațiul liber înainte de manevră.',law:'OUG 195/2002, art. 48 și 51'},
+  reverse:{title:'MERS ÎNAPOI NEREGULAMENTAR',why:'Ai efectuat o manevră de mers înapoi într-un loc în care nu este permisă.',how:'Oprește manevra de mers înapoi. Verifică indicatoarele și marcajele, asigură-te și continuă înainte pe traseul permis.',law:'HG 1391/2006, art. 128 și art. 126'},
   signal:{title:'VIRAJ FĂRĂ SEMNALIZARE',why:'Ai schimbat direcția de mers într-o intersecție fără să activezi din timp semnalizarea corespunzătoare sau ai dezactivat-o în timpul virajului.',how:'Înainte de viraj, apasă Q pentru stânga sau E pentru dreapta. Menține semnalizarea pe întreaga durată a manevrei și asigură-te înainte de schimbarea direcției.',law:'OUG 195/2002, art. 54 alin. (1)–(2)'}
  };
  const dialog=document.createElement('dialog'); dialog.id='driving-replay';dialog.className='driving-replay';
@@ -58,6 +59,7 @@
    cg.font='bold 15px monospace';cg.fillStyle='#d5e1d0';cg.fillText(`LIMITĂ ${limit}`,194,49);
    cg.font='bold 13px monospace';cg.fillStyle='#e2e9ce';
    cg.fillText(s.player.indicator<0?'◀ SEMNAL STÂNGA':s.player.indicator>0?'SEMNAL DREAPTA ▶':'FĂRĂ SEMNAL',25,90);
+   if(s.player.speed<-.025){cg.fillStyle='#ffd99c';cg.fillText('R · MERS ÎNAPOI',25,111);}
    image=small.toDataURL('image/webp',.66);
   }catch(e){if(!frames.length)console.warn('[Replay] Captură indisponibilă:',e);}
   frames.push({at:now,simTime:s.time,image,kmh,limit,player:{...s.player},traffic:clone(s.traffic),
@@ -78,6 +80,11 @@
     const target=(frames.at(-1)?.at||0)-2700;
     return candidates.reduce((a,b)=>Math.abs(b.at-target)<Math.abs(a.at-target)?b:a);
    }
+  }
+  if(report.kind==='reverse'){
+   const safe=frames.filter(f=>f.player.speed>=-.025&&
+     !window.DriveSimulation?.reverseProhibition(f.player));
+   if(safe.length)return safe.at(-1);
   }
   return frames.find(f=>f.at>=(frames.at(-1)?.at||0)-3000)||frames[0]||null;
  }
@@ -116,7 +123,35 @@
   g.fillStyle='#101e18';g.fillRect(0,382,720,23);g.fillStyle='#e9f6d9';
   g.font='13px sans-serif';g.fillText('EXEMPLU ANIMAT · Q = STÂNGA / E = DREAPTA · nu este înregistrare',15,399);
  }
+ function drawReverseExample(t){
+  // Geometric teaching diagram only; actual violation replay is the recorded canvas.
+  g.textAlign='left';g.fillStyle='#56764d';g.fillRect(0,0,720,405);
+  g.fillStyle='#384349';g.fillRect(277,0,166,405);
+  g.strokeStyle='#e9e5d5';g.lineWidth=3;g.setLineDash([16,14]);
+  g.beginPath();g.moveTo(360,0);g.lineTo(360,405);g.stroke();g.setLineDash([]);
+  const prohibited=event?.reverseReason||'crosswalk';
+  if(prohibited==='crosswalk'){
+   for(let i=0;i<6;i++){g.fillStyle='#f6f2e8';g.fillRect(280+i*27,143,15,65);}
+  }else if(prohibited==='noStopping'){
+   g.fillStyle='#e4f2ed';g.beginPath();g.arc(482,155,31,0,Math.PI*2);g.fill();
+   g.strokeStyle='#df4e49';g.lineWidth=7;g.stroke();g.fillStyle='#2675a3';
+   g.beginPath();g.arc(482,155,24,0,Math.PI*2);g.fill();
+   g.strokeStyle='#e94f44';g.lineWidth=6;g.beginPath();g.moveTo(464,173);g.lineTo(500,137);g.stroke();
+  }
+  const phase=clamp((t-.25)/.70),carY=287-(phase*115);
+  g.fillStyle='#f8ca54';g.fillRect(346,carY,28,53);
+  g.fillStyle='#47606a';g.fillRect(351,carY+9,18,12);
+  g.strokeStyle='#e6e6d5';g.lineWidth=4;g.beginPath();g.moveTo(360,carY-5);g.lineTo(360,carY-42);g.stroke();
+  g.fillStyle='#e6e6d5';g.beginPath();g.moveTo(354,carY-33);g.lineTo(360,carY-44);g.lineTo(366,carY-33);g.fill();
+  g.fillStyle='#132a20';g.fillRect(12,12,480,88);
+  g.fillStyle='#f5f3df';g.font='bold 23px sans-serif';g.fillText('MERSUL ÎNAPOI ESTE INTERZIS AICI',24,43);
+  g.font='bold 16px sans-serif';g.fillStyle='#dae8d1';
+  g.fillText(t<.3?'1. Oprește manevra și asigură-te':'2. Înaintează pe drumul permis',24,72);
+  g.fillStyle='#13281e';g.fillRect(0,380,720,25);g.fillStyle='#e3eedc';
+  g.font='13px sans-serif';g.fillText('DEMONSTRAȚIE ANIMATĂ · nu este o filmare din joc',14,398);
+ }
  function drawExample(t,kind){
+  if(kind==='reverse'){drawReverseExample(t);return;}
   if(kind==='signal'){drawSignalExample(t,event?.turnSign||1);return;}
   g.textAlign='left';
   // A genuine instructional animation drawn from traffic geometry (not a recording).
@@ -189,12 +224,15 @@
   $('dr-title').textContent=info.title;
   const recorded=Math.round(report.speedKmh??Math.abs(report.player?.speed||0)*21.6);
   const max=report.limit||s.limit||50;
-  $('dr-speed-summary').textContent=`VITEZA LA ABATERE · ${recorded} KM/H · LIMITĂ ${max} KM/H`;
+  $('dr-speed-summary').textContent=`${report.kind==='reverse'?'MERS ÎNAPOI · ':'VITEZA LA ABATERE · '}${recorded} KM/H · LIMITĂ ${max} KM/H`;
   $('dr-speed-summary').classList.toggle('overspeed',recorded>max+2);
   const sideLabel=report.turnSign===1?'dreapta':'stânga';
-  $('dr-why').textContent=info.why+(report.kind==='signal'?` Ai virat spre ${sideLabel}.`:'')+(report.kind==='speed'?` Viteza înregistrată: ${recorded} km/h. Limita: ${max} km/h.`:'');
+  const reverseWhy=report.reverseReason==='crosswalk'?' Ai dat înapoi pe marcajul pietonal.':
+    report.reverseReason==='noStopping'?' Ai mers înapoi în zona semnalizată cu Oprirea interzisă.':
+    report.reverseReason==='distance'?' Ai depășit distanța maximă de 50 m.':'';
+  $('dr-why').textContent=info.why+(report.kind==='reverse'?reverseWhy:'')+(report.kind==='signal'?` Ai virat spre ${sideLabel}.`:'')+(report.kind==='speed'?` Viteza înregistrată: ${recorded} km/h. Limita: ${max} km/h.`:'');
   $('dr-how').textContent=info.how+(report.kind==='signal'?` Pentru această manevră: ${report.turnSign===1?'apasă E (dreapta)':'apasă Q (stânga)'} înainte de intersecție.`:'');
-  $('dr-law').textContent=info.law+' ↗';$('dr-law').href='https://legislatie.just.ro/Public/DetaliiDocument/74028';
+  $('dr-law').textContent=info.law+' ↗';$('dr-law').href=report.kind==='reverse'?'https://legislatie.just.ro/Public/DetaliiDocument/79058':'https://legislatie.just.ro/Public/DetaliiDocument/74028';
   dialog.showModal();
   play('replay');
  }
@@ -225,6 +263,7 @@
    }
   }else if(e.kind==='speed')s.limit=e.limit;
   s.turnWatch=null;
+  s.reverseDistanceM=0;s.forwardRecoveryM=0;
   s.retraining={kind:e.kind,junctionId:e.junctionId,direction:e.direction,turnSign:e.turnSign,
     startDistance:s.distance,collisions:s.collisions};
   delete s.ruleCooldown[e.key];
@@ -233,7 +272,7 @@
   // A lesson cannot become impossible only because the last penalty reached zero.
   if(s.score===0)s.score=1;
   s.lastPenalty=s.time-4;
-  s.message=`↻ EXERCIȚIU: ${explanations[e.kind].how}`;
+  s.message=`↻ EXERCIȚIU: ${e.kind==='reverse'?'Mergi ÎNAINTE și evită mersul înapoi în zona interzisă.':explanations[e.kind].how}`;
   s.messageUntil=s.time+120;
   frames=[];lastCapture=-1000;runId++;dialog.close();state=null;event=null;
  }

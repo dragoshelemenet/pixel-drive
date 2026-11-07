@@ -1,0 +1,29 @@
+{
+  "project": "Pixel Drive",
+  "category": "B",
+  "reference_site": "https://www.scoalarutiera.ro/",
+  "reference_total_reported": 1208,
+  "requested_range": {
+    "start": 1,
+    "end": 50
+  },
+  "imported_exact_count": 0,
+  "next_range_after_authorized_import": {
+    "start": 1,
+    "end": 50
+  },
+  "status": "blocked_pending_redistribution_permission_or_licensed_source",
+  "reason": "Sursa Școala Rutieră interzice reproducerea textelor și imaginilor. Nu există acord disponibil.",
+  "existing_original_questions_preserved": 52,
+  "images_policy": "Use licensed original image when available; only generate original illustration otherwise.",
+  "batches": [
+    {
+      "batch": "official-001",
+      "range": "1-50",
+      "status": "not imported",
+      "verified_ids": [],
+      "source": "https://www.scoalarutiera.ro/",
+      "rights": "not cleared"
+    }
+  ]
+}

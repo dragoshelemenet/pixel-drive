@@ -19,7 +19,7 @@
   title:'Prioritate de dreapta',hint:'Intersecție nedirijată! Privește în dreapta și acordă prioritate înainte de a intra.'
  });
  function create(options={}){
-  const s={player:{x:24.78,z:19,angle:-Math.PI/2,speed:0,indicator:0},time:0,score:1000,collisions:0,failed:false,paused:false,limit:50,message:'Obiectiv: mergi la punctul marcat și preia pasagerul.',messageUntil:7,lastPenalty:-10,ruleCooldown:{},stopMemory:{},passed:new Set(),learned:new Set(),distance:0,traffic:[],pedestrians:[],mission:{phase:'pickup'},violationEvent:null,violationSerial:0,retraining:null,turnWatch:null};
+  const s={player:{x:24.78,z:19,angle:-Math.PI/2,speed:0,indicator:0},time:0,score:1000,collisions:0,failed:false,paused:false,limit:50,message:'Obiectiv: mergi la punctul marcat și preia pasagerul.',messageUntil:7,lastPenalty:-10,ruleCooldown:{},stopMemory:{},passed:new Set(),learned:new Set(),distance:0,traffic:[],pedestrians:[],mission:{phase:'pickup'},violationEvent:null,violationSerial:0,retraining:null,turnWatch:null,reverseDistanceM:0,forwardRecoveryM:0};
   for(let i=0;i<46;i++){
    const j=W.junctions[(i*13+3)%W.junctions.length];let d=i%4;while(!W.neighbor(j,(d+2)%4))d=(d+1)%4;
    const v=W.V[d],r=W.right(d);s.traffic.push({id:i,x:j.x-v.x*7+r.x*W.LANE,z:j.z-v.z*7+r.z*W.LANE,angle:Math.atan2(v.z,v.x),d,j,speed:0,cruise:1.5+(i%5)*.16,phase:'approach',stopTime:0,color:['#be6851','#a7b5bf','#d7bb76','#729a91','#797da2'][i%5]});
@@ -60,7 +60,7 @@
   s.score=Math.max(0,s.score-points);s.message=`−${points} · ${text}`;s.messageUntil=s.time+4;
   // One report per physics frame; consumed after the actual screen is drawn.
   if(!s.violationEvent)s.violationEvent={id:++s.violationSerial,kind:meta?.kind||key.split('-')[0],
-    key,points,text,junctionId:meta?.junctionId||null,direction:meta?.direction??null,turnSign:meta?.turnSign??null,
+    key,points,text,junctionId:meta?.junctionId||null,direction:meta?.direction??null,turnSign:meta?.turnSign??null,reverseReason:meta?.reverseReason??null,
     limit:s.limit,time:s.time,speedKmh:meta?.speedKmh??Math.round(Math.abs(s.player.speed)*21.6),player:{...s.player}};
   if(s.score===0){s.failed=true;s.player.speed=0;}
   return true;
@@ -186,6 +186,58 @@
    }
   }
  }
+ // Art. 128, HG 1391/2006: reverse travel prohibited beyond 50 m and
+ // in places subject to art. 126 (except one-way roads), among other cases.
+ // World distance uses 6 real-world meters per map unit (same as journey HUD).
+ const REVERSE_METERS_PER_WORLD_UNIT=6;
+ function reverseProhibition(p){
+  // Existing pedestrian crossings are physically painted around the ordinary
+  // junctions, two world units before each entry. Roundabouts lack that marking.
+  for(const j of W.junctions){
+   if(j.type==='roundabout')continue;
+   if(Math.hypot(p.x-j.x,p.z-j.z)>4.2)continue;
+   for(let d=0;d<4;d++){
+    if(!W.neighbor(j,(d+2)%4))continue;
+    const v=W.V[d],r=W.right(d);
+    const center={x:j.x-v.x*2,z:j.z-v.z*2};
+    const dx=p.x-center.x,dz=p.z-center.z;
+    if(Math.abs(dx*v.x+dz*v.z)<.66&&Math.abs(dx*r.x+dz*r.z)<1.45)
+     return 'crosswalk';
+   }
+  }
+  // Map's no-stopping zone begins at its posted sign on the indicated side.
+  // This is a conservative zone approximation, not a generalized claim that
+  // every junction/one-way street forbids reversing.
+  for(const sign of W.signs){
+   if(sign.kind!=='noStopping')continue;
+   const v=W.V[sign.d],r=W.right(sign.d),dx=p.x-sign.x,dz=p.z-sign.z;
+   const longitudinal=dx*v.x+dz*v.z,lateral=dx*r.x+dz*r.z;
+   if(longitudinal>=0&&longitudinal<6&&Math.abs(lateral)<2.1)
+    return 'noStopping';
+  }
+  return null;
+ }
+ function checkReverse(s,old){
+  const p=s.player;
+  const step=Math.hypot(p.x-old.x,p.z-old.z)*REVERSE_METERS_PER_WORLD_UNIT;
+  if(p.speed<-.025&&step>0){
+   s.reverseDistanceM+=step;
+   s.forwardRecoveryM=0;
+   const reason=reverseProhibition(p)||reverseProhibition(old)||
+     (s.reverseDistanceM>50.01?'distance':null);
+   if(reason){
+    const text=reason==='crosswalk'?'Ai mers înapoi pe trecerea pentru pietoni.':
+      reason==='noStopping'?'Ai mers înapoi în zona cu oprirea interzisă.':
+      'Ai mers înapoi pe o distanță mai mare de 50 m.';
+    penalize(s,80,text,'reverse-'+reason,2,
+      {kind:'reverse',reverseReason:reason,speedKmh:Math.round(Math.abs(p.speed)*21.6)});
+   }
+  }else if(p.speed>.025&&step>0){
+   s.forwardRecoveryM+=step;
+   // Moving forward is a new manoeuvre; stopping alone isn't.
+   if(s.forwardRecoveryM>=1.2){s.reverseDistanceM=0;}
+  }
+ }
  function update(s,input,dt){
   if(s.failed||s.paused)return;dt=Math.min(dt,.05);s.time+=dt;
   pedestrians(s,dt);traffic(s,dt);
@@ -212,13 +264,18 @@
   if(valid){p.x=nx;p.z=nz;s.distance+=Math.hypot(nx-old.x,nz-old.z);}else if(Math.abs(p.speed)>.08)collision(s,'Coliziune cu bordura sau un obstacol.');
   for(const t of s.traffic)if(Math.hypot(t.x-p.x,t.z-p.z)<.75){p.x=old.x;p.z=old.z;collision(s,'Coliziune cu un vehicul.');}
   for(const ped of s.pedestrians)if(ped.crossing&&Math.hypot(ped.x-p.x,ped.z-p.z)<.43){s.failed=true;s.score=0;p.speed=0;s.message='Ai lovit un pieton. Oprește înainte de trecere și acordă prioritate.';}
-  checkRules(s,old);
+  if(!s.violationEvent)checkReverse(s,old);
+  if(!s.violationEvent)checkRules(s,old);
   if(!s.violationEvent)checkTurnSignal(s);
   // A failed lesson stays active until the driver repeats it correctly.
   const retry=s.retraining;
   if(retry&&!s.violationEvent){
    let success=false;
-   if(retry.junctionId){
+   if(retry.kind==='reverse'){
+    success=p.speed>.025&&s.distance-retry.startDistance>=1.4&&
+      s.forwardRecoveryM>=3&&reverseProhibition(p)===null&&
+      s.collisions===retry.collisions;
+   }else if(retry.junctionId){
     const j=W.junctions.find(q=>q.id===retry.junctionId);
     if(j){
      if(retry.kind==='signal'){
@@ -272,5 +329,5 @@
   else{s.mission.phase='complete';s.score+=200;s.message='Cursă completă! Ai învățat preluarea, coborârea și parcarea.';}
   s.messageUntil=s.time+5;return{type:'mission',phase:s.mission.phase};
  }
- window.DriveSimulation={create,update,penalize,collision,crossPath,trafficConflict,checkRules,checkTurnSignal,objective,interact,driveSettings:{initialAcceleration:0.22,reverseAcceleration:0.28}};
+ window.DriveSimulation={create,update,penalize,collision,crossPath,trafficConflict,checkRules,checkTurnSignal,checkReverse,reverseProhibition,objective,interact,driveSettings:{initialAcceleration:0.22,reverseAcceleration:0.28}};
 })();
