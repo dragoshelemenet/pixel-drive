@@ -122,7 +122,16 @@
   if(s.failed||s.paused)return;dt=Math.min(dt,.05);s.time+=dt;
   pedestrians(s,dt);traffic(s,dt);
   const p=s.player,old={x:p.x,z:p.z};
-  if(input.w)p.speed=Math.min(2.8,Math.max(0,p.speed)+1.5*dt);else if(input.s)p.speed=Math.max(-1.1,p.speed-3.5*dt);else p.speed=p.speed>0?Math.max(0,p.speed-.7*dt):Math.min(0,p.speed+1.2*dt);
+  // Softer throttle: ~3x more time to accelerate, while preserving top speed and braking.
+  const ACCEL_FORWARD=0.50, ACCEL_REVERSE=0.60;
+  if(input.w){
+   p.speed=Math.min(2.8,Math.max(0,p.speed)+ACCEL_FORWARD*dt);
+  }else if(input.s){
+   // S brakes firmly while moving forward; only slowly accelerates in reverse after stopping.
+   p.speed=p.speed>0?Math.max(0,p.speed-3.5*dt):Math.max(-1.1,p.speed-ACCEL_REVERSE*dt);
+  }else{
+   p.speed=p.speed>0?Math.max(0,p.speed-.7*dt):Math.min(0,p.speed+1.2*dt);
+  }
   if(input.space)p.speed=p.speed>0?Math.max(0,p.speed-6*dt):Math.min(0,p.speed+6*dt);
   const steering=(input.d?1:0)-(input.a?1:0);if(Math.abs(p.speed)>.01)p.angle+=steering*1.35*clamp(p.speed/1.1,-1,1)*dt;
   const nx=p.x+Math.cos(p.angle)*p.speed*dt,nz=p.z+Math.sin(p.angle)*p.speed*dt;
