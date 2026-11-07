@@ -1,4 +1,4 @@
-/* Pixel Drive quiz v38 — 60 seconds in all modes, automatic question popup.
+/* Pixel Drive quiz v45 — 60 seconds in all modes, automatic question popup.
    The regular Level 1 page always counts 01:00 -> 00:00; no test URL override. */
 (()=>{
  'use strict';
@@ -43,17 +43,28 @@
   const q=bank.randomExcept(lastId);if(!q)return;
   try{
    current=q;answered=false;lastId=q.id;wasPaused=gameState.paused;
-   dialog.innerHTML=`<div class="drive-quiz-top"><span class="drive-quiz-eyebrow">PIXEL DRIVE · TEST RUTIER</span><span class="drive-quiz-reward">+50 CR</span></div><div class="drive-quiz-topic">${q.category} · România</div>${picture(q)}<h2>${q.question}</h2><p class="drive-quiz-sub">Alege răspunsul corect. Greșit = 0 CR, fără penalizare.</p><div class="drive-quiz-answers">${q.answers.map((answer,i)=>`<button type="button" data-answer="${i}"><span>${String.fromCharCode(65+i)}</span>${answer}</button>`).join('')}</div><button type="button" class="drive-quiz-skip">Sari peste · 0 CR</button>`;
+   const safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+   const answerSet=new Set();const gold=new Set(q.correctIndices||[q.correct]);
+   const sourceLink=q.sourceUrl||q.url;
+   const sourceInfo=`<a class="drive-quiz-source" href="${safe(sourceLink)}" target="_blank" rel="noopener noreferrer">${safe(q.sourceLabel||'Sursa întrebării · '+q.source)} ↗</a>${q.referenceImageUrl?`<a class="drive-quiz-source" href="${safe(q.referenceImageUrl)}" target="_blank" rel="noopener noreferrer">Verifică imaginea originală de referință ↗</a>`:""}`;
+   dialog.innerHTML=`<div class="drive-quiz-top"><span class="drive-quiz-eyebrow">PIXEL DRIVE · TEST RUTIER</span><span class="drive-quiz-reward">+50 CR</span></div><div class="drive-quiz-topic">${safe(q.category)} · România</div>${picture(q)}<h2>${safe(q.question)}</h2><p class="drive-quiz-sub">Selectează toate variantele corecte (poate fi una, două sau trei). Apoi apasă Verifică.</p><div class="drive-quiz-answers">${q.answers.map((answer,i)=>`<button type="button" aria-pressed="false" data-answer="${i}"><span>${String.fromCharCode(65+i)}</span>${safe(answer)}</button>`).join('')}</div><button type="button" class="drive-quiz-confirm" disabled>Verifică răspunsul</button>${sourceInfo}<button type="button" class="drive-quiz-skip">Sari peste · 0 CR</button>`;
    attachImageFallback(dialog,q);
    gameState.paused=true;
    dialog.showModal();
+   const confirm=dialog.querySelector('.drive-quiz-confirm');
    dialog.querySelectorAll('[data-answer]').forEach(btn=>btn.addEventListener('click',()=>{
-    if(answered)return;answered=true;
-    const chosen=Number(btn.dataset.answer),correct=chosen===q.correct;
-    if(correct)window.DriveCareer?.awardCredits(50);
-    dialog.innerHTML=`<div class="drive-quiz-result ${correct?'good':'bad'}"><span>${correct?'✓ CORECT · +50 CR':'✕ GREȘIT · +0 CR'}</span><h2>${correct?'Ai câștigat 50 de credite!':'Nicio penalizare. Continuă să înveți.'}</h2><p><b>Răspunsul corect:</b> ${q.answers[q.correct]}</p><p>${q.explanation}</p><a href="${q.url}" rel="noopener noreferrer" target="_blank">Sursă: ${q.source} ↗</a><button type="button" id="drive-quiz-continue">Continuă să conduci →</button></div>`;
-    dialog.querySelector('#drive-quiz-continue').addEventListener('click',finish);
+     if(answered)return;const i=Number(btn.dataset.answer);
+     if(answerSet.has(i))answerSet.delete(i);else answerSet.add(i);
+     btn.classList.toggle('selected',answerSet.has(i));btn.setAttribute('aria-pressed',String(answerSet.has(i)));
+     confirm.disabled=answerSet.size===0;
    }));
+   confirm.addEventListener('click',()=>{
+     if(answered||!answerSet.size)return;answered=true;
+     const correct=answerSet.size===gold.size&&[...answerSet].every(i=>gold.has(i));
+     if(correct)window.DriveCareer?.awardCredits(50);
+     dialog.innerHTML=`<div class="drive-quiz-result ${correct?'good':'bad'}"><span>${correct?'✓ CORECT · +50 CR':'✕ GREȘIT · +0 CR'}</span><h2>${correct?'Ai câștigat 50 de credite!':'Nicio penalizare. Continuă să înveți.'}</h2><p><b>Răspunsuri corecte:</b> ${[...gold].map(i=>safe(q.answers[i])).join('; ')}</p><p>${safe(q.explanation)}</p>${sourceInfo}<button type="button" id="drive-quiz-continue">Continuă să conduci →</button></div>`;
+     dialog.querySelector('#drive-quiz-continue').addEventListener('click',finish);
+   });
    dialog.querySelector('.drive-quiz-skip').addEventListener('click',finish);
    dialog.querySelector('[data-answer]')?.focus();
    console.info('[Pixel Drive Quiz] Popup opened:',q.id);

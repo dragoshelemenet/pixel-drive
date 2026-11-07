@@ -29,17 +29,26 @@ function question(){
   panel.querySelector('#school-finish').onclick=close;
   return;
  }
- show('Școala auto · '+(quiz.index+1)+'/'+quiz.questions.length,`<div class="school-quiz-question"><span>${q.category} · Cod rutier RO</span><div class="school-quiz-visual"><img class="quiz-question-image" src="${q.imageUrl}" alt="${q.imageAlt}" referrerpolicy="no-referrer"><small>${q.imageCredit}${q.imagePage?` · <a href="${q.imagePage}" target="_blank" rel="noopener noreferrer">Sursa imaginii ↗</a>`:""}</small></div><h3>${q.question}</h3>${q.answers.map((answer,i)=>`<button class="school-quiz-answer" data-answer="${i}"><b>${String.fromCharCode(65+i)}.</b> ${answer}</button>`).join('')}</div>`);
- const quizImg=panel.querySelector('.school-quiz-visual img');
- if(quizImg)quizImg.addEventListener('error',()=>{if(!quizImg.dataset.fallbackUsed){quizImg.dataset.fallbackUsed='1';quizImg.src=q.fallbackImage;}});
- panel.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{
-  if(!quiz)return;
-  const chosen=+b.dataset.answer,right=chosen===q.correct;
-  if(right)quiz.right++;
-  quiz.index++;
-  show(right?'Răspuns corect':'Răspuns greșit',`<p>${right?'Bravo!':'Nu primești punct pentru această întrebare.'}</p><p><b>Răspuns corect:</b> ${q.answers[q.correct]}</p><p>${q.explanation}</p><p><a href="${q.url}" target="_blank" rel="noopener">Sursă legală: ${q.source} ↗</a></p><button id="school-next">${quiz.index===quiz.questions.length?'Vezi rezultatul':'Următoarea întrebare →'}</button>`);
-  panel.querySelector('#school-next').onclick=question;
+ const safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const sourceLink=safe(q.sourceUrl||q.url);
+ const refLink=`<a href="${sourceLink}" target="_blank" rel="noopener noreferrer">${safe(q.sourceLabel||'Sursa întrebării: '+q.source)} ↗</a>${q.referenceImageUrl?` · <a href="${safe(q.referenceImageUrl)}" target="_blank" rel="noopener noreferrer">Imaginea de referință ↗</a>`:""}`;
+ show('Școala auto · '+(quiz.index+1)+'/'+quiz.questions.length,`<div class="school-quiz-question"><span>${safe(q.category)} · Cod rutier RO</span><div class="school-quiz-visual"><img class="quiz-question-image" src="${safe(q.imageUrl)}" alt="${safe(q.imageAlt)}" referrerpolicy="no-referrer"><small>${safe(q.imageCredit)}${q.imagePage?` · <a href="${safe(q.imagePage)}" target="_blank" rel="noopener noreferrer">Referință imagine ↗</a>`:''}</small></div><h3>${safe(q.question)}</h3><p>Pot exista mai multe răspunsuri corecte. Selectează-le pe toate.</p>${q.answers.map((answer,i)=>`<button class="school-quiz-answer" aria-pressed="false" data-answer="${i}"><b>${String.fromCharCode(65+i)}.</b> ${safe(answer)}</button>`).join('')}<button id="school-check" disabled>Verifică răspunsul</button><p style="font-size:12px">${refLink}</p></div>`);
+ const img=panel.querySelector('.school-quiz-visual img');
+ if(img)img.addEventListener('error',()=>{if(!img.dataset.fallbackUsed){img.dataset.fallbackUsed='1';img.src=q.fallbackImage;}});
+ const chosen=new Set(),gold=new Set(q.correctIndices||[q.correct]);
+ const check=panel.querySelector('#school-check');
+ panel.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const i=+b.dataset.answer;
+  if(chosen.has(i))chosen.delete(i);else chosen.add(i);
+  b.classList.toggle('selected',chosen.has(i));b.setAttribute('aria-pressed',String(chosen.has(i)));
+  check.disabled=chosen.size===0;
  });
+ check.onclick=()=>{
+  if(!quiz||!chosen.size)return;
+  const right=chosen.size===gold.size&&[...chosen].every(x=>gold.has(x));
+  if(right)quiz.right++;quiz.index++;
+  show(right?'Răspuns corect':'Răspuns greșit',`<p>${right?'Bravo!':'Nu primești punct pentru această întrebare.'}</p><p><b>Răspunsuri corecte:</b> ${[...gold].map(i=>safe(q.answers[i])).join('; ')}</p><p>${safe(q.explanation)}</p><p>${refLink}</p><button id="school-next">${quiz.index===quiz.questions.length?'Vezi rezultatul':'Următoarea întrebare →'}</button>`);
+  panel.querySelector('#school-next').onclick=question;
+ };
 }
 const hud=document.createElement('div');hud.className='career-hud';document.querySelector('.scene-wrap').append(hud);
 const rescue=document.createElement('button');rescue.className='fuel-rescue';rescue.textContent='REZERVOR GOL · Primește 5% combustibil';rescue.hidden=true;document.querySelector('.scene-wrap').append(rescue);rescue.onclick=()=>{if(data.fuel<=0){data.fuel=5;save();rescue.hidden=true;if(state)notice('Ai primit 5% combustibil. Mergi la benzinărie.');}};

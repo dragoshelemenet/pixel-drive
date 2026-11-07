@@ -1,45 +1,11 @@
-# Pixel Drive — Registrul surselor pentru chestionare
+# Pixel Drive – banca de întrebări, lotul 01
 
-Ultima actualizare: 2026-11-07.
+**Import realizat:** 1-50: 50 întrebări. Total importat: 50; următoarele: 51-100.
 
-## Status
+Sursa: [RoDrive](https://huggingface.co/datasets/AnonymousDrive/RoDrive) – University of Bucharest dataset, licență [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Autorii și contribuțiile sunt listați în pagina datasetului. Pentru text și răspunsuri s-a păstrat ordinea variantelor; este posibil ca unele întrebări să aibă mai multe răspunsuri corecte.
 
-- Lot 00: 3 întrebări demonstrative deja existente (STOP, roșu, pietoni).
-- Lot 01: 49 întrebări NOI originale, în `dist/nivel-1/quiz-batches/batch-01.js`.
-- TOTAL în joc: 52 întrebări (nu reprezintă toată baza oficială DGPCI).
-- Următorul lot: nu este încă inclus. Nu se declară completate loturi viitoare.
+**Atenție:** acestea sunt primele 50 de înregistrări RoDrive sortate după ID, nu neapărat primele 50 din mediul Școala Rutieră. Datasetul RoDrive are 1208 intrări valide combinate; totalul de 1.208 este reperul site-ului de referință și nu dovedește echivalența exactă a ordinii sau a versiunilor.
 
-## Proveniență și drept de utilizare
+Toate imaginile sunt **ilustrații originale schematice create pentru Pixel Drive**, nu fotografii extrase din site-uri. Pentru situațiile vizuale complexe verifică referința originală (câmpul `referenceImageUrl` în `batch-01.js`); o diagramă generică poate omite un detaliu esențial al întrebării. Astfel de itemi trebuie validați înainte de folosire la pregătire reală.
 
-Întrebările sunt redactate ORIGINAL pentru Pixel Drive după normele legale din România. **Nu** sunt copiate automat dintr-o bancă DGPCI/DRPCIV, un site comercial sau un dataset cu licență neclară. Fiecare întrebare are `source` (act normativ și articol) și `url` către Portalul Legislativ.
-
-Surse normative primare:
-
-1. OUG 195/2002 privind circulația pe drumurile publice: https://legislatie.just.ro/Public/DetaliiDocument/74028
-2. HG 1391/2006, regulament de aplicare: https://legislatie.just.ro/Public/DetaliiDocument/285008
-
-Surse pentru eventuala extindere a catalogului (NEIMPORTATE):
-
-- RoDrive — dataset Universitatea din București: https://zenodo.org/records/21401022 (licența de reutilizare trebuie confirmată înainte de import).
-- SoferOnline — index cu ~1455 întrebări: https://soferonline.ro/chestionare-auto/categoria-b (nu am permisiune confirmată de republicare).
-
-Imagini: 3 întrebări inițiale folosesc URL-uri Wikimedia Commons și imagini locale de rezervă, cu credite. Întrebările noi folosesc ilustrații SVG originale Pixel Drive sau indicatoarele deja prezente în proiect, fără a copia imagini de pe site-urile de chestionare.
-
-## Lot 01 — distribuție (49 întrebări originale)
-
-- Calea ferată: 3
-- Depășire: 4
-- Indicatoare: 3
-- Manevre: 4
-- Oprire: 4
-- Prioritate: 7
-- Semafoare: 7
-- Siguranță: 9
-- Viteză: 8
-
-## Schema pentru următoarele loturi
-
-- Pune câte un fișier `quiz-batches/batch-02.js`, `batch-03.js` etc. și încarcă-l în `index.html` după `quiz-bank.js`, înainte de `career.js`.
-- Fiecare întrebare are ID unic, categorie, întrebare originală, 3 răspunsuri, indice răspuns corect, explicație, articol normativ, URL către sursa normativă, imagine și creditul imaginii.
-- Adaugă în acest document totalul real și sursele fiecărui lot, numai după publicarea lui.
-- Dacă ulterior dorești exact setul DGPCI, trebuie obținută o sursă cu permisiune clară de redistribuire și verificată actualitatea datelor.
+Actele normative principale pentru verificare: [OUG 195/2002](https://legislatie.just.ro/Public/DetaliiDocument/74028) și [HG 1391/2006](https://legislatie.just.ro/Public/DetaliiDocument/79058). Unele explicații din RoDrive pot fi depășite; nu sunt certificate oficial.
