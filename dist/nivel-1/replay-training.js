@@ -22,6 +22,7 @@
     <div class="dr-media"><div class="dr-video-label" id="dr-video-label">VIDEO · ULTIMELE SECUNDE DIN JOC</div>
       <canvas id="dr-canvas" width="720" height="405" aria-label="Replay cu cadre din joc"></canvas>
       <div class="dr-media-controls"><button id="dr-watch" type="button">↺ Vezi replay-ul</button><button id="dr-example" type="button">▶ Exemplul corect</button><span id="dr-progress">REPLAY</span></div>
+      <div id="dr-speed-summary" class="dr-speed-summary">VITEZA LA ABATERE · -- KM/H</div>
       <p class="dr-media-caption" id="dr-media-caption">Cadre capturate din sesiunea ta de condus, nu o animație inventată.</p>
     </div>
     <div class="dr-explainer"><p class="dr-wrong">CE AI GREȘIT</p><p id="dr-why"></p><p class="dr-correct">CUM TREBUIE SĂ PROCEDEZI</p><p id="dr-how"></p>
@@ -38,16 +39,27 @@
  const CAPTURE_EVERY=205,KEEP_MS=9000,CLIP_MS=6500;
  const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
  const clone=x=>JSON.parse(JSON.stringify(x));
- function capture(s,canvas,now){
-  if(now-lastCapture<CAPTURE_EVERY)return;
+ function capture(s,canvas,now,force=false,overrideKmh=null){
+  if(!force&&now-lastCapture<CAPTURE_EVERY)return;
   lastCapture=now;
+  const kmh=overrideKmh??Math.round(Math.abs(s.player.speed)*21.6);
+  const limit=s.limit||50,over=kmh>limit+2;
   let image=null;
   try{
    const small=document.createElement('canvas'); small.width=720;small.height=405;
-   small.getContext('2d',{alpha:false}).drawImage(canvas,0,0,720,405);
-   image=small.toDataURL('image/webp',.62);
+   const cg=small.getContext('2d',{alpha:false});
+   cg.drawImage(canvas,0,0,720,405);
+   // This overlay is burned into EVERY captured frame for later inspection.
+   cg.fillStyle='rgba(10,22,19,.91)';cg.fillRect(13,12,320,58);
+   cg.strokeStyle=over?'#ef695e':'#a6c59b';cg.lineWidth=2;cg.strokeRect(13,12,320,58);
+   cg.textAlign='left';cg.font='bold 28px monospace';cg.fillStyle=over?'#ffad9c':'#f6f9eb';
+   cg.fillText(`${kmh} KM/H`,25,51);
+   cg.font='bold 15px monospace';cg.fillStyle='#d5e1d0';cg.fillText(`LIMITĂ ${limit}`,194,49);
+   cg.font='bold 13px monospace';cg.fillStyle='#e2e9ce';
+   cg.fillText(s.player.indicator<0?'◀ SEMNAL STÂNGA':s.player.indicator>0?'SEMNAL DREAPTA ▶':'FĂRĂ SEMNAL',25,90);
+   image=small.toDataURL('image/webp',.66);
   }catch(e){if(!frames.length)console.warn('[Replay] Captură indisponibilă:',e);}
-  frames.push({at:now,simTime:s.time,image,player:{...s.player},traffic:clone(s.traffic),
+  frames.push({at:now,simTime:s.time,image,kmh,limit,player:{...s.player},traffic:clone(s.traffic),
     pedestrians:clone(s.pedestrians)});
   while(frames.length&&now-frames[0].at>KEEP_MS)frames.shift();
  }
@@ -142,11 +154,17 @@
   const now=frames.at(-1)?.at||performance.now();
   clip=frames.filter(f=>f.at>=now-CLIP_MS).map(f=>{
    const picture=new Image(); if(f.image)picture.src=f.image;
-   return {picture};
+   return {picture,kmh:f.kmh,limit:f.limit};
   });
   s.paused=true;s.player.speed=0;
   const info=explanations[report.kind];
-  $('dr-title').textContent=info.title;$('dr-why').textContent=info.why;$('dr-how').textContent=info.how;
+  $('dr-title').textContent=info.title;
+  const recorded=Math.round(report.speedKmh??Math.abs(report.player?.speed||0)*21.6);
+  const max=report.limit||s.limit||50;
+  $('dr-speed-summary').textContent=`VITEZA LA ABATERE · ${recorded} KM/H · LIMITĂ ${max} KM/H`;
+  $('dr-speed-summary').classList.toggle('overspeed',recorded>max+2);
+  $('dr-why').textContent=info.why+(report.kind==='speed'?` Viteza înregistrată: ${recorded} km/h. Limita: ${max} km/h.`:'');
+  $('dr-how').textContent=info.how;
   $('dr-law').textContent=info.law+' ↗';$('dr-law').href='https://legislatie.just.ro/Public/DetaliiDocument/74028';
   dialog.showModal();
   play('replay');
@@ -193,7 +211,10 @@
  $('dr-example').addEventListener('click',()=>play('demo'));
  $('dr-retry').addEventListener('click',restartCorrectly);
  window.DriveReplay={onFrame(s,canvas,now){
+   // Preserve the last instant even if a collision has already set speed=0.
+   if(s.violationEvent){const report=s.violationEvent;
+     if(!dialog.open)capture(s,canvas,now,true,report.speedKmh);
+     s.violationEvent=null;interrupt(s,report);return;}
    if(!dialog.open&&!s.paused&&!s.failed)capture(s,canvas,now);
-   if(s.violationEvent){const report=s.violationEvent;s.violationEvent=null;interrupt(s,report);}
   },open:()=>dialog.open,showExample:()=>play('demo')};
 })();

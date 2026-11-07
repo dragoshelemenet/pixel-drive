@@ -53,7 +53,7 @@
   $('score').textContent=state.score+' PUNCTE';$('damage').textContent=state.collisions+' / 4 COLIZIUNI';$('speed').textContent=Math.round(Math.abs(p.speed)*21.6)+' KM/H';$('limit').textContent='LIMITĂ '+state.limit;
   $('rule-title').textContent=c.title;$('rule-text').textContent=c.text;$('rule-source').textContent=c.source+' ↗';$('rule-source').href=c.url;
   $('rule-distance').textContent=sign?'SEMN APROAPE · APASĂ I':c.distance===null?'ÎN FAȚĂ':c.distance<.5?'ACUM · ÎN ZONĂ':'ÎN FAȚĂ · '+Math.round(c.distance*6)+' M';
-  $('indicator').textContent=p.indicator<0?'◀ SEMNAL STÂNGA':p.indicator>0?'SEMNAL DREAPTA ▶':'SEMNAL OPRIT';$('rule-symbol').textContent=symbols[c.key]||'↑';$('rule-symbol').dataset.kind=c.key;
+  syncTurnPad();$('indicator').textContent=p.indicator<0?'◀ SEMNAL STÂNGA':p.indicator>0?'SEMNAL DREAPTA ▶':'SEMNAL OPRIT';$('rule-symbol').textContent=symbols[c.key]||'↑';$('rule-symbol').dataset.kind=c.key;
   $('objective-title').textContent=o.title;$('objective-text').textContent=o.text;$('objective-distance').textContent=o.distance===null?'GATA':Math.round(o.distance*6)+' M';
   const atGoal=o.target&&o.distance<=2.25,stopped=Math.abs(p.speed)<=.04;
   $('learn').textContent=o.service?'I · ȘCOALA AUTO':atGoal?(stopped?'I · INTERACȚIONEAZĂ':'OPREȘTE · I'):sign?'I · ÎNVAȚĂ SEMNUL':landmark?'I · VEZI LOCUL':'I · ÎNVAȚĂ';
@@ -64,7 +64,37 @@
   if(state.failed){$('fail').hidden=false;$('fail-reason').textContent=state.message;keys={};}
  }
  function resumeFocusPause(){if(autoPaused&&!modalOpen&&!document.querySelector('dialog[open]')){autoPaused=false;state.paused=false;document.body.classList.remove('paused');$('pause').textContent='Pauză';last=0;ui();}}
- canvas.tabIndex=0;canvas.addEventListener('pointerdown',()=>{canvas.focus();resumeFocusPause();});
+ canvas.tabIndex=0;
+ // Short click: left = indicator left, right = indicator right.
+ // Drag is reserved for looking around in the cabin (especially right-button drag).
+ let mouseGesture=null;
+ canvas.addEventListener('contextmenu',e=>e.preventDefault());
+ canvas.addEventListener('pointerdown',e=>{
+  canvas.focus();resumeFocusPause();
+  if(e.pointerType==='mouse'&&(e.button===0||e.button===2))
+   mouseGesture={id:e.pointerId,button:e.button,x:e.clientX,y:e.clientY};
+ });
+ canvas.addEventListener('pointerup',e=>{
+  const g=mouseGesture;mouseGesture=null;
+  if(!g||g.id!==e.pointerId||modalOpen||state.failed||
+     document.querySelector('dialog[open]'))return;
+  if(canvas.dataset.cabinControlClick==='1'){
+   delete canvas.dataset.cabinControlClick;return;
+  }
+  if(Math.hypot(e.clientX-g.x,e.clientY-g.y)>9)return;
+  signal(g.button===0?-1:1);
+ });
+ canvas.addEventListener('pointercancel',()=>{mouseGesture=null;delete canvas.dataset.cabinControlClick;});
+ // Dedicated touch controls remain reachable even when the main toolbar is hidden.
+ const indicatorPad=document.createElement('div');indicatorPad.id='indicator-pad';
+ indicatorPad.innerHTML='<button type="button" data-turn="-1" aria-label="Semnalizează stânga">◀ <span>STÂNGA</span></button><button type="button" data-turn="1" aria-label="Semnalizează dreapta"><span>DREAPTA</span> ▶</button>';
+ document.querySelector('.scene-wrap').appendChild(indicatorPad);
+ indicatorPad.querySelectorAll('[data-turn]').forEach(b=>b.addEventListener('click',()=>signal(Number(b.dataset.turn))));
+ function syncTurnPad(){indicatorPad.querySelectorAll('[data-turn]').forEach(b=>{
+  b.classList.toggle('active',Number(b.dataset.turn)===state.player.indicator);
+  b.setAttribute('aria-pressed',String(Number(b.dataset.turn)===state.player.indicator));
+ });}
+
  const key=e=>({KeyW:'w',KeyA:'a',KeyS:'s',KeyD:'d',KeyQ:'q',KeyE:'e',KeyP:'p',KeyI:'i',Space:'space',ArrowUp:'w',ArrowDown:'s',ArrowLeft:'a',ArrowRight:'d'})[e.code]||(e.key||'').toLowerCase();
  window.addEventListener('keydown',e=>{if(e.key==='Escape'&&modalOpen){e.preventDefault();closeLesson();return;}if(modalOpen||document.querySelector('dialog[open]'))return;if(e.target.closest?.('input,textarea,select,[contenteditable=true]'))return;if(e.target.closest?.('button,a,summary')&&(e.code==='Space'||e.code==='Enter'))return;const k=key(e);if(['w','a','s','d'].includes(k))resumeFocusPause();if(['w','a','s','d','q','e','p','space','i'].includes(k))e.preventDefault();if(k==='i'){if(!e.repeat)interact();return;}if(!e.repeat){if(k==='q')signal(-1);if(k==='e')signal(1);if(k==='p')pause();}keys[k]=true;});
  window.addEventListener('keyup',e=>keys[key(e)]=false);

@@ -104,3 +104,17 @@ body[data-hud="off"] .drive-quiz-timer{display:flex!important}body[data-hud="ess
 #dr-retry{width:100%;border:0;border-radius:7px;padding:17px 12px;margin-top:auto;background:#cfe8aa;color:#203b27;font:800 13px/1.3 system-ui;cursor:pointer;min-height:56px}
 #dr-retry:hover{background:#e7f6ce}
 @media(max-width:780px){.dr-replay-layout{grid-template-columns:1fr;padding:12px;gap:10px}.dr-replay-head{padding:12px}.dr-replay-head h2{font-size:19px}.dr-alert{font-size:9px}.dr-explainer{padding:14px}.dr-explainer p{font-size:13px}.dr-replay-layout{max-height:none}.driving-replay{max-height:96dvh}.dr-media-controls button{font-size:11px}}
+
+/* Pixel Drive v42: touch turn-signals and speed-aware replay */
+#indicator-pad{display:none;position:fixed;left:14px;top:150px;z-index:10001;gap:7px;align-items:center}
+#indicator-pad button{min-width:92px;padding:11px 9px;border:2px solid #a7bba5;border-radius:8px;background:#182d24ef;color:#f4f5dc;font:700 13px system-ui;cursor:pointer;box-shadow:0 3px 12px #07120c77;touch-action:manipulation}
+#indicator-pad button span{font-size:10px}
+#indicator-pad button.active{background:#a96d19;border-color:#ffce64;color:#fff3d4;box-shadow:0 0 20px #ecc24d8c}
+.dr-speed-summary{display:block;background:#15291ee8;border-left:4px solid #9fce99;color:#faf9e9;border-radius:5px;padding:10px 12px;margin-top:8px;font:700 14px ui-monospace,monospace}
+.dr-speed-summary.overspeed{background:#4a201fea;border-color:#fd795c}
+@media(hover:none),(pointer:coarse){
+ #indicator-pad{display:flex;top:auto;left:10px;bottom:calc(115px + env(safe-area-inset-bottom,0px))}
+ #indicator-pad button{min-width:85px}
+ .mobile-driving [data-indicator]{display:none!important}
+}
+@media(max-width:680px){#indicator-pad{bottom:calc(70px + env(safe-area-inset-bottom,0px))}#indicator-pad button{min-width:68px;padding:8px 6px}#indicator-pad button span{font-size:8px}}

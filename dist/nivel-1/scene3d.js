@@ -37,7 +37,7 @@ for(const q of W.signs){if(q.kind==='roadworks'){for(let i=0;i<5;i++){const cone
 for(const j of W.junctions){const offset=j.type==='roundabout'?4.8:2,x=j.x+offset,z=j.z+offset;box(x,1.4,z,.06,2.8,.06,'#7b817c');box(x-.3,2.8,z,.65,.06,.08,'#7b817c');const light=new T.PointLight('#ffd394',0,7,2);light.position.set(x-.6,2.65,z);scene.add(light);lamps.push(light);}
 const ambient=new T.HemisphereLight('#dce9ff','#4f5934',1.25);scene.add(ambient);const sun=new T.DirectionalLight('#ffe5ba',3);sun.position.set(10,35,20);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-22;sun.shadow.camera.right=22;sun.shadow.camera.top=22;sun.shadow.camera.bottom=-22;sun.shadow.camera.near=.5;sun.shadow.camera.far=100;sun.shadow.bias=-.0002;sun.shadow.normalBias=.012;sun.shadow.radius=4;scene.add(sun);scene.add(sun.target);
 const vehicle=DriveScenery.vehicle;
-const player=vehicle('#e1e1d8');scene.add(player);const traffic=[],people=[];const headlights=new T.SpotLight('#fff2c4',0,18,.42,.6,1);headlights.position.set(0,.45,-.4);headlights.target.position.set(0,0,-10);player.add(headlights,headlights.target);
+const player=vehicle('#e1e1d8');scene.add(player);const traffic=new Map(),people=[];const headlights=new T.SpotLight('#fff2c4',0,18,.42,.6,1);headlights.position.set(0,.45,-.4);headlights.target.position.set(0,0,-10);player.add(headlights,headlights.target);
 const signals=[];
 const signalColors={red:'#ff3026',yellow:'#ffba20',green:'#35eb70'};
 const signalOn={},signalOff={};for(const color of Object.keys(signalColors)){signalOn[color]=new T.MeshBasicMaterial({color:signalColors[color],toneMapped:false});signalOff[color]=mat({red:'#351716',yellow:'#352c13',green:'#132b1c'}[color]);}
@@ -64,13 +64,29 @@ const rainGeo=new T.BufferGeometry(),drops=new Float32Array(1500);for(let i=0;i<
 // from the scene, avoiding transform traversal and shadow rendering as well.
 const chunks=new Map(),bounds=new T.Box3();scene.updateMatrixWorld(true);
 for(const o of [...scene.children]){if((!o.isMesh&&!o.isSprite)||course.includes(o))continue;bounds.setFromObject(o);const size=new T.Vector3();bounds.getSize(size);if(size.x>16||size.z>16)continue;const key=Math.floor(o.position.x/8)+','+Math.floor(o.position.z/8);let cell=chunks.get(key);if(!cell){cell={group:new T.Group(),bounds:new T.Box3(),active:false};chunks.set(key,cell);}cell.bounds.union(bounds);cell.group.add(o);}
-for(const cell of chunks.values()){DriveScenery.batch(cell.group);cell.bounds.expandByScalar(6);}
+for(const cell of chunks.values()){
+ cell.batched=false;cell.bounds.expandByScalar(6);
+}
+// Static meshes are constructed by the existing scenery builder, but merged and
+// attached to the GPU scene only when a chunk enters the player's visible range.
+// This is local render streaming (not network asset downloads).
 const frustum=new T.Frustum(),projection=new T.Matrix4();
 const lampPositions=lamps.map(l=>l.position.clone());lamps.forEach(l=>scene.remove(l));
 const localLights=Array.from({length:4},()=>{const l=new T.PointLight('#ffd394',0,7,2);scene.add(l);return l;});
 let minimap,wholeMap=true,lastWidth=0,lastHeight=0;function draw(canvas,s,dt){if(unavailable)return fallback.draw(canvas,s,dt);if(!renderer){try{renderer=new T.WebGLRenderer({canvas,antialias:true});}catch(e){unavailable=true;return fallback.draw(canvas,s,dt);}renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMappingExposure=1.05;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.toneMapping=T.ACESFilmicToneMapping;camera=new T.PerspectiveCamera(36,16/9,.1,180);minimap=document.createElement('canvas');minimap.width=320;minimap.height=320;minimap.onclick=()=>wholeMap=!wholeMap;minimap.setAttribute('aria-label','Hartă: școală, benzinărie, salon auto, atelier, poligon și obiectiv. Click pentru zoom.');minimap.style='position:absolute;right:18px;bottom:18px;width:220px;height:220px;cursor:pointer;z-index:3;background:#14251cdd;border:1px solid #9aa491;border-radius:8px';canvas.parentNode.append(minimap);}
 const w=canvas.clientWidth||1280,h=canvas.clientHeight||720;if(w!==lastWidth||h!==lastHeight){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastWidth=w;lastHeight=h;}const p=s.player;if(s.time<lastTime)rainy=Math.random()<.35;lastTime=s.time;const rainTarget=rainy&&s.time>50&&s.time<170?1:0;wetness+=(rainTarget-wetness)*(1-Math.exp(-dt*.35));rainCloud.visible=wetness>.02;rainCloud.material.opacity=.65*wetness;rainCloud.position.set(p.x,0,p.z);if(rainCloud.visible){for(let i=1;i<drops.length;i+=3){drops[i]-=dt*9;if(drops[i]<0)drops[i]=20;}rainGeo.attributes.position.needsUpdate=true;}materials.road.roughness=.85-.58*wetness;const model=window.DriveCareer?.model()||0;player.scale.set(1+model*.08,1+(model===2?.2:0),1+model*.12);const elevation=window.DriveTraining?.elevation(p.x,p.z)||0;player.position.set(p.x,elevation,p.z);player.rotation.y=-p.angle-Math.PI/2;if(window.DriveCareer)player.children[0].material.color.set(DriveCareer.color());
-while(traffic.length<s.traffic.length){const v=vehicle(s.traffic[traffic.length].color);scene.add(v);traffic.push(v);}s.traffic.forEach((v,i)=>{traffic[i].position.set(v.x,0,v.z);traffic[i].rotation.y=-v.angle-Math.PI/2;});while(people.length<s.pedestrians.length){const g=new T.Group();box(0,.3,0,.13,.42,.12,'#527798',g);const head=new T.Mesh(new T.SphereGeometry(.09,8,6),mat('#d2af8c'));head.position.y=.62;g.add(head);scene.add(g);people.push(g);}s.pedestrians.forEach((v,i)=>people[i].position.set(v.x,0,v.z));
+// Lazy car mesh creation. Traffic far away keeps its simulation state but does
+// not create GPU geometry until the player approaches that street.
+for(const t of s.traffic){
+ const dx=t.x-p.x,dz=t.z-p.z,near=dx*dx+dz*dz<(DriveTraining.active()?68:62)**2;
+ let mesh=traffic.get(t.id);
+ if(!near){if(mesh)mesh.visible=false;continue;}
+ if(!mesh){mesh=vehicle(t.color);traffic.set(t.id,mesh);scene.add(mesh);}
+ mesh.visible=true;mesh.position.set(t.x,0,t.z);mesh.rotation.y=-t.angle-Math.PI/2;
+}
+for(const [id,mesh] of traffic)if(!s.traffic.some(t=>t.id===id)){
+ mesh.visible=false;scene.remove(mesh);traffic.delete(id);
+}while(people.length<s.pedestrians.length){const g=new T.Group();box(0,.3,0,.13,.42,.12,'#527798',g);const head=new T.Mesh(new T.SphereGeometry(.09,8,6),mat('#d2af8c'));head.position.y=.62;g.add(head);scene.add(g);people.push(g);}s.pedestrians.forEach((v,i)=>people[i].position.set(v.x,0,v.z));
 if(heading===null||s.time<.1)heading=p.angle;const delta=Math.atan2(Math.sin(p.angle-heading),Math.cos(p.angle-heading));heading+=delta*(1-Math.exp(-5*dt));const fx=Math.cos(heading),fz=Math.sin(heading);camera.position.set(p.x-fx*8.5,16.5,p.z-fz*8.5);camera.lookAt(p.x+fx*3,0,p.z+fz*3);
 if(window.DriveTraining?.active()){const look=DriveCabin.look();camera.fov=64;camera.updateProjectionMatrix();const ex=p.x-Math.sin(p.angle)*(look.offsetX||0)-Math.cos(p.angle)*(look.offsetZ||0),ez=p.z+Math.cos(p.angle)*(look.offsetX||0)-Math.sin(p.angle)*(look.offsetZ||0),ey=1.12+elevation+(look.offsetY||0);camera.position.set(ex,ey,ez);camera.lookAt(ex+Math.cos(p.angle+look.yaw)*12*Math.cos(look.pitch),ey+Math.sin(look.pitch)*12,ez+Math.sin(p.angle+look.yaw)*12*Math.cos(look.pitch));player.visible=false;}else {player.visible=true;camera.fov=36;camera.updateProjectionMatrix();}
 // A sustained late-afternoon sun fades smoothly into dusk, rather than losing its shadows immediately.
@@ -81,7 +97,23 @@ sun.position.set(p.x-23,Math.max(9,15-dusk*6),p.z-16);sun.target.position.set(p.
 headlights.intensity=1+night*15;const nearest=lampPositions.map(position=>({position,d:position.distanceToSquared(player.position)})).sort((a,b)=>a.d-b.d);
 localLights.forEach((l,i)=>{l.position.copy(nearest[i].position);l.intensity=nearest[i].d<900?night*6:0;});windows.forEach(m=>{m.emissive.set('#ffd28a');m.emissiveIntensity=night*1.6;});
 scene.background.set('#c6c4ae').lerp(new T.Color('#17243b'),night);scene.fog.color.copy(scene.background);scene.fog.near=22;scene.fog.far=78-20*wetness;
-signals.forEach(({j,d,group,lenses})=>{group.visible=group.position.distanceToSquared(player.position)<1600;const active=W.light(j,d,s.time);lenses.forEach(({color,lens})=>{lens.material=color===active?signalOn[color]:signalOff[color];});});course.forEach((m,i)=>m.visible=DriveCareer.training()===i+1);camera.updateMatrixWorld(true);projection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);frustum.setFromProjectionMatrix(projection);let activeChunks=0;for(const cell of chunks.values()){const active=frustum.intersectsBox(cell.bounds);if(active!==cell.active){if(active)scene.add(cell.group);else scene.remove(cell.group);cell.active=active;}if(active)activeChunks++;}traffic.forEach((o,i)=>o.visible=i<s.traffic.length&&o.position.distanceToSquared(player.position)<2500);people.forEach(o=>o.visible=o.position.distanceToSquared(player.position)<2500);if(DriveTraining.active()&&performance.now()-mirrorClock>66){mirrorClock=performance.now();const added=[];for(const cell of chunks.values())if(!cell.active&&cell.bounds.distanceToPoint(player.position)<30){scene.add(cell.group);added.push(cell.group);}mirrorTargets.forEach((target,i)=>{const side=i===0?-1:1;mirrorCamera.position.set(p.x-Math.sin(p.angle)*side*.6,1.05+elevation,p.z+Math.cos(p.angle)*side*.6);const rearAngle=p.angle+Math.PI+side*.15;mirrorCamera.lookAt(mirrorCamera.position.x+Math.cos(rearAngle)*18,.85+elevation,mirrorCamera.position.z+Math.sin(rearAngle)*18);renderer.setRenderTarget(target);renderer.render(scene,mirrorCamera);});renderer.setRenderTarget(null);for(const g of added)scene.remove(g);DriveCabin.setMirrorTextures(mirrorTargets.map(t=>t.texture));}renderer.render(scene,camera);if(window.DriveCabin)DriveCabin.render(renderer,canvas,s);window.DriveRender.stats={activeChunks,totalChunks:chunks.size,streetLights:localLights.length,drawCalls:renderer.info?.render.calls};DriveVisuals.map(minimap,s,wholeMap);}
+signals.forEach(({j,d,group,lenses})=>{group.visible=group.position.distanceToSquared(player.position)<1600;const active=W.light(j,d,s.time);lenses.forEach(({color,lens})=>{lens.material=color===active?signalOn[color]:signalOff[color];});});course.forEach((m,i)=>m.visible=DriveCareer.training()===i+1);camera.updateMatrixWorld(true);projection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);frustum.setFromProjectionMatrix(projection);let activeChunks=0,chunkBatchBudget=5;
+// Near + camera-frustum visibility. Activate only a handful of fresh cells per
+// frame to avoid a single expensive mesh-merge spike while entering new streets.
+const visibleCells=[];
+for(const cell of chunks.values()){
+ const near=cell.bounds.distanceToPoint(player.position)<70;
+ const visible=near&&frustum.intersectsBox(cell.bounds);
+ if(!visible&&cell.active){scene.remove(cell.group);cell.active=false;}
+ if(visible)visibleCells.push(cell);
+}
+visibleCells.sort((a,b)=>a.bounds.distanceToPoint(player.position)-b.bounds.distanceToPoint(player.position));
+for(const cell of visibleCells){
+ if(!cell.batched&&chunkBatchBudget>0){DriveScenery.batch(cell.group);cell.batched=true;chunkBatchBudget--;}
+ if(cell.batched&&!cell.active){scene.add(cell.group);cell.active=true;}
+ if(cell.active)activeChunks++;
+}
+people.forEach(o=>o.visible=o.position.distanceToSquared(player.position)<2500);if(DriveTraining.active()&&performance.now()-mirrorClock>66){mirrorClock=performance.now();const added=[];for(const cell of chunks.values())if(!cell.active&&cell.bounds.distanceToPoint(player.position)<30){scene.add(cell.group);added.push(cell.group);}mirrorTargets.forEach((target,i)=>{const side=i===0?-1:1;mirrorCamera.position.set(p.x-Math.sin(p.angle)*side*.6,1.05+elevation,p.z+Math.cos(p.angle)*side*.6);const rearAngle=p.angle+Math.PI+side*.15;mirrorCamera.lookAt(mirrorCamera.position.x+Math.cos(rearAngle)*18,.85+elevation,mirrorCamera.position.z+Math.sin(rearAngle)*18);renderer.setRenderTarget(target);renderer.render(scene,mirrorCamera);});renderer.setRenderTarget(null);for(const g of added)scene.remove(g);DriveCabin.setMirrorTextures(mirrorTargets.map(t=>t.texture));}renderer.render(scene,camera);if(window.DriveCabin)DriveCabin.render(renderer,canvas,s);window.DriveRender.stats={activeChunks,totalChunks:chunks.size,readyChunks:[...chunks.values()].filter(c=>c.batched).length,activeTraffic:[...traffic.values()].filter(m=>m.visible).length,totalTraffic:s.traffic.length,streetLights:localLights.length,drawCalls:renderer.info?.render.calls};DriveVisuals.map(minimap,s,wholeMap);}
 
 window.DriveRender={draw};
 })();

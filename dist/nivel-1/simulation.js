@@ -24,7 +24,22 @@
    const j=W.junctions[(i*13+3)%W.junctions.length];let d=i%4;while(!W.neighbor(j,(d+2)%4))d=(d+1)%4;
    const v=W.V[d],r=W.right(d);s.traffic.push({id:i,x:j.x-v.x*7+r.x*W.LANE,z:j.z-v.z*7+r.z*W.LANE,angle:Math.atan2(v.z,v.x),d,j,speed:0,cruise:1.5+(i%5)*.16,phase:'approach',stopTime:0,color:['#be6851','#a7b5bf','#d7bb76','#729a91','#797da2'][i%5]});
   }
-  for(const j of W.roundabouts)s.traffic.push({id:s.traffic.length,orbit:j,theta:0,x:j.x+2.9,z:j.z,angle:-Math.PI/2,speed:1.5,color:'#c19769'});
+  // Neighborhood rush hour: extra cars are distributed on EXISTING lanes only.
+  // They queue behind slower leaders near signals / busy unsignalled crossings.
+  const busy=W.junctions.filter(j=>j.type==='signal'||j.type==='right');
+  let added=0;
+  for(let i=0;i<32&&added<18;i++){
+   const j=busy[(i*7+3)%busy.length];
+   let d=(i+Math.floor(i/5))%4;
+   for(let n=0;n<4&&!W.neighbor(j,(d+2)%4);n++)d=(d+1)%4;
+   const v=W.V[d],r=W.right(d),distance=8.7+(i%3)*1.45;
+   const x=j.x-v.x*distance+r.x*W.LANE,z=j.z-v.z*distance+r.z*W.LANE;
+   if(!W.roadAt(x,z,0)||s.traffic.some(t=>Math.hypot(t.x-x,t.z-z)<1.9))continue;
+   s.traffic.push({id:1000+i,x,z,angle:Math.atan2(v.z,v.x),d,j,speed:0,
+      cruise:0.78+(i%4)*.13,phase:'approach',stopTime:0,queueCar:true,
+      color:['#6b9baf','#ccb576','#968da7','#a77467'][i%4]});added++;
+  }
+  for(const j of W.roundabouts)s.traffic.push({id:3000+j.id,orbit:j,theta:0,x:j.x+2.9,z:j.z,angle:-Math.PI/2,speed:1.5,color:'#c19769'});
   for(let i=0;i<W.junctions.length;i++)if(i%3===1&&W.junctions[i].type!=='roundabout'){const j=W.junctions[i];s.pedestrians.push({id:i,j,x:j.x-2.1,z:j.z+1.62,crossing:false,t:0,wait:0,direction:1,color:['#c86d61','#6d99b4','#d3ae61'][i%3]});}
   s.studied=new Set();
   if(options.vary){let index=attempt;try{index=Number(localStorage.getItem('pixel-route-attempt')||0);if(!Number.isFinite(index))index=0;localStorage.setItem('pixel-route-attempt',String(index+1));}catch{}attempt=index+1;const lesson=scenarios[index%scenarios.length];Object.assign(s.player,{x:lesson.x,z:lesson.z,angle:lesson.angle??-Math.PI/2});s.scenario={...lesson,startDistance:0,complete:false};s.message=lesson.title+' · '+lesson.hint;s.messageUntil=10;s.traffic=s.traffic.filter(t=>Math.hypot(t.x-s.player.x,t.z-s.player.z)>3);
@@ -46,11 +61,11 @@
   // One report per physics frame; consumed after the actual screen is drawn.
   if(!s.violationEvent)s.violationEvent={id:++s.violationSerial,kind:meta?.kind||key.split('-')[0],
     key,points,text,junctionId:meta?.junctionId||null,direction:meta?.direction??null,
-    limit:s.limit,time:s.time,player:{...s.player}};
+    limit:s.limit,time:s.time,speedKmh:meta?.speedKmh??Math.round(Math.abs(s.player.speed)*21.6),player:{...s.player}};
   if(s.score===0){s.failed=true;s.player.speed=0;}
   return true;
  }
- function collision(s,kind){if(s.time-s.lastPenalty<2||s.failed)return;s.lastPenalty=s.time;s.collisions++;penalize(s,120,kind,'collision',0,{kind:'collision'});s.player.speed=0;if(s.collisions>=4){s.failed=true;s.message='Patru coliziuni. Reîncearcă traseul cu viteză mai mică.';}}
+ function collision(s,kind){if(s.time-s.lastPenalty<2||s.failed)return;const impactKmh=Math.round(Math.abs(s.player.speed)*21.6);s.lastPenalty=s.time;s.collisions++;penalize(s,120,kind,'collision',0,{kind:'collision',speedKmh:impactKmh});s.player.speed=0;if(s.collisions>=4){s.failed=true;s.message='Patru coliziuni. Reîncearcă traseul cu viteză mai mică.';}}
  function trafficConflict(s,j,d,onlyRight=false,ignore=null){const r=W.right(d);return s.traffic.some(t=>t!==ignore&&Math.hypot(t.x-j.x,t.z-j.z)<4.8&&(t.speed>.05||t.phase==='cross')&&(onlyRight?(t.d===(d+3)%4&&((t.x-j.x)*r.x+(t.z-j.z)*r.z>.6)):(t.d%2!==d%2||t.orbit)));}
  function crossPath(j,d,out){
   const v=W.V[d],r=W.right(d),u=W.V[out],rr=W.right(out),distance=j.type==='roundabout'?4.3:3.0;
@@ -71,7 +86,14 @@
    if(!p.wait&&green&&clear){p.crossing=true;p.t=0;}
   }
  }}
- function traffic(s,dt){for(const t of s.traffic){
+ function traffic(s,frameDt){for(const t of s.traffic){
+  let dt=frameDt;
+  const dx=t.x-s.player.x,dz=t.z-s.player.z;
+  if(dx*dx+dz*dz>60*60){
+   t.farTicks=(t.farTicks||0)+frameDt;
+   if(t.farTicks<.20)continue;
+   dt=Math.min(.25,t.farTicks);t.farTicks=0;
+  }else t.farTicks=0;
   if(t.orbit){t.theta-=dt*.5;t.x=t.orbit.x+Math.cos(t.theta)*2.9;t.z=t.orbit.z+Math.sin(t.theta)*2.9;t.angle=t.theta-Math.PI/2;continue;}
   const v=W.V[t.d];
   if(t.phase==='approach'){
@@ -86,8 +108,8 @@
    }
    if(s.pedestrians.some(p=>p.crossing&&(p.x-t.x)*v.x+(p.z-t.z)*v.z>0&&Math.hypot(p.x-t.x,p.z-t.z)<3))wait=true;
    const obstacles=[...s.traffic.filter(o=>o!==t),s.player];
-   if(obstacles.some(o=>{const dx=o.x-t.x,dz=o.z-t.z,a=dx*v.x+dz*v.z,l=Math.abs(dx*v.z-dz*v.x);return a>0&&a<1.5&&l<.55;}))wait=true;
-   t.speed=wait?Math.max(0,t.speed-7*dt):Math.min(t.cruise,t.speed+2*dt);
+   if(obstacles.some(o=>{const dx=o.x-t.x,dz=o.z-t.z,a=dx*v.x+dz*v.z,l=Math.abs(dx*v.z-dz*v.x);return a>0&&a<Math.max(1.65,t.speed*1.4+.7)&&l<.58;}))wait=true;
+   const crowded=t.j.type!=='roundabout'&&(t.j.col+t.j.row)%3===0;const cruise=crowded?Math.min(t.cruise,0.83):t.cruise;t.speed=wait?Math.max(0,t.speed-7*dt):Math.min(cruise,t.speed+1.55*dt);
    if(dist<=entry+.02&&!wait){
     let choices=[t.d,(t.d+1)%4,(t.d+3)%4].filter(d=>W.neighbor(t.j,d));if(!choices.length)choices=[(t.d+2)%4];
     t.out=choices[(t.id+Math.floor(s.time/12))%choices.length];t.path=crossPath(t.j,t.d,t.out);t.pathIndex=1;t.phase='cross';
@@ -122,13 +144,16 @@
   if(s.failed||s.paused)return;dt=Math.min(dt,.05);s.time+=dt;
   pedestrians(s,dt);traffic(s,dt);
   const p=s.player,old={x:p.x,z:p.z};
-  // Softer throttle: ~3x more time to accelerate, while preserving top speed and braking.
-  const ACCEL_FORWARD=0.50, ACCEL_REVERSE=0.60;
+  // v42: mild launch and distinct resistance near the posted speed limit.
+  // Never cap speed automatically: speeding remains possible (and educationally penalised).
+  const speedKmh=Math.abs(p.speed)*21.6;
+  const fraction=speedKmh/Math.max(15,s.limit||50);
+  const accel=0.22*(fraction>.90?.30:fraction>.72?.55:1);
   if(input.w){
-   p.speed=Math.min(2.8,Math.max(0,p.speed)+ACCEL_FORWARD*dt);
+   p.speed=Math.min(2.8,Math.max(0,p.speed)+accel*dt);
   }else if(input.s){
-   // S brakes firmly while moving forward; only slowly accelerates in reverse after stopping.
-   p.speed=p.speed>0?Math.max(0,p.speed-3.5*dt):Math.max(-1.1,p.speed-ACCEL_REVERSE*dt);
+   // Braking stays strong, while reverse acceleration is gradual.
+   p.speed=p.speed>0?Math.max(0,p.speed-3.5*dt):Math.max(-1.1,p.speed-0.28*dt);
   }else{
    p.speed=p.speed>0?Math.max(0,p.speed-.7*dt):Math.min(0,p.speed+1.2*dt);
   }
@@ -189,5 +214,5 @@
   else{s.mission.phase='complete';s.score+=200;s.message='Cursă completă! Ai învățat preluarea, coborârea și parcarea.';}
   s.messageUntil=s.time+5;return{type:'mission',phase:s.mission.phase};
  }
- window.DriveSimulation={create,update,penalize,collision,crossPath,trafficConflict,checkRules,objective,interact};
+ window.DriveSimulation={create,update,penalize,collision,crossPath,trafficConflict,checkRules,objective,interact,driveSettings:{initialAcceleration:0.22,reverseAcceleration:0.28}};
 })();
