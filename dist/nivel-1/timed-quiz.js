@@ -1,10 +1,10 @@
-/* Pixel Drive quiz v35 — elapsed active-gameplay timer with a reliable queued popup.
+/* Pixel Drive quiz v37 — elapsed active-gameplay timer with a reliable queued popup.
    Test: /nivel-1/?quizTest=1 -> 10s timer plus 'TEST ACUM' button. */
 (()=>{
  'use strict';
  const sim=window.DriveSimulation, bank=window.DriveQuizBank;
  const testMode=new URLSearchParams(location.search).get('quizTest')==='1';
- const INTERVAL=testMode?10:120;
+ const INTERVAL=testMode?10:60;
  if(!sim||!bank){console.error('[Pixel Drive Quiz] Missing DriveSimulation or DriveQuizBank');const el=document.getElementById('drive-quiz-timer');if(el)el.querySelector('.drive-quiz-clock-label').textContent='CHESTIONAR: EROARE';return;}
  let gameState=null,remaining=INTERVAL,due=false,current=null,lastId=null,answered=false,previousTime=null;
  let wasPaused=false,displayed='';
