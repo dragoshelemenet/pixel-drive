@@ -37,7 +37,28 @@ for(const q of W.signs){if(q.kind==='roadworks'){for(let i=0;i<5;i++){const cone
 for(const j of W.junctions){const offset=j.type==='roundabout'?4.8:2,x=j.x+offset,z=j.z+offset;box(x,1.4,z,.06,2.8,.06,'#7b817c');box(x-.3,2.8,z,.65,.06,.08,'#7b817c');const light=new T.PointLight('#ffd394',0,7,2);light.position.set(x-.6,2.65,z);scene.add(light);lamps.push(light);}
 const ambient=new T.HemisphereLight('#dce9ff','#4f5934',1.25);scene.add(ambient);const sun=new T.DirectionalLight('#ffe5ba',3);sun.position.set(10,35,20);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-22;sun.shadow.camera.right=22;sun.shadow.camera.top=22;sun.shadow.camera.bottom=-22;sun.shadow.camera.near=.5;sun.shadow.camera.far=100;sun.shadow.bias=-.0002;sun.shadow.normalBias=.012;sun.shadow.radius=4;scene.add(sun);scene.add(sun.target);
 const vehicle=DriveScenery.vehicle;
-const player=vehicle('#e1e1d8');scene.add(player);const traffic=new Map(),people=[];const headlights=new T.SpotLight('#fff2c4',0,18,.42,.6,1);headlights.position.set(0,.45,-.4);headlights.target.position.set(0,0,-10);player.add(headlights,headlights.target);
+const player=vehicle('#e1e1d8');scene.add(player);const traffic=new Map(),people=[];
+// Turn lights: local -Z is the car's front, +Z its rear.
+// Emissive-looking amber lamps remain visible at dusk and in mirror renders.
+const blinkOn=new T.MeshBasicMaterial({color:'#ffbe37',toneMapped:false});
+const blinkOff=new T.MeshBasicMaterial({color:'#543d25'});
+const turnLampGeo=new T.BoxGeometry(.105,.066,.034);
+const turnLampMeshes={left:[],right:[]};
+for(const [side,x] of [['left',-.205],['right',.205]]){
+ for(const z of [-.538,.545]){
+  const lens=new T.Mesh(turnLampGeo,blinkOff);
+  lens.position.set(x,.278,z);lens.castShadow=false;player.add(lens);
+  turnLampMeshes[side].push(lens);
+ }
+}
+function updateTurnLamps(p,time){
+ // 1.5 complete flashes per second, including at night.
+ const lit=Math.floor(time*3)%2===0;
+ for(const [side,dir] of [['left',-1],['right',1]]){
+  const active=p.indicator===dir&&lit;
+  for(const lens of turnLampMeshes[side])lens.material=active?blinkOn:blinkOff;
+ }
+}const headlights=new T.SpotLight('#fff2c4',0,18,.42,.6,1);headlights.position.set(0,.45,-.4);headlights.target.position.set(0,0,-10);player.add(headlights,headlights.target);
 const signals=[];
 const signalColors={red:'#ff3026',yellow:'#ffba20',green:'#35eb70'};
 const signalOn={},signalOff={};for(const color of Object.keys(signalColors)){signalOn[color]=new T.MeshBasicMaterial({color:signalColors[color],toneMapped:false});signalOff[color]=mat({red:'#351716',yellow:'#352c13',green:'#132b1c'}[color]);}
@@ -74,7 +95,7 @@ const frustum=new T.Frustum(),projection=new T.Matrix4();
 const lampPositions=lamps.map(l=>l.position.clone());lamps.forEach(l=>scene.remove(l));
 const localLights=Array.from({length:4},()=>{const l=new T.PointLight('#ffd394',0,7,2);scene.add(l);return l;});
 let minimap,wholeMap=true,lastWidth=0,lastHeight=0;function draw(canvas,s,dt){if(unavailable)return fallback.draw(canvas,s,dt);if(!renderer){try{renderer=new T.WebGLRenderer({canvas,antialias:true});}catch(e){unavailable=true;return fallback.draw(canvas,s,dt);}renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMappingExposure=1.05;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.toneMapping=T.ACESFilmicToneMapping;camera=new T.PerspectiveCamera(36,16/9,.1,180);minimap=document.createElement('canvas');minimap.width=320;minimap.height=320;minimap.onclick=()=>wholeMap=!wholeMap;minimap.setAttribute('aria-label','Hartă: școală, benzinărie, salon auto, atelier, poligon și obiectiv. Click pentru zoom.');minimap.style='position:absolute;right:18px;bottom:18px;width:220px;height:220px;cursor:pointer;z-index:3;background:#14251cdd;border:1px solid #9aa491;border-radius:8px';canvas.parentNode.append(minimap);}
-const w=canvas.clientWidth||1280,h=canvas.clientHeight||720;if(w!==lastWidth||h!==lastHeight){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastWidth=w;lastHeight=h;}const p=s.player;if(s.time<lastTime)rainy=Math.random()<.35;lastTime=s.time;const rainTarget=rainy&&s.time>50&&s.time<170?1:0;wetness+=(rainTarget-wetness)*(1-Math.exp(-dt*.35));rainCloud.visible=wetness>.02;rainCloud.material.opacity=.65*wetness;rainCloud.position.set(p.x,0,p.z);if(rainCloud.visible){for(let i=1;i<drops.length;i+=3){drops[i]-=dt*9;if(drops[i]<0)drops[i]=20;}rainGeo.attributes.position.needsUpdate=true;}materials.road.roughness=.85-.58*wetness;const model=window.DriveCareer?.model()||0;player.scale.set(1+model*.08,1+(model===2?.2:0),1+model*.12);const elevation=window.DriveTraining?.elevation(p.x,p.z)||0;player.position.set(p.x,elevation,p.z);player.rotation.y=-p.angle-Math.PI/2;if(window.DriveCareer)player.children[0].material.color.set(DriveCareer.color());
+const w=canvas.clientWidth||1280,h=canvas.clientHeight||720;if(w!==lastWidth||h!==lastHeight){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastWidth=w;lastHeight=h;}const p=s.player;if(s.time<lastTime)rainy=Math.random()<.35;lastTime=s.time;const rainTarget=rainy&&s.time>50&&s.time<170?1:0;wetness+=(rainTarget-wetness)*(1-Math.exp(-dt*.35));rainCloud.visible=wetness>.02;rainCloud.material.opacity=.65*wetness;rainCloud.position.set(p.x,0,p.z);if(rainCloud.visible){for(let i=1;i<drops.length;i+=3){drops[i]-=dt*9;if(drops[i]<0)drops[i]=20;}rainGeo.attributes.position.needsUpdate=true;}materials.road.roughness=.85-.58*wetness;const model=window.DriveCareer?.model()||0;player.scale.set(1+model*.08,1+(model===2?.2:0),1+model*.12);const elevation=window.DriveTraining?.elevation(p.x,p.z)||0;player.position.set(p.x,elevation,p.z);player.rotation.y=-p.angle-Math.PI/2;updateTurnLamps(p,s.time);if(window.DriveCareer)player.children[0].material.color.set(DriveCareer.color());
 // Lazy car mesh creation. Traffic far away keeps its simulation state but does
 // not create GPU geometry until the player approaches that street.
 for(const t of s.traffic){

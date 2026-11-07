@@ -19,7 +19,7 @@
   title:'Prioritate de dreapta',hint:'Intersecție nedirijată! Privește în dreapta și acordă prioritate înainte de a intra.'
  });
  function create(options={}){
-  const s={player:{x:24.78,z:19,angle:-Math.PI/2,speed:0,indicator:0},time:0,score:1000,collisions:0,failed:false,paused:false,limit:50,message:'Obiectiv: mergi la punctul marcat și preia pasagerul.',messageUntil:7,lastPenalty:-10,ruleCooldown:{},stopMemory:{},passed:new Set(),learned:new Set(),distance:0,traffic:[],pedestrians:[],mission:{phase:'pickup'},violationEvent:null,violationSerial:0,retraining:null};
+  const s={player:{x:24.78,z:19,angle:-Math.PI/2,speed:0,indicator:0},time:0,score:1000,collisions:0,failed:false,paused:false,limit:50,message:'Obiectiv: mergi la punctul marcat și preia pasagerul.',messageUntil:7,lastPenalty:-10,ruleCooldown:{},stopMemory:{},passed:new Set(),learned:new Set(),distance:0,traffic:[],pedestrians:[],mission:{phase:'pickup'},violationEvent:null,violationSerial:0,retraining:null,turnWatch:null};
   for(let i=0;i<46;i++){
    const j=W.junctions[(i*13+3)%W.junctions.length];let d=i%4;while(!W.neighbor(j,(d+2)%4))d=(d+1)%4;
    const v=W.V[d],r=W.right(d);s.traffic.push({id:i,x:j.x-v.x*7+r.x*W.LANE,z:j.z-v.z*7+r.z*W.LANE,angle:Math.atan2(v.z,v.x),d,j,speed:0,cruise:1.5+(i%5)*.16,phase:'approach',stopTime:0,color:['#be6851','#a7b5bf','#d7bb76','#729a91','#797da2'][i%5]});
@@ -60,7 +60,7 @@
   s.score=Math.max(0,s.score-points);s.message=`−${points} · ${text}`;s.messageUntil=s.time+4;
   // One report per physics frame; consumed after the actual screen is drawn.
   if(!s.violationEvent)s.violationEvent={id:++s.violationSerial,kind:meta?.kind||key.split('-')[0],
-    key,points,text,junctionId:meta?.junctionId||null,direction:meta?.direction??null,
+    key,points,text,junctionId:meta?.junctionId||null,direction:meta?.direction??null,turnSign:meta?.turnSign??null,
     limit:s.limit,time:s.time,speedKmh:meta?.speedKmh??Math.round(Math.abs(s.player.speed)*21.6),player:{...s.player}};
   if(s.score===0){s.failed=true;s.player.speed=0;}
   return true;
@@ -140,6 +140,52 @@
   }
   const speed=Math.abs(p.speed)*21.6;if(speed>s.limit+2)penalize(s,20,`Ai depășit limita de ${s.limit} km/h.`,'speed',5,{kind:'speed'});
  }
+ // Detect an actual turn inside a junction, not tiny steering corrections.
+ // The indicator must be activated BEFORE the stop/entry line and remain active
+ // when the direction changes. An unsignalled straight crossing is not penalized.
+ function checkTurnSignal(s){
+  const p=s.player;
+  if(p.speed<=.055){if(s.turnWatch&&s.time-s.turnWatch.started>28)s.turnWatch=null;return;}
+  let watch=s.turnWatch;
+  if(!watch){
+   const d=W.heading(p.angle),v=W.V[d];
+   for(const j of W.junctions){
+    if(j.type==='roundabout'||!W.neighbor(j,(d+2)%4))continue;
+    const along=(j.x-p.x)*v.x+(j.z-p.z)*v.z;
+    const lateral=Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x);
+    if(along>2.6&&along<8.2&&lateral<1.6){
+     watch={junctionId:j.id,direction:d,angle:Math.atan2(v.z,v.x),
+       started:s.time,signalLeft:false,signalRight:false,completed:false};
+     s.turnWatch=watch;break;
+    }
+   }
+  }
+  if(!watch)return;
+  const j=W.junctions.find(q=>q.id===watch.junctionId);
+  if(!j){s.turnWatch=null;return;}
+  const v=W.V[watch.direction];
+  const along=(j.x-p.x)*v.x+(j.z-p.z)*v.z;
+  const lateral=Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x);
+  const distance=Math.hypot(j.x-p.x,j.z-p.z);
+  if(s.time-watch.started>28||distance>11.5||along< -6){s.turnWatch=null;return;}
+  if(along>2.55&&along<8.2&&lateral<2){
+   if(p.indicator===-1)watch.signalLeft=true;
+   if(p.indicator===1)watch.signalRight=true;
+  }
+  const delta=Math.atan2(Math.sin(p.angle-watch.angle),Math.cos(p.angle-watch.angle));
+  // Meaningful change (>~40°), while actually crossing the junction area.
+  if(!watch.completed&&distance<4.6&&Math.abs(delta)>.70&&Math.abs(p.speed)>.075){
+   watch.completed=true;
+   const side=delta>0?1:-1;
+   const inAdvance=side===1?watch.signalRight:watch.signalLeft;
+   if(!inAdvance||p.indicator!==side){
+    const label=side===1?'dreapta':'stânga';
+    penalize(s,60,`Ai virat la ${label} fără semnalizarea corectă din timp.`,
+      'signal-'+j.id+'-'+watch.direction,4,
+      {kind:'signal',junctionId:j.id,direction:watch.direction,turnSign:side});
+   }
+  }
+ }
  function update(s,input,dt){
   if(s.failed||s.paused)return;dt=Math.min(dt,.05);s.time+=dt;
   pedestrians(s,dt);traffic(s,dt);
@@ -167,6 +213,7 @@
   for(const t of s.traffic)if(Math.hypot(t.x-p.x,t.z-p.z)<.75){p.x=old.x;p.z=old.z;collision(s,'Coliziune cu un vehicul.');}
   for(const ped of s.pedestrians)if(ped.crossing&&Math.hypot(ped.x-p.x,ped.z-p.z)<.43){s.failed=true;s.score=0;p.speed=0;s.message='Ai lovit un pieton. Oprește înainte de trecere și acordă prioritate.';}
   checkRules(s,old);
+  if(!s.violationEvent)checkTurnSignal(s);
   // A failed lesson stays active until the driver repeats it correctly.
   const retry=s.retraining;
   if(retry&&!s.violationEvent){
@@ -174,11 +221,22 @@
    if(retry.junctionId){
     const j=W.junctions.find(q=>q.id===retry.junctionId);
     if(j){
-     const v=W.V[retry.direction],line=retry.kind==='round'?4.35:2.55;
-     const before=(j.x-old.x)*v.x+(j.z-old.z)*v.z;
-     const after=(j.x-p.x)*v.x+(j.z-p.z)*v.z;
-     const lateral=Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x);
-     success=lateral<1.6&&before>line&&after<=line&&p.speed>0;
+     if(retry.kind==='signal'){
+      const v=W.V[retry.direction],entry=Math.atan2(v.z,v.x);
+      const change=Math.atan2(Math.sin(p.angle-entry),Math.cos(p.angle-entry));
+      const needed=retry.turnSign;
+      const watch=s.turnWatch;
+      success=Math.hypot(p.x-j.x,p.z-j.z)<4.6&&Math.abs(change)>.70&&
+        Math.sign(change)===needed&&p.indicator===needed&&
+        watch?.junctionId===j.id&&watch.completed&&
+        (needed===1?watch.signalRight:watch.signalLeft);
+     }else{
+      const v=W.V[retry.direction],line=retry.kind==='round'?4.35:2.55;
+      const before=(j.x-old.x)*v.x+(j.z-old.z)*v.z;
+      const after=(j.x-p.x)*v.x+(j.z-p.z)*v.z;
+      const lateral=Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x);
+      success=lateral<1.6&&before>line&&after<=line&&p.speed>0;
+     }
     }
    }else success=s.distance>=retry.startDistance+4&&
     Math.abs(p.speed)*21.6<=s.limit+1&&s.collisions===retry.collisions;
@@ -214,5 +272,5 @@
   else{s.mission.phase='complete';s.score+=200;s.message='Cursă completă! Ai învățat preluarea, coborârea și parcarea.';}
   s.messageUntil=s.time+5;return{type:'mission',phase:s.mission.phase};
  }
- window.DriveSimulation={create,update,penalize,collision,crossPath,trafficConflict,checkRules,objective,interact,driveSettings:{initialAcceleration:0.22,reverseAcceleration:0.28}};
+ window.DriveSimulation={create,update,penalize,collision,crossPath,trafficConflict,checkRules,checkTurnSignal,objective,interact,driveSettings:{initialAcceleration:0.22,reverseAcceleration:0.28}};
 })();

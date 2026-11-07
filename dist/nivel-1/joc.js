@@ -65,26 +65,9 @@
  }
  function resumeFocusPause(){if(autoPaused&&!modalOpen&&!document.querySelector('dialog[open]')){autoPaused=false;state.paused=false;document.body.classList.remove('paused');$('pause').textContent='Pauză';last=0;ui();}}
  canvas.tabIndex=0;
- // Short click: left = indicator left, right = indicator right.
- // Drag is reserved for looking around in the cabin (especially right-button drag).
- let mouseGesture=null;
- canvas.addEventListener('contextmenu',e=>e.preventDefault());
- canvas.addEventListener('pointerdown',e=>{
-  canvas.focus();resumeFocusPause();
-  if(e.pointerType==='mouse'&&(e.button===0||e.button===2))
-   mouseGesture={id:e.pointerId,button:e.button,x:e.clientX,y:e.clientY};
- });
- canvas.addEventListener('pointerup',e=>{
-  const g=mouseGesture;mouseGesture=null;
-  if(!g||g.id!==e.pointerId||modalOpen||state.failed||
-     document.querySelector('dialog[open]'))return;
-  if(canvas.dataset.cabinControlClick==='1'){
-   delete canvas.dataset.cabinControlClick;return;
-  }
-  if(Math.hypot(e.clientX-g.x,e.clientY-g.y)>9)return;
-  signal(g.button===0?-1:1);
- });
- canvas.addEventListener('pointercancel',()=>{mouseGesture=null;delete canvas.dataset.cabinControlClick;});
+ // Mouse buttons are reserved exclusively for camera/control interactions.
+ // Turn indicators: Q/E on desktop, dedicated buttons on touch screens.
+ canvas.addEventListener('pointerdown',()=>{canvas.focus();resumeFocusPause();});
  // Dedicated touch controls remain reachable even when the main toolbar is hidden.
  const indicatorPad=document.createElement('div');indicatorPad.id='indicator-pad';
  indicatorPad.innerHTML='<button type="button" data-turn="-1" aria-label="Semnalizează stânga">◀ <span>STÂNGA</span></button><button type="button" data-turn="1" aria-label="Semnalizează dreapta"><span>DREAPTA</span> ▶</button>';

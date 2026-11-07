@@ -12,7 +12,8 @@
   yield:{title:'NU AI CEDAT TRECEREA',why:'Ai intrat în fața vehiculelor de pe drumul prioritar.',how:'Încetinește, urmărește traficul transversal și oprește dacă este nevoie. Intră doar după ce ai acordat prioritate.',law:'OUG 195/2002, art. 57'},
   round:{title:'NU AI ACORDAT PRIORITATE ÎN GIRATORIU',why:'Ai intrat în sensul giratoriu în fața unui vehicul care circula deja în interior.',how:'Apropie-te încet, lasă să treacă vehiculele din giratoriu, apoi intră într-un spațiu sigur.',law:'OUG 195/2002, art. 57 alin. (4)'},
   speed:{title:'AI DEPĂȘIT LIMITA DE VITEZĂ',why:'Ai circulat peste limita indicată în zona respectivă.',how:'Eliberează accelerația, frânează progresiv și păstrează o viteză sub limita afișată.',law:'OUG 195/2002, art. 48–49'},
-  collision:{title:'AI PROVOCAT O COLIZIUNE',why:'Ai atins un vehicul sau un obstacol din traseu.',how:'Redu viteza, păstrează distanța de siguranță și verifică spațiul liber înainte de manevră.',law:'OUG 195/2002, art. 48 și 51'}
+  collision:{title:'AI PROVOCAT O COLIZIUNE',why:'Ai atins un vehicul sau un obstacol din traseu.',how:'Redu viteza, păstrează distanța de siguranță și verifică spațiul liber înainte de manevră.',law:'OUG 195/2002, art. 48 și 51'},
+  signal:{title:'VIRAJ FĂRĂ SEMNALIZARE',why:'Ai schimbat direcția de mers într-o intersecție fără să activezi din timp semnalizarea corespunzătoare sau ai dezactivat-o în timpul virajului.',how:'Înainte de viraj, apasă Q pentru stânga sau E pentru dreapta. Menține semnalizarea pe întreaga durată a manevrei și asigură-te înainte de schimbarea direcției.',law:'OUG 195/2002, art. 54 alin. (1)–(2)'}
  };
  const dialog=document.createElement('dialog'); dialog.id='driving-replay';dialog.className='driving-replay';
  dialog.setAttribute('aria-label','Replay abatere rutieră și exemplu corect');
@@ -89,7 +90,34 @@
   if(frame?.picture?.complete&&frame.picture.naturalWidth){g.drawImage(frame.picture,0,0,720,405);return;}
   drawUnavailable();
  }
+ function drawSignalExample(t,side){
+  // Simplified training-only top-down demonstration, not recorded footage.
+  const right=side===1,dir=right?1:-1;
+  g.textAlign='left';g.fillStyle='#547454';g.fillRect(0,0,720,405);
+  g.fillStyle='#343c40';g.fillRect(293,0,134,405);g.fillRect(0,132,720,137);
+  g.strokeStyle='#e8e7d4';g.lineWidth=2;g.setLineDash([12,14]);
+  g.beginPath();g.moveTo(360,0);g.lineTo(360,115);g.moveTo(360,286);g.lineTo(360,405);
+  g.moveTo(0,199);g.lineTo(277,199);g.moveTo(443,199);g.lineTo(720,199);g.stroke();g.setLineDash([]);
+  const turn=clamp((t-.47)/.51),approach=clamp(t/.46);
+  const x=360+dir*205*(turn*turn*(3-2*turn));
+  const y=t<.47?355-130*approach:225-24*Math.sin(turn*Math.PI/2);
+  const angle=dir*Math.PI/2*turn;
+  g.save();g.translate(x,y);g.rotate(angle);
+  g.fillStyle='#f8c74b';g.fillRect(-17,-25,34,50);
+  g.fillStyle='#354e5c';g.fillRect(-12,-16,24,13);
+  g.fillStyle='#6b3223';g.fillRect(-13,19,26,6);
+  if(Math.floor(t*16)%2===0){g.fillStyle='#ffc738';g.fillRect(dir===-1?-17:10,18,8,9);}
+  g.restore();
+  g.fillStyle='#132c20';g.fillRect(10,9,425,88);
+  g.fillStyle='#f2f4df';g.font='bold 24px sans-serif';
+  g.fillText(right?'SEMNALEAZĂ DREAPTA · E':'SEMNALEAZĂ STÂNGA · Q',23,42);
+  g.font='bold 16px sans-serif';g.fillStyle='#d2e6c8';
+  g.fillText(t<.47?'1. Semnalizează DIN TIMP și asigură-te':'2. Menține semnalul ÎN TIMPUL virajului',23,72);
+  g.fillStyle='#101e18';g.fillRect(0,382,720,23);g.fillStyle='#e9f6d9';
+  g.font='13px sans-serif';g.fillText('EXEMPLU ANIMAT · Q = STÂNGA / E = DREAPTA · nu este înregistrare',15,399);
+ }
  function drawExample(t,kind){
+  if(kind==='signal'){drawSignalExample(t,event?.turnSign||1);return;}
   g.textAlign='left';
   // A genuine instructional animation drawn from traffic geometry (not a recording).
   g.fillStyle='#4f724d';g.fillRect(0,0,720,405);
@@ -163,8 +191,9 @@
   const max=report.limit||s.limit||50;
   $('dr-speed-summary').textContent=`VITEZA LA ABATERE · ${recorded} KM/H · LIMITĂ ${max} KM/H`;
   $('dr-speed-summary').classList.toggle('overspeed',recorded>max+2);
-  $('dr-why').textContent=info.why+(report.kind==='speed'?` Viteza înregistrată: ${recorded} km/h. Limita: ${max} km/h.`:'');
-  $('dr-how').textContent=info.how;
+  const sideLabel=report.turnSign===1?'dreapta':'stânga';
+  $('dr-why').textContent=info.why+(report.kind==='signal'?` Ai virat spre ${sideLabel}.`:'')+(report.kind==='speed'?` Viteza înregistrată: ${recorded} km/h. Limita: ${max} km/h.`:'');
+  $('dr-how').textContent=info.how+(report.kind==='signal'?` Pentru această manevră: ${report.turnSign===1?'apasă E (dreapta)':'apasă Q (stânga)'} înainte de intersecție.`:'');
   $('dr-law').textContent=info.law+' ↗';$('dr-law').href='https://legislatie.just.ro/Public/DetaliiDocument/74028';
   dialog.showModal();
   play('replay');
@@ -195,7 +224,8 @@
       speed:0,cruise:1.4,phase:'approach',stopTime:0,color:'#56a5df',tutorial:true});
    }
   }else if(e.kind==='speed')s.limit=e.limit;
-  s.retraining={kind:e.kind,junctionId:e.junctionId,direction:e.direction,
+  s.turnWatch=null;
+  s.retraining={kind:e.kind,junctionId:e.junctionId,direction:e.direction,turnSign:e.turnSign,
     startDistance:s.distance,collisions:s.collisions};
   delete s.ruleCooldown[e.key];
   s.violationEvent=null;s.paused=false;s.failed=false;
