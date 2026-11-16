@@ -3,6 +3,7 @@
 const T=THREE,palette=new Map();
 const material=(color,roughness=.85)=>{const key=color+roughness;if(!palette.has(key))palette.set(key,new T.MeshStandardMaterial({color,roughness}));return palette.get(key);};
 function build({W,scene,box,materials,windows}){
+if(W.realMap)return DriveRealScenery.build({W,scene,windows});
 let seed=719;const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
 const add=(geo,m,x,y,z)=>{const o=new T.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);return o;};
 const B=(x,y,z,w,h,d,c)=>box(x,y,z,w,h,d,typeof c==='string'?material(c):c);

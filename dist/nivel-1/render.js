@@ -1,5 +1,5 @@
 (() => {
- const W=window.DriveWorld,TILE=24,VW=640,VH=360;
+ const W=window.DriveWorld,TILE=W.realMap?12:24,VW=640,VH=360;
  let ctx,cameraAngle=null,weather=null;
  const project=(x,z)=>({x:x*TILE,y:z*TILE});
  function polygon(points,color,stroke){ctx.beginPath();ctx.moveTo(points[0].x,points[0].y);for(let i=1;i<points.length;i++)ctx.lineTo(points[i].x,points[i].y);ctx.closePath();ctx.fillStyle=color;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke();}}
@@ -39,6 +39,13 @@
  const cache=document.createElement('canvas');cache.width=cache.height=W.SIZE*TILE;ctx=cache.getContext('2d');
  function terrain(){
   rect(0,0,cache.width,cache.height,'#718b47');
+  if(W.realMap){
+   for(const a of W.areas){const colors={residential:'#839250',meadow:'#91a45d',farmland:'#98935f',forest:'#536b43',water:'#67898a',cemetery:'#657848'};polygon(a.points.map(([x,z])=>({x:x*TILE,y:z*TILE})),colors[a.type]||'#81924e');}
+   for(const r of W.roads)for(const part of r.parts){ctx.beginPath();ctx.moveTo(part[0][0]*TILE,part[0][1]*TILE);for(let i=1;i<part.length;i++)ctx.lineTo(part[i][0]*TILE,part[i][1]*TILE);ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=Math.max(1,r.width*TILE);ctx.strokeStyle=['track','living_street'].includes(r.type)||r.surface==='unpaved'?'#a79c83':'#4d4f4d';ctx.stroke();if(['secondary','tertiary'].includes(r.type)){ctx.lineWidth=Math.max(.5,.025*TILE);ctx.strokeStyle='#d4c9ac';ctx.stroke();}}
+   for(const f of W.footways)for(const part of f.parts){ctx.beginPath();ctx.moveTo(part[0][0]*TILE,part[0][1]*TILE);for(let i=1;i<part.length;i++)ctx.lineTo(part[i][0]*TILE,part[i][1]*TILE);ctx.lineWidth=Math.max(1,.12*TILE);ctx.lineCap='round';ctx.strokeStyle='#b4aa8d';ctx.stroke();}
+   for(const b of W.buildings)polygon(b.points.map(([x,z])=>({x:x*TILE,y:z*TILE})),['church','chapel'].includes(b.type)?'#aa7c57':'#b8aa8e','#524d42');
+   return;
+  }
   // Continuous streets. Outer rows form T junctions and corners.
   for(const z of W.AXES){worldRect(5.9,z-2.1,106.1,z+2.1,'#443f40');worldRect(6,z-2,106,z+2,'#b5a58e');}
   for(const x of W.AXES){worldRect(x-2.1,5.9,x+2.1,106.1,'#443f40');worldRect(x-2,6,x+2,106,'#b5a58e');}
@@ -52,7 +59,7 @@
     disk(j.x,j.z,4.35,'#c0b299');disk(j.x,j.z,4.1,'#45464e');disk(j.x,j.z,1.95,'#e7d5b1');disk(j.x,j.z,1.78,'#6b9144');tree(j.x,j.z+.2,1);
     for(let a=0;a<Math.PI*2;a+=Math.PI/2){const x=j.x+Math.cos(a)*2.9,z=j.z+Math.sin(a)*2.9;ctx.save();ctx.translate(x*TILE,z*TILE);ctx.rotate(a-Math.PI/2);polygon([{x:5,y:0},{x:-3,y:-3},{x:-1,y:0},{x:-3,y:3}],'#e6ddc4');ctx.restore();}
    }else for(let d=0;d<4;d++)if(W.neighbor(j,(d+2)%4)){
-    const v=W.V[d],r=W.right(d),center={x:j.x-v.x*2,z:j.z-v.z*2};
+    const v=W.vector(d,j),r=W.right(d,j),center={x:j.x-v.x*2,z:j.z-v.z*2};
     for(let n=0;n<9;n++){const offset=-1.5+n*.35,cx=center.x+r.x*offset,cz=center.z+r.z*offset;ctx.save();ctx.translate(cx*TILE,cz*TILE);ctx.rotate(Math.atan2(v.z,v.x));rect(-.32*TILE,-.09*TILE,.64*TILE,.18*TILE,'#eee2c8');ctx.restore();}
     if(j.type==='signal'||(j.type==='stop'&&d%2===0)){
       const x=j.x-v.x*2.55+r.x*.82,z=j.z-v.z*2.55+r.z*.82;ctx.save();ctx.translate(x*TILE,z*TILE);ctx.rotate(Math.atan2(v.z,v.x));rect(-1,-17,2,33,'#eee2c8');ctx.restore();
@@ -175,7 +182,7 @@
   const targetId={pickup:'pickup',dropoff:'dropoff',park:'parking'}[s.mission?.phase],target= W.landmarks.find(l=>l.id===targetId);
   if(target&&visible(target)){ctx.beginPath();ctx.arc(target.x*TILE,target.z*TILE,1.12*TILE,0,Math.PI*2);ctx.strokeStyle='#f2d45d';ctx.lineWidth=2;ctx.stroke();}
   for(const j of W.junctions)if(j.type==='signal'&&visible(j))for(let d=0;d<4;d++)if(W.neighbor(j,(d+2)%4)){
-   const v=W.V[d],r=W.right(d),p=project(j.x-v.x*2.6+r.x*1.95,j.z-v.z*2.6+r.z*1.95),light=W.light(j,d,s.time);
+   const v=W.vector(d,j),r=W.right(d,j),p=project(j.x-v.x*2.6+r.x*1.95,j.z-v.z*2.6+r.z*1.95),light=W.light(j,d,s.time);
    rect(p.x-3,p.y-12,6,16,'#18241e');for(let k=0;k<3;k++){ctx.beginPath();ctx.arc(p.x,p.y-9+k*4.5,1.6,0,Math.PI*2);ctx.fillStyle=['red','yellow','green'][k]===light?['#ff4b38','#ffd15a','#8acc57'][k]:'#414c3e';ctx.fill();}rect(p.x-1,p.y+4,2,7,'#222d25');
   }
   for(const p of s.pedestrians)if(visible(p)){const q=project(p.x,p.z);rect(q.x+1,q.y+1,5,6,'#17271e44');rect(q.x-2,q.y-2,4,5,p.color);rect(q.x-1.5,q.y-5,3,3,'#dbb28b');rect(q.x-2,q.y+3,1,3,'#25313b');rect(q.x+1,q.y+3,1,3,'#25313b');}

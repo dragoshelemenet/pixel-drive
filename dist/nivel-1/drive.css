@@ -118,3 +118,4 @@ body[data-hud="off"] .drive-quiz-timer{display:flex!important}body[data-hud="ess
  .mobile-driving [data-indicator]{display:none!important}
 }
 @media(max-width:680px){#indicator-pad{bottom:calc(70px + env(safe-area-inset-bottom,0px))}#indicator-pad button{min-width:68px;padding:8px 6px}#indicator-pad button span{font-size:8px}}
+/* Pixel Drive city selection menu. */

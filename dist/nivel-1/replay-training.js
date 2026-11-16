@@ -69,7 +69,7 @@
  function selectCheckpoint(s,report){
   const j=W.junctions.find(q=>q.id===report.junctionId);
   if(j&&report.direction!==null){
-   const d=report.direction,v=W.V[d],line=report.kind==='round'?4.35:2.55;
+   const d=report.direction,v=W.vector(d,j),line=report.kind==='round'?4.35:(W.realMap?.65:2.55);
    const candidates=frames.filter(f=>{
     const p=f.player,along=(j.x-p.x)*v.x+(j.z-p.z)*v.z;
     const lateral=Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x);
@@ -246,7 +246,7 @@
    s.traffic=clone(snap.traffic);s.pedestrians=clone(snap.pedestrians);
   }else{s.player={...e.player,speed:0,indicator:0};}
   if(j&&e.direction!==null){
-   const v=W.V[e.direction],right=W.right(e.direction),line=e.kind==='round'?4.35:2.55;
+   const v=W.vector(e.direction,j),right=W.right(e.direction,j),line=e.kind==='round'?4.35:(W.realMap?.65:2.55);
    const along=(j.x-s.player.x)*v.x+(j.z-s.player.z)*v.z;
    if(along<line+2||along>line+8){
     s.player.x=j.x-v.x*(line+3.9)+right.x*W.LANE;
@@ -256,7 +256,7 @@
    // Preserve a right-side vehicle for a teachable repeat if no one is there.
    if(e.kind==='right'&&!s.traffic.some(t=>t.d===(e.direction+3)%4&&
       Math.hypot(t.x-j.x,t.z-j.z)<8)){
-    const incoming=(e.direction+3)%4,iv=W.V[incoming],ir=W.right(incoming);
+    const incoming=(e.direction+3)%4,iv=W.vector(incoming,j),ir=W.right(incoming,j);
     s.traffic.push({id:9000+e.id,x:j.x-iv.x*6+ir.x*W.LANE,
       z:j.z-iv.z*6+ir.z*W.LANE,angle:Math.atan2(iv.z,iv.x),d:incoming,j,
       speed:0,cruise:1.4,phase:'approach',stopTime:0,color:'#56a5df',tutorial:true});

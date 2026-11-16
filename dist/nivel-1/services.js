@@ -1,5 +1,18 @@
 /* Recognizable service lots. Everything static joins the existing spatial batching. */
 (()=>{function build({T,W,scene,box,mat,materials}){
+if(W.realMap){
+ for(const p of W.services){if(!p.site)continue;const s=p.site,group=new T.Group();
+ const localBox=(x,y,z,w,h,d,m)=>{const o=new T.Mesh(new T.BoxGeometry(w,h,d),typeof m==='string'?mat(m):m);o.position.set(x,y,z);o.castShadow=o.receiveShadow=true;group.add(o);return o;};
+ build({T,W:{services:[{...p,x:-.8,z:0}],realMap:false},scene:group,box:localBox,mat,materials});
+ localBox((1.1-s.access)/2,.12,0,1.1+s.access,.08,2.2,materials.road);
+ group.position.set(s.x,0,s.z);group.rotation.y=-Math.atan2(s.uz,s.ux);scene.add(group);group.updateMatrixWorld(true);for(const child of [...group.children])scene.attach(child);scene.remove(group);
+ }
+ const a=W.trainingAccess.a,b=W.trainingAccess.b,dx=b.x-a.x,dz=b.z-a.z;
+ const drive=box((a.x+b.x)/2,.1,(a.z+b.z)/2,Math.hypot(dx,dz),.08,2.4,materials.road);drive.rotation.y=-Math.atan2(dz,dx);
+ const kiosk=new T.Group(),kb=(x,y,z,w,h,d,m)=>{const o=new T.Mesh(new T.BoxGeometry(w,h,d),typeof m==='string'?mat(m):m);o.position.set(x,y,z);o.castShadow=o.receiveShadow=true;kiosk.add(o);return o;};
+ build({T,W:{services:[{type:'training',x:0,z:0}]},scene:kiosk,box:kb,mat,materials});kiosk.position.set(W.trainingCenter.x-8,0,W.trainingCenter.z-32);scene.add(kiosk);kiosk.updateMatrixWorld(true);for(const child of [...kiosk.children])scene.attach(child);scene.remove(kiosk);
+ return;
+}
 const palette=new Map(),M=c=>{if(!palette.has(c))palette.set(c,mat(c));return palette.get(c);};
 const B=(x,y,z,w,h,d,c)=>box(x,y,z,w,h,d,typeof c==='string'?M(c):c);
 const glass=new T.MeshStandardMaterial({color:'#527d8b',metalness:.25,roughness:.22});

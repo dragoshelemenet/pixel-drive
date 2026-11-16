@@ -2,7 +2,7 @@
  const W=window.DriveWorld,R=window.DriveRules;
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  let attempt=0;
- const scenarios=[
+ const scenarios=W.realMap?W.scenarios:[
  {kind:'stop',x:24.78,z:15,title:'Oprire la STOP',hint:'Studiază indicatorul cu I, apoi oprește complet înainte de intersecție.'},
  {kind:'roundabout',x:40.78,z:47,title:'Sens giratoriu',hint:'Studiază indicatorul cu I. Cedează la intrare și semnalizează ieșirea.'},
  {kind:'children',x:56.78,z:37,title:'Zonă cu copii',hint:'Caută indicatorul Copii și apasă I. Redu viteza și urmărește marginile drumului.'},
@@ -13,22 +13,31 @@
  {kind:'noParking',x:85,z:39.22,angle:Math.PI,title:'Staționarea interzisă',hint:'Găsește indicatorul și apasă I pentru diferența dintre oprire și staționare.'}
  ];
  // Extra repeated exercises at genuine unsignalled intersections.
- const rightJunctions=W.junctions.filter(j=>j.type==='right'&&j.col>0&&j.col<6&&j.row>0&&j.row<6);
+ const rightJunctions=W.realMap?[]:W.junctions.filter(j=>j.type==='right'&&j.col>0&&j.col<6&&j.row>0&&j.row<6);
  for(const j of rightJunctions.filter((_,i)=>i%3===0).slice(0,7))scenarios.push({
   kind:'right',junctionId:j.id,x:j.x+W.LANE,z:j.z+6.3,angle:-Math.PI/2,
   title:'Prioritate de dreapta',hint:'Intersecție nedirijată! Privește în dreapta și acordă prioritate înainte de a intra.'
  });
  function create(options={}){
-  const s={player:{x:24.78,z:19,angle:-Math.PI/2,speed:0,indicator:0},time:0,score:1000,collisions:0,failed:false,paused:false,limit:50,message:'Obiectiv: mergi la punctul marcat și preia pasagerul.',messageUntil:7,lastPenalty:-10,ruleCooldown:{},stopMemory:{},passed:new Set(),learned:new Set(),distance:0,traffic:[],pedestrians:[],mission:{phase:'pickup'},violationEvent:null,violationSerial:0,retraining:null,turnWatch:null,reverseDistanceM:0,forwardRecoveryM:0,brakeKeyHeld:false,brakeKeyMode:null,aiIncidentAt:-100};
-  for(let i=0;i<46;i++){
+  const start=W.playerStart||{x:24.78,z:19,angle:-Math.PI/2};
+  const s={player:{x:start.x,z:start.z,angle:start.angle,speed:0,indicator:0},time:0,score:1000,collisions:0,failed:false,paused:false,limit:50,message:'Obiectiv: mergi la punctul marcat și preia pasagerul.',messageUntil:7,lastPenalty:-10,ruleCooldown:{},stopMemory:{},passed:new Set(),learned:new Set(),distance:0,traffic:[],pedestrians:[],mission:{phase:'pickup'},violationEvent:null,violationSerial:0,retraining:null,turnWatch:null,reverseDistanceM:0,forwardRecoveryM:0,brakeKeyHeld:false,brakeKeyMode:null,aiIncidentAt:-100};
+  if(W.realMap){
+   const routes=W.realTrafficRoutes.filter(r=>r.points.length>4);
+   for(let i=0;i<20&&routes.length;i++){
+    const route=routes[(i*7+2)%routes.length],direction=route.oneway==='-1'?-1:route.oneway==='yes'||route.oneway==='1'?1:(i%2?1:-1),ri=Math.max(1,Math.min(route.points.length-2,Math.floor((i+1)*route.points.length/21)));
+    const a=route.points[ri],b=route.points[ri+direction];if(!a||!b)continue;
+    const x=a[0],z=a[1],angle=Math.atan2(b[1]-a[1],b[0]-a[0]);
+    s.traffic.push({id:i,x,z,angle,d:W.heading(angle,x,z),j:W.junctions.reduce((best,q)=>Math.hypot(q.x-x,q.z-z)<Math.hypot(best.x-x,best.z-z)?q:best,W.junctions[0]),speed:0,cruise:.9+(i%4)*.17,phase:'route',color:['#be6851','#a7b5bf','#d7bb76','#729a91','#797da2'][i%5],route,routeIndex:ri,routeDirection:direction});
+   }
+  }else for(let i=0;i<46;i++){
    const j=W.junctions[(i*13+3)%W.junctions.length];let d=i%4;while(!W.neighbor(j,(d+2)%4))d=(d+1)%4;
-   const v=W.V[d],r=W.right(d);s.traffic.push({id:i,x:j.x-v.x*7+r.x*W.LANE,z:j.z-v.z*7+r.z*W.LANE,angle:Math.atan2(v.z,v.x),d,j,speed:0,cruise:1.5+(i%5)*.16,phase:'approach',stopTime:0,color:['#be6851','#a7b5bf','#d7bb76','#729a91','#797da2'][i%5]});
+   const v=W.vector(d,j),r=W.right(d,j);s.traffic.push({id:i,x:j.x-v.x*7+r.x*W.LANE,z:j.z-v.z*7+r.z*W.LANE,angle:Math.atan2(v.z,v.x),d,j,speed:0,cruise:1.5+(i%5)*.16,phase:'approach',stopTime:0,color:['#be6851','#a7b5bf','#d7bb76','#729a91','#797da2'][i%5]});
   }
   // Neighborhood rush hour: extra cars are distributed on EXISTING lanes only.
   // They queue behind slower leaders near signals / busy unsignalled crossings.
-  const busy=W.junctions.filter(j=>j.type==='signal'||j.type==='right');
+  const busy=W.realMap?[]:W.junctions.filter(j=>j.type==='signal'||j.type==='right');
   let added=0;
-  for(let i=0;i<32&&added<18;i++){
+  if(!W.realMap)for(let i=0;i<32&&added<18;i++){
    const j=busy[(i*7+3)%busy.length];
    let d=(i+Math.floor(i/5))%4;
    for(let n=0;n<4&&!W.neighbor(j,(d+2)%4);n++)d=(d+1)%4;
@@ -40,10 +49,10 @@
       color:['#6b9baf','#ccb576','#968da7','#a77467'][i%4]});added++;
   }
   for(const j of W.roundabouts)s.traffic.push({id:3000+j.id,orbit:j,theta:0,x:j.x+2.9,z:j.z,angle:-Math.PI/2,speed:1.5,color:'#c19769'});
-  for(let i=0;i<W.junctions.length;i++)if(i%3===1&&W.junctions[i].type!=='roundabout'){const j=W.junctions[i];s.pedestrians.push({id:i,j,x:j.x-2.1,z:j.z+1.62,crossing:false,t:0,wait:0,direction:1,color:['#c86d61','#6d99b4','#d3ae61'][i%3]});}
+  if(!W.realMap)for(let i=0;i<W.junctions.length;i++)if(i%3===1&&W.junctions[i].type!=='roundabout'){const j=W.junctions[i];s.pedestrians.push({id:i,j,x:j.x-2.1,z:j.z+1.62,crossing:false,t:0,wait:0,direction:1,color:['#c86d61','#6d99b4','#d3ae61'][i%3]});}
   s.studied=new Set();
-  if(options.vary){let index=attempt;try{index=Number(localStorage.getItem('pixel-route-attempt')||0);if(!Number.isFinite(index))index=0;localStorage.setItem('pixel-route-attempt',String(index+1));}catch{}attempt=index+1;const lesson=scenarios[index%scenarios.length];Object.assign(s.player,{x:lesson.x,z:lesson.z,angle:lesson.angle??-Math.PI/2});s.scenario={...lesson,startDistance:0,complete:false};s.message=lesson.title+' · '+lesson.hint;s.messageUntil=10;s.traffic=s.traffic.filter(t=>Math.hypot(t.x-s.player.x,t.z-s.player.z)>3);
-   if(lesson.kind==='right'){
+  if(options.vary&&scenarios.length){let index=attempt;try{const key='pixel-route-attempt-'+(W.realMap?'viscri':'original');index=Number(localStorage.getItem(key)||0);if(!Number.isFinite(index))index=0;localStorage.setItem(key,String(index+1));}catch{}attempt=index+1;const lesson=scenarios[index%scenarios.length];Object.assign(s.player,{x:lesson.x,z:lesson.z,angle:lesson.angle??W.playerStart?.angle??-Math.PI/2});s.scenario={...lesson,startDistance:0,complete:false};s.message=lesson.title+' · '+lesson.hint;s.messageUntil=10;s.traffic=s.traffic.filter(t=>Math.hypot(t.x-s.player.x,t.z-s.player.z)>3);
+   if(lesson.kind==='right'&&!W.realMap){
     const j=W.junctions.find(q=>q.id===lesson.junctionId);
     // Create a clearly visible car approaching from the player's RIGHT.
     // Its heading 3 is west, so the car comes from the east side.
@@ -79,7 +88,7 @@
   const aiMotion=Math.hypot(car.x-from.x,car.z-from.z);
   const j=car.j;
   if(j&&Math.hypot(j.x-old.x,j.z-old.z)<5.4){
-    const pDir=W.heading(s.player.angle),v=W.V[pDir];
+    const pDir=W.heading(s.player.angle,s.player.x,s.player.z),v=W.vector(pDir,s.player);
     const along=(j.x-old.x)*v.x+(j.z-old.z)*v.z;
     const lateral=Math.abs((j.x-old.x)*v.z-(j.z-old.z)*v.x);
     const nearEntry=along>-1.6&&along<5.4&&lateral<1.9;
@@ -89,7 +98,7 @@
       if(j.type==='signal'&&W.light(j,car.d,s.time)==='red'&&W.light(j,pDir,s.time)==='green')
         return 'ai';
       if(j.type==='right'&&car.d!==undefined){
-        const r=W.right(car.d),side=(old.x-j.x)*r.x+(old.z-j.z)*r.z;
+        const r=W.right(car.d,j),side=(old.x-j.x)*r.x+(old.z-j.z)*r.z;
         if(side>1.2&&pDir%2!==car.d%2)return 'ai';
       }
     }
@@ -118,9 +127,9 @@
    s.messageUntil=s.time+4;
   }
  }
- function trafficConflict(s,j,d,onlyRight=false,ignore=null){const r=W.right(d);return s.traffic.some(t=>t!==ignore&&Math.hypot(t.x-j.x,t.z-j.z)<4.8&&(t.speed>.05||t.phase==='cross')&&(onlyRight?(t.d===(d+3)%4&&((t.x-j.x)*r.x+(t.z-j.z)*r.z>.6)):(t.d%2!==d%2||t.orbit)));}
+ function trafficConflict(s,j,d,onlyRight=false,ignore=null){const r=W.right(d,j);return s.traffic.some(t=>t!==ignore&&Math.hypot(t.x-j.x,t.z-j.z)<4.8&&(t.speed>.05||t.phase==='cross')&&(onlyRight?(t.d===(d+3)%4&&((t.x-j.x)*r.x+(t.z-j.z)*r.z>.6)):(t.d%2!==d%2||t.orbit)));}
  function crossPath(j,d,out){
-  const v=W.V[d],r=W.right(d),u=W.V[out],rr=W.right(out),distance=j.type==='roundabout'?4.3:3.0;
+  const v=W.vector(d,j),r=W.right(d,j),u=W.vector(out,j),rr=W.right(out,j),distance=j.type==='roundabout'?4.3:(W.realMap?.65:3.0);
   const a={x:j.x-v.x*distance+r.x*W.LANE,z:j.z-v.z*distance+r.z*W.LANE},b={x:j.x+u.x*distance+rr.x*W.LANE,z:j.z+u.z*distance+rr.z*W.LANE};
   if(j.type==='roundabout'){
    let start=Math.atan2(a.z-j.z,a.x-j.x),end=Math.atan2(b.z-j.z,b.x-j.x);while(end>=start-.2)end-=Math.PI*2;
@@ -138,7 +147,21 @@
    if(!p.wait&&green&&clear){p.crossing=true;p.t=0;}
   }
  }}
- function traffic(s,frameDt){for(const t of s.traffic){
+ function trafficReal(s,dt){for(const t of s.traffic){
+  t.prevX=t.x;t.prevZ=t.z;const pts=t.route.points;let i=t.routeIndex,dir=t.routeDirection,progress=t.routeProgress||0;
+  const fx=Math.cos(t.angle),fz=Math.sin(t.angle),ahead=o=>{const dx=o.x-t.x,dz=o.z-t.z;return dx*fx+dz*fz>0&&dx*fx+dz*fz<1.65&&Math.abs(-dx*fz+dz*fx)<.38;};
+  const lead=s.traffic.some(o=>o!==t&&ahead(o))||ahead(s.player);
+  t.speed=lead?Math.max(0,t.speed-4*dt):Math.min(t.cruise,t.speed+1.2*dt);let step=t.speed*dt;
+  for(let guard=0;guard<pts.length+1;guard++){
+   let ni=i+dir;if(ni<0||ni>=pts.length){if(['yes','1','-1'].includes(t.route.oneway)){i=dir>0?0:pts.length-1;}else dir*=-1;ni=i+dir;progress=0;}
+   const a=pts[i],b=pts[ni];if(!a||!b)break;const dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);if(len<.001){i=ni;continue;}
+   const move=Math.min(step,len-progress);progress+=move;step-=move;const f=progress/len,lane=Math.min(W.LANE,t.route.width*.22);t.x=a[0]+dx*f-dz/len*lane;t.z=a[1]+dz*f+dx/len*lane;t.angle=Math.atan2(dz,dx);
+   if(progress>=len-1e-6){i=ni;progress=0;if(step>1e-6)continue;}break;
+  }
+  t.routeIndex=i;t.routeProgress=progress;t.routeDirection=dir;t.d=W.heading(t.angle,t.x,t.z);
+  if(W.junctions.length)t.j=W.junctions.reduce((best,j)=>Math.hypot(j.x-t.x,j.z-t.z)<Math.hypot(best.x-t.x,best.z-t.z)?j:best,W.junctions[0]);
+ }}
+ function traffic(s,frameDt){if(W.realMap){trafficReal(s,frameDt);return;}for(const t of s.traffic){
   let dt=frameDt;
   const dx=t.x-s.player.x,dz=t.z-s.player.z;
   if(dx*dx+dz*dz>60*60){
@@ -147,7 +170,7 @@
    dt=Math.min(.25,t.farTicks);t.farTicks=0;
   }else t.farTicks=0;
   if(t.orbit){t.theta-=dt*.5;t.x=t.orbit.x+Math.cos(t.theta)*2.9;t.z=t.orbit.z+Math.sin(t.theta)*2.9;t.angle=t.theta-Math.PI/2;continue;}
-  const v=W.V[t.d];
+  const v=W.vector(t.d,t);
   if(t.phase==='approach'){
    const dist=(t.j.x-t.x)*v.x+(t.j.z-t.z)*v.z,entry=t.j.type==='roundabout'?4.3:3;
    let wait=false;
@@ -159,7 +182,7 @@
     else if(t.j.type==='roundabout')wait=s.traffic.some(o=>o!==t&&Math.hypot(o.x-t.x,o.z-t.z)<2.8);
    }
    if(dist<entry+2.4){
-    const player=s.player,pd=W.heading(player.angle),pv=W.V[pd];
+    const player=s.player,pd=W.heading(player.angle,player.x,player.z),pv=W.vector(pd,player);
     const ahead=(t.j.x-player.x)*pv.x+(t.j.z-player.z)*pv.z;
     const side=Math.abs((t.j.x-player.x)*pv.z-(t.j.z-player.z)*pv.x);
     const atJunction=ahead>-1.6&&ahead<5.6&&side<1.8;
@@ -185,7 +208,8 @@
   }
  }}
  function checkRules(s,old){
-  const p=s.player,d=W.heading(p.angle),v=W.V[d];
+  const p=s.player,d=W.heading(p.angle,p.x,p.z),v=W.vector(d,p);
+  if(W.realMap&&W.speedLimitAt)s.limit=W.speedLimitAt(p.x,p.z)||50;
   for(const j of W.junctions){
    const along=(j.x-p.x)*v.x+(j.z-p.z)*v.z,lateral=Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x),before=(j.x-old.x)*v.x+(j.z-old.z)*v.z;
    if(lateral<1.6&&before>0&&along<=0&&p.speed>0)s.limit=50;
@@ -213,7 +237,7 @@
   if(p.speed<=.055){if(s.turnWatch&&s.time-s.turnWatch.started>28)s.turnWatch=null;return;}
   let watch=s.turnWatch;
   if(!watch){
-   const d=W.heading(p.angle),v=W.V[d];
+   const d=W.heading(p.angle,p.x,p.z),v=W.vector(d,p);
    for(const j of W.junctions){
     if(j.type==='roundabout'||!W.neighbor(j,(d+2)%4))continue;
     const along=(j.x-p.x)*v.x+(j.z-p.z)*v.z;
@@ -228,7 +252,7 @@
   if(!watch)return;
   const j=W.junctions.find(q=>q.id===watch.junctionId);
   if(!j){s.turnWatch=null;return;}
-  const v=W.V[watch.direction];
+  const v=W.vector(watch.direction,j);
   const along=(j.x-p.x)*v.x+(j.z-p.z)*v.z;
   const lateral=Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x);
   const distance=Math.hypot(j.x-p.x,j.z-p.z);
@@ -263,7 +287,7 @@
    if(Math.hypot(p.x-j.x,p.z-j.z)>4.2)continue;
    for(let d=0;d<4;d++){
     if(!W.neighbor(j,(d+2)%4))continue;
-    const v=W.V[d],r=W.right(d);
+    const v=W.vector(d,j),r=W.right(d,j);
     const center={x:j.x-v.x*2,z:j.z-v.z*2};
     const dx=p.x-center.x,dz=p.z-center.z;
     if(Math.abs(dx*v.x+dz*v.z)<.66&&Math.abs(dx*r.x+dz*r.z)<1.45)
@@ -275,7 +299,7 @@
   // every junction/one-way street forbids reversing.
   for(const sign of W.signs){
    if(sign.kind!=='noStopping')continue;
-   const v=W.V[sign.d],r=W.right(sign.d),dx=p.x-sign.x,dz=p.z-sign.z;
+   const v=W.vector(sign.d,sign),r=W.right(sign.d,sign),dx=p.x-sign.x,dz=p.z-sign.z;
    const longitudinal=dx*v.x+dz*v.z,lateral=dx*r.x+dz*r.z;
    if(longitudinal>=0&&longitudinal<6&&Math.abs(lateral)<2.1)
     return 'noStopping';
@@ -358,7 +382,7 @@
     const j=W.junctions.find(q=>q.id===retry.junctionId);
     if(j){
      if(retry.kind==='signal'){
-      const v=W.V[retry.direction],entry=Math.atan2(v.z,v.x);
+      const v=W.vector(retry.direction,j),entry=Math.atan2(v.z,v.x);
       const change=Math.atan2(Math.sin(p.angle-entry),Math.cos(p.angle-entry));
       const needed=retry.turnSign;
       const watch=s.turnWatch;
@@ -367,7 +391,7 @@
         watch?.junctionId===j.id&&watch.completed&&
         (needed===1?watch.signalRight:watch.signalLeft);
      }else{
-      const v=W.V[retry.direction],line=retry.kind==='round'?4.35:2.55;
+      const v=W.vector(retry.direction,j),line=retry.kind==='round'?4.35:(W.realMap?.65:2.55);
       const before=(j.x-old.x)*v.x+(j.z-old.z)*v.z;
       const after=(j.x-p.x)*v.x+(j.z-p.z)*v.z;
       const lateral=Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x);

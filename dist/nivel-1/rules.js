@@ -20,6 +20,7 @@
   green:{title:'Verde · poți continua dacă este liber',text:'Verdele permite trecerea, dar nu intrarea într-o intersecție blocată. La viraj, asigură-te și acordă prioritate participanților care au acest drept.',source:'HG 1391/2006 · art. 51; OUG 195/2002 · art. 57',url:REG},
   limit30:{title:'Limită de viteză · 30 km/h',text:'Nu depăși 30 km/h pe sectorul semnalizat. Limita este un maxim; traficul, vizibilitatea sau pietonii pot cere o viteză mai mică.',source:'OUG 195/2002 · art. 48–49',url:ROAD},
   limit50:{title:'Limită de viteză · 50 km/h',text:'Nu depăși 50 km/h pe sectorul semnalizat. Redu viteza suplimentar înaintea intersecțiilor, trecerilor și virajelor.',source:'OUG 195/2002 · art. 48–49',url:ROAD},
+  limit90:{title:'Limită de viteză · 90 km/h',text:'Indicatorul sau datele sectorului indică o limită de 90 km/h. Condu la o viteză potrivită localității, carosabilului și vizibilității; limita afișată nu înlocuiește obligația de prudență.',source:'OUG 195/2002 · art. 48–49',url:ROAD},
   parking:{title:'Oprire, staționare și parcare',text:'Oprire înseamnă să stai cel mult 5 minute. Peste 5 minute se numește staționare. Parcarea se face într-un spațiu amenajat sau semnalizat pentru asta.',source:'OUG 195/2002 · art. 63',url:ROAD},
   noStopping:{title:'Oprirea interzisă',text:'Nu opri voluntar aici nici pentru câteva secunde. Caută o zonă în care oprirea este permisă.',source:'HG 1391/2006 · art. 142',url:REG},
   noParking:{title:'Staționarea interzisă',text:'Nu lăsa mașina aici mai mult de 5 minute. O oprire scurtă poate fi permisă doar dacă nu există și altă interdicție și nu încurci traficul.',source:'OUG 195/2002 · art. 63; HG 1391/2006 · art. 143',url:REG},
@@ -27,9 +28,9 @@
   pickup:{title:'Preluare pasager',text:'Oprește complet în refugiul marcat, fără să blochezi banda. Apasă I pentru a prelua pasagerul.',source:'OUG 195/2002 · art. 63',url:ROAD},
   dropoff:{title:'Lasă pasagerul',text:'Oprește complet în zona marcată și asigură-te că pasagerul poate coborî fără să fie în pericol. Apasă I pentru a-l lăsa.',source:'OUG 195/2002 · art. 63',url:ROAD}
  };
- function aheadJunction(p){const d=W.heading(p.angle),v=W.V[d];return W.junctions.map(j=>({j,d,a:(j.x-p.x)*v.x+(j.z-p.z)*v.z,l:Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x)})).filter(t=>t.a>-.9&&t.a<12&&t.l<2.5).sort((a,b)=>a.a-b.a)[0];}
+ function aheadJunction(p){const d=W.heading(p.angle,p.x,p.z),v=W.vector(d,p);return W.junctions.map(j=>({j,d,a:(j.x-p.x)*v.x+(j.z-p.z)*v.z,l:Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x)})).filter(t=>t.a>-.9&&t.a<12&&t.l<2.5).sort((a,b)=>a.a-b.a)[0];}
  function context(s){
-  const p=s.player,d=W.heading(p.angle),v=W.V[d];
+  const p=s.player,d=W.heading(p.angle,p.x,p.z),v=W.vector(d,p);
   const landmark=W.landmarks?.map(l=>({l,distance:Math.hypot(l.x-p.x,l.z-p.z)})).filter(x=>x.distance<4.5).sort((a,b)=>a.distance-b.distance)[0];
   if(landmark){const key=landmark.l.kind==='busStop'?'busStop':landmark.l.kind;return {...topics[key],key,distance:landmark.distance,landmark:landmark.l};}
   const round=W.roundabouts.find(j=>Math.hypot(j.x-p.x,j.z-p.z)<5.8);

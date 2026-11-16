@@ -1,4 +1,6 @@
 (() => {
+  let selectedCity='viscri';try{selectedCity=localStorage.getItem('pixel-drive-city')||'viscri';}catch{}
+  if(selectedCity!=='original'&&window.DriveWorld?.realMap)return;
   const SIZE=112, HALF=1.6, LANE=.78, AXES=[8,24,40,56,72,88,104,-8];
   const V=[{x:0,z:-1},{x:1,z:0},{x:0,z:1},{x:-1,z:0}];
   const roundKeys=new Set(['2,2','4,4','1,5']);
@@ -50,5 +52,5 @@
   function light(j,d,time){const p=(time+j.offset)%32;if(p>=24)return'red';const start=d%2===0?0:12;return p>=start&&p<start+9?'green':p>=start+9&&p<start+11?'yellow':'red';}
   function pedGreen(j,time){return (time+j.offset)%32>=24;}
   const heading=a=>((Math.round((a+Math.PI/2)/(Math.PI/2))%4)+4)%4;
-  window.DriveWorld={SIZE,HALF,LANE,AXES,V,right,neighbor,junctions,roundabouts,signs,services,landmarks,parkingBays,roadAt,light,pedGreen,heading};
+  window.DriveWorld={SIZE,HALF,LANE,AXES,V,right,vector:d=>V[d],neighbor,junctions,roundabouts,signs,services,landmarks,parkingBays,roadAt,light,pedGreen,heading};
 })();
