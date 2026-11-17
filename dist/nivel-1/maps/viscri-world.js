@@ -23,7 +23,10 @@
  function vector(d,point){const ideal=V[d]||V[0];if(point?.links){const n=point.links[d]?.node;if(n){const l=Math.hypot(n.x-point.x,n.z-point.z)||1;return{x:(n.x-point.x)/l,z:(n.z-point.z)/l};}}
   const q=point&&Number.isFinite(point.x)?point:{x:size/2,z:size/2},n=nearest(q);if(n){let x=n.tangent.x,z=n.tangent.z;if(x*ideal.x+z*ideal.z<0){x=-x;z=-z;}return{x,z};}return ideal;}
  const heading=a=>angleDir(a),right=(d,p)=>{const v=vector(d,p);return{x:-v.z,z:v.x};};
- function roadAt(x,z,margin=0){const n=nearest({x,z});if(n&&n.d<=n.segment.width/2-margin)return true;return Math.abs(x-W.trainingCenter.x)<=13-margin&&Math.abs(z-W.trainingCenter.z)<=6-margin;}
+ function roadAt(x,z,margin=0){// A junction is the union of its roads: a nearer narrow way must not
+ // hide the wider road that actually contains this point.
+ const candidates=cells.get(Math.floor(x/cellSize)+','+Math.floor(z/cellSize))||[];
+ for(const seg of candidates){const t=Math.max(0,Math.min(seg.len,(x-seg.a.x)*seg.dx+(z-seg.a.z)*seg.dz));if(Math.hypot(x-seg.a.x-seg.dx*t,z-seg.a.z-seg.dz*t)<=seg.width/2-margin)return true;}return Math.abs(x-W.trainingCenter.x)<=13-margin&&Math.abs(z-W.trainingCenter.z)<=6-margin;}
  const rounds=roads.filter(r=>r.type==='roundabout');
  const poi=(name)=>D.pois.find(p=>p.name===name)?.position;
  const pickup=poi('Punct gastronomic local')||[213.165,157.603];
@@ -64,7 +67,29 @@
   }
  }
  // Use road-aligned, safe starts for speed practice instead of intersection-centre spawns.
- const scenarios=roads.filter(r=>postedLimit(r)&&r.points.length>2).slice(0,8).map(r=>{const a=r.points[0],b=r.points[1],len=Math.hypot(b[0]-a[0],b[1]-a[1])||1,vx=(b[0]-a[0])/len,vz=(b[1]-a[1])/len;return{kind:'speed',x:(a[0]+b[0])/2-vz*r.width/4,z:(a[1]+b[1])/2+vx*r.width/4,angle:Math.atan2(vz,vx),title:'Viteză adaptată · Viscri',hint:'Respectă limita sectorului. Indicatoarele de viteză sunt reprezentări ale datelor drumului, nu poziții verificate în teren.'};});
+ // Reserve the whole largest selectable car, plus a clear launch corridor.
+ // Narrow roads need a centred start; a fixed quarter-width offset clips curbs.
+ const spawnLength=.55*.67*1.36,spawnWidth=.29*.67*1.24;
+ const launchFits=p=>{const vx=Math.cos(p.angle),vz=Math.sin(p.angle);
+  for(let d=0;d<=1.6;d+=.1)for(const a of [-spawnLength,0,spawnLength])for(const b of [-spawnWidth,0,spawnWidth])
+   if(!roadAt(p.x+vx*(a+d)-vz*b,p.z+vz*(a+d)+vx*b,.04))return false;
+  return true;
+ };
+ const scenarios=[];
+ // Evaluated after W exists because roadAt also exposes the training area.
+ function safeStarts(){for(const r of roads.filter(r=>postedLimit(r))){
+  const direction=r.oneway==='-1'?-1:1;
+  const candidates=segmentList.filter(s=>s.road===r&&s.len>3).sort((a,b)=>b.len-a.len);
+  for(const seg of candidates){const vx=seg.dx*direction,vz=seg.dz*direction;
+   const offset=Math.max(0,Math.min(r.width/4,r.width/2-spawnWidth-.06));
+   const p={kind:'speed',x:(seg.a.x+seg.b.x)/2-vz*offset,z:(seg.a.z+seg.b.z)/2+vx*offset,angle:Math.atan2(vz,vx),title:'Viteză adaptată · Viscri',hint:'Respectă limita sectorului. Indicatoarele de viteză sunt reprezentări ale datelor drumului, nu poziții verificate în teren.'};
+   if(launchFits(p)){scenarios.push(p);break;}
+  }
+  if(scenarios.length===8)break;
+ }
+ if(!scenarios.length)throw new Error('No safe Viscri driving starts');
+ if(!launchFits(W.playerStart)){const p=scenarios.reduce((a,b)=>Math.hypot(a.x-start[0],a.z-start[1])<Math.hypot(b.x-start[0],b.z-start[1])?a:b);W.playerStart={x:p.x,z:p.z,angle:p.angle};}
+ }
  const startTangent=nearest({x:start[0],z:start[1]})?.tangent||vector(1,{x:start[0],z:start[1]});
  if(startTangent.x<0){startTangent.x=-startTangent.x;startTangent.z=-startTangent.z;}
  const W={realMap:true,vehicleScale:0.67,serviceScale:0.5,mapData:D,SIZE:size,HALF:.65,LANE:.2,AXES:[],V,right,vector,heading,neighbor:neighbors,junctions,roundabouts:rounds,signs,services,landmarks,parkingBays:[],scenarios,roads,footways,buildings:D.buildings,areas:D.areas,pois:D.pois,playerStart:{x:start[0],z:start[1],angle:Math.atan2(startTangent.z,startTangent.x)},trainingCenter:{x:trainingCenter[0],z:trainingCenter[1]},roadAt,nearestRoad:nearest,
@@ -74,6 +99,7 @@
  // Provide graph edges only between genuinely shared OSM road nodes.
  W.neighbor=neighbors;W.realTrafficRoutes=roads.filter(r=>r.points.length>3&&!['service','track'].includes(r.type));
  W.scenarios=scenarios;
+ safeStarts();
  DriveServiceLayout.apply(W);
  window.DriveWorld= W;
 })();

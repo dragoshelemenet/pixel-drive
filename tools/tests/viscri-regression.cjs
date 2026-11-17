@@ -23,6 +23,17 @@ for(const city of ['viscri','original']){
   const a=S.vehicleBody({x:0,z:0,angle:0}),b=S.vehicleBody({x:0,z:.52,angle:Math.PI});assert(!S.bodiesOverlap(a,b),'opposite lanes must not collide');b.z=.1;assert(S.bodiesOverlap(a,b),'actual vehicle contact must collide');
   const saved=W.landmarks;W.landmarks=[{kind:'museum',x:10,z:10},{kind:'parking',x:11,z:10}];assert.equal(c.DriveRules.context({player:{x:10,z:10,angle:0},pedestrians:[],time:0}).key,'parking');W.landmarks=saved;
  }
+ // Drive from every launch position, for every purchasable body size.
+ if(W.realMap){
+  for(let model=0;model<4;model++)for(let attempt=0;attempt<=W.scenarios.length;attempt++){
+   c.DriveCareer={model:()=>model};c.store.set('pixel-route-attempt-viscri',String(attempt-1));
+   const s=S.create({vary:attempt>0}),start={...s.player};
+   for(let frame=0;frame<180;frame++)S.update(s,{w:true},1/60);
+   assert.equal(s.collisions,0,'launch collision model '+model+' start '+attempt);
+   assert(Math.hypot(s.player.x-start.x,s.player.z-start.z)>.9,'launch must move model '+model+' start '+attempt);
+  }
+  delete c.DriveCareer;
+ }
  // Exercise the real public capture -> interrupt -> retry path, including cyclic topology.
  c.load('replay-training');const replayState=S.create(),actor=replayState.traffic[0],route=actor.route,j=actor.j;
  c.DriveReplay.onFrame(replayState,{},10000);
