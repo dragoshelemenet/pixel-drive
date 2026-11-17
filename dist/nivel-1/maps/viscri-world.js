@@ -7,6 +7,8 @@
  // scenery streamer. Overlap the final vertex so the road remains continuous.
  const lineParts=(points,maxLength=8)=>{const parts=[];for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/maxLength));for(let k=0;k<n;k++)parts.push([[a[0]+(b[0]-a[0])*k/n,a[1]+(b[1]-a[1])*k/n],[a[0]+(b[0]-a[0])*(k+1)/n,a[1]+(b[1]-a[1])*(k+1)/n]]);}return parts;};
  const roads=D.roads.map(r=>({...r,sourceWidth:r.width,width:Math.max(r.width,(['track','service'].includes(r.type)?3.5:6.5)*D.projection.gameUnitsPerMeter),parts:lineParts(r.points),segments:[],bounds:[]}));
+ function normalAt(pts,i){const a=pts[Math.max(0,i-1)],p=pts[i],b=pts[Math.min(pts.length-1,i+1)];let ax=p[0]-a[0],az=p[1]-a[1],bx=b[0]-p[0],bz=b[1]-p[1];let al=Math.hypot(ax,az),bl=Math.hypot(bx,bz);if(!al){ax=bx;az=bz;al=bl;}if(!bl){bx=ax;bz=az;bl=al;}if(!al||!bl)return[0,1];ax/=al;az/=al;bx/=bl;bz/=bl;const nx=-az-bz,nz=ax+bx,nl=Math.hypot(nx,nz);if(nl<.001)return[-az,ax];const gain=Math.min(2,1/Math.max(.01,(-az*nx+ax*nz)/nl));return[nx/nl*gain,nz/nl*gain];}
+ for(const r of roads)r.normals=r.points.map((_,i)=>normalAt(r.points,i));
  const footways=D.footways.map(f=>({...f,parts:lineParts(f.points)}));
  const cells=new Map(),cellSize=10,segmentList=[];
  for(const r of roads)for(const part of r.parts)for(let i=1;i<part.length;i++){
@@ -15,6 +17,16 @@
   const minX=Math.floor((Math.min(a.x,b.x)-r.width)/cellSize),maxX=Math.floor((Math.max(a.x,b.x)+r.width)/cellSize),minZ=Math.floor((Math.min(a.z,b.z)-r.width)/cellSize),maxZ=Math.floor((Math.max(a.z,b.z)+r.width)/cellSize);
   for(let x=minX;x<=maxX;x++)for(let z=minZ;z<=maxZ;z++){const k=x+','+z;if(!cells.has(k))cells.set(k,[]);cells.get(k).push(seg);}
  }
+ // Match the renderer's joined road cross-sections, including gravel shoulders.
+ const surfaceCells=new Map();
+ for(const r of roads)for(let i=1;i<r.points.length;i++){
+  const a=r.points[i-1],b=r.points[i],na=r.normals[i-1],nb=r.normals[i],h=(r.width+.14)/2;
+  const points=[[a[0]+na[0]*h,a[1]+na[1]*h],[a[0]-na[0]*h,a[1]-na[1]*h],[b[0]+nb[0]*h,b[1]+nb[1]*h],[b[0]-nb[0]*h,b[1]-nb[1]*h]];
+  const q={a,b,na,nb,width:r.width,points};
+  const xs=points.map(p=>p[0]),zs=points.map(p=>p[1]);
+  for(let x=Math.floor(Math.min(...xs)/cellSize);x<=Math.floor(Math.max(...xs)/cellSize);x++)for(let z=Math.floor(Math.min(...zs)/cellSize);z<=Math.floor(Math.max(...zs)/cellSize);z++){const key=x+','+z;if(!surfaceCells.has(key))surfaceCells.set(key,[]);surfaceCells.get(key).push(q);}
+ }
+ function triangleContains(x,z,a,b,c){const cross=(p,q)=>(q[0]-p[0])*(z-p[1])-(q[1]-p[1])*(x-p[0]);const u=cross(a,b),v=cross(b,c),w=cross(c,a);return (u>=-1e-9&&v>=-1e-9&&w>=-1e-9)||(u<=1e-9&&v<=1e-9&&w<=1e-9);}
  function nearest(point){let best=null,bd=Infinity;const cx=Math.floor(point.x/cellSize),cz=Math.floor(point.z/cellSize);for(let ring=0;ring<3;ring++)for(let x=cx-ring;x<=cx+ring;x++)for(let z=cz-ring;z<=cz+ring;z++)for(const s of cells.get(x+','+z)||[]){const t=Math.max(0,Math.min(1,((point.x-s.a.x)*s.dx+(point.z-s.a.z)*s.dz)/s.len)),x0=s.a.x+s.dx*t*s.len,z0=s.a.z+s.dz*t*s.len,d=Math.hypot(point.x-x0,point.z-z0);if(d<bd){bd=d;best={segment:s,x:x0,z:z0,d,tangent:{x:s.dx,z:s.dz}};}}return best;}
  const junctions=D.intersections.map((q,i)=>({id:'osm-'+q.id,col:i%8,row:Math.floor(i/8),x:q.position[0],z:q.position[1],type:q.roads.length>=3?'right':'merge',roadIds:q.roads,links:{}}));
  const byRoad=new Map();for(const j of junctions)for(const id of j.roadIds){if(!byRoad.has(id))byRoad.set(id,[]);byRoad.get(id).push(j);}
@@ -26,7 +38,12 @@
  function roadAt(x,z,margin=0){// A junction is the union of its roads: a nearer narrow way must not
  // hide the wider road that actually contains this point.
  const candidates=cells.get(Math.floor(x/cellSize)+','+Math.floor(z/cellSize))||[];
- for(const seg of candidates){const t=Math.max(0,Math.min(seg.len,(x-seg.a.x)*seg.dx+(z-seg.a.z)*seg.dz));if(Math.hypot(x-seg.a.x-seg.dx*t,z-seg.a.z-seg.dz*t)<=seg.width/2-margin)return true;}return Math.abs(x-W.trainingCenter.x)<=13-margin&&Math.abs(z-W.trainingCenter.z)<=6-margin;}
+ for(const seg of candidates){const t=Math.max(0,Math.min(seg.len,(x-seg.a.x)*seg.dx+(z-seg.a.z)*seg.dz));if(Math.hypot(x-seg.a.x-seg.dx*t,z-seg.a.z-seg.dz*t)<=(seg.width+.14)/2-margin)return true;}
+ for(const q of surfaceCells.get(Math.floor(x/cellSize)+','+Math.floor(z/cellSize))||[]){const h=(q.width+.14)/2-margin;if(h<=0)continue;const {a,b,na,nb}=q;
+ const p=[[a[0]+na[0]*h,a[1]+na[1]*h],[a[0]-na[0]*h,a[1]-na[1]*h],[b[0]+nb[0]*h,b[1]+nb[1]*h],[b[0]-nb[0]*h,b[1]-nb[1]*h]];
+ if(triangleContains(x,z,p[0],p[2],p[1])||triangleContains(x,z,p[1],p[2],p[3]))return true;
+ }
+ return Math.abs(x-W.trainingCenter.x)<=13-margin&&Math.abs(z-W.trainingCenter.z)<=6-margin;}
  const rounds=roads.filter(r=>r.type==='roundabout');
  const poi=(name)=>D.pois.find(p=>p.name===name)?.position;
  const pickup=poi('Punct gastronomic local')||[213.165,157.603];

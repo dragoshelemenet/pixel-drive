@@ -17,6 +17,17 @@ for(const city of ['viscri','original']){
  const a=W.trainingAccess.a,b=W.trainingAccess.b;for(let t=0;t<=1;t+=.025)assert(W.roadAt(a.x+(b.x-a.x)*t,a.z+(b.z-a.z)*t,.05),'training access gap');
  }
  if(W.realMap){
+  // Sample the actual rendered bend triangles, rather than just centrelines.
+  let roadSamples=0;
+  for(const r of W.roads)for(let i=1;i<r.points.length;i++){
+   const a=r.points[i-1],b=r.points[i],na=r.normals[i-1],nb=r.normals[i],h=(r.width+.14)/2;
+   const ps=[[a[0]+na[0]*h,a[1]+na[1]*h],[a[0]-na[0]*h,a[1]-na[1]*h],[b[0]+nb[0]*h,b[1]+nb[1]*h],[b[0]-nb[0]*h,b[1]-nb[1]*h]];
+   for(const ids of [[0,2,1],[1,2,3]])for(const weights of [[.8,.1,.1],[.1,.8,.1],[.1,.1,.8],[1/3,1/3,1/3]]){
+    const x=ids.reduce((n,id,k)=>n+ps[id][0]*weights[k],0),z=ids.reduce((n,id,k)=>n+ps[id][1]*weights[k],0);
+    assert(W.roadAt(x,z,.02),'rendered road rejected at '+r.id);roadSamples++;
+   }
+  }
+  assert(!W.roadAt(-100,-100),'off-map terrain must stay blocked');console.log(JSON.stringify({roadSamples,checks:'render/collision agreement passed'}));
   assert.equal(W.vehicleScale,.67);assert.equal(W.serviceScale,.5);
   assert(W.signs.length>0);assert(W.signs.every(q=>q.source==='way-maxspeed'&&q.surveyed===false));
   for(const q of W.signs)for(const r of W.roads)for(const part of r.parts){const a=part[0],b=part[1],dx=b[0]-a[0],dz=b[1]-a[1],len2=dx*dx+dz*dz,t=Math.max(0,Math.min(1,((q.x-a[0])*dx+(q.z-a[1])*dz)/len2));assert(Math.hypot(q.x-a[0]-dx*t,q.z-a[1]-dz*t)>r.width/2,'sign intersects road '+q.id);}

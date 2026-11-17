@@ -26,7 +26,7 @@ function build({W,scene,windows,deferBuildings=false}){
  // Subdivide after joining, so chunk boundaries share both position and UV phase.
  function normalAt(pts,i){const a=pts[Math.max(0,i-1)],p=pts[i],b=pts[Math.min(pts.length-1,i+1)];let ax=p[0]-a[0],az=p[1]-a[1],bx=b[0]-p[0],bz=b[1]-p[1];let al=Math.hypot(ax,az),bl=Math.hypot(bx,bz);if(!al){ax=bx;az=bz;al=bl;}if(!bl){bx=ax;bz=az;bl=al;}if(!al||!bl)return[0,1];ax/=al;az/=al;bx/=bl;bz/=bl;const nx=-az-bz,nz=ax+bx,nl=Math.hypot(nx,nz);if(nl<.001)return[-az,ax];const gain=Math.min(2,1/Math.max(.01,(-az*nx+ax*nz)/nl));return[nx/nl*gain,nz/nl*gain];}
  for(const r of W.roads){const unpaved=['unpaved','gravel','fine_gravel','dirt','ground','earth','sand'].includes(r.surface)||(!r.surface&&r.type==='track');const material=unpaved?gravel:['sett','cobblestone','paving_stones'].includes(r.surface)?setts:asphalt;
-  const normals=r.points.map((_,i)=>normalAt(r.points,i));let traveled=0;
+  const normals=r.normals||r.points.map((_,i)=>normalAt(r.points,i));let traveled=0;
   for(let i=1;i<r.points.length;i++){const a=r.points[i-1],b=r.points[i],len=Math.hypot(b[0]-a[0],b[1]-a[1]),count=Math.max(1,Math.ceil(len/8));
    for(let k=0;k<count;k++){const ts=[k/count,(k+1)/count],part=ts.map(t=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t]),ns=ts.map(t=>[normals[i-1][0]*(1-t)+normals[i][0]*t,normals[i-1][1]*(1-t)+normals[i][1]*t]);roadMesh(part,r.width+.14,gravel,.018,ns,traveled+len*k/count);roadMesh(part,r.width,material,.028,ns,traveled+len*k/count);}
    traveled+=len;
