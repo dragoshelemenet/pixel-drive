@@ -3,9 +3,9 @@
 if(W.realMap){
  for(const p of W.services){if(!p.site)continue;const s=p.site,group=new T.Group();
  const localBox=(x,y,z,w,h,d,m)=>{const o=new T.Mesh(new T.BoxGeometry(w,h,d),typeof m==='string'?mat(m):m);o.position.set(x,y,z);o.castShadow=o.receiveShadow=true;group.add(o);return o;};
- build({T,W:{services:[{...p,x:-.8,z:0}],realMap:false},scene:group,box:localBox,mat,materials});
+ build({T,W:{services:[{...p,x:-.8,z:0}],realMap:false,vehicleScale:(W.vehicleScale||1)/(s.scale||1)},scene:group,box:localBox,mat,materials});
  localBox((1.1-s.access)/2,.12,0,1.1+s.access,.08,2.2,materials.road);
- group.position.set(s.x,0,s.z);group.rotation.y=-Math.atan2(s.uz,s.ux);scene.add(group);group.updateMatrixWorld(true);for(const child of [...group.children])scene.attach(child);scene.remove(group);
+ group.scale.setScalar(s.scale||1);group.position.set(s.x,0,s.z);group.rotation.y=-Math.atan2(s.uz,s.ux);scene.add(group);group.updateMatrixWorld(true);for(const child of [...group.children])scene.attach(child);scene.remove(group);
  }
  const a=W.trainingAccess.a,b=W.trainingAccess.b,dx=b.x-a.x,dz=b.z-a.z;
  const drive=box((a.x+b.x)/2,.1,(a.z+b.z)/2,Math.hypot(dx,dz),.08,2.4,materials.road);drive.rotation.y=-Math.atan2(dz,dx);
@@ -17,7 +17,7 @@ const palette=new Map(),M=c=>{if(!palette.has(c))palette.set(c,mat(c));return pa
 const B=(x,y,z,w,h,d,c)=>box(x,y,z,w,h,d,typeof c==='string'?M(c):c);
 const glass=new T.MeshStandardMaterial({color:'#527d8b',metalness:.25,roughness:.22});
 function sign(text,x,y,z,w=3,color='#e5eee1',bg='#193d58',front=true){const c=document.createElement('canvas');c.width=1024;c.height=192;const g=c.getContext('2d');g.fillStyle=bg;g.fillRect(0,0,1024,192);g.fillStyle=color;g.font='bold 90px Arial';g.textAlign='center';g.textBaseline='middle';g.fillText(text,512,98,970);const tex=new T.CanvasTexture(c);tex.colorSpace=T.SRGBColorSpace;const o=new T.Mesh(new T.PlaneGeometry(w,w*192/1024),new T.MeshBasicMaterial({map:tex,side:T.DoubleSide}));o.position.set(x,y,z);if(front)o.rotation.y=-Math.PI/2;scene.add(o);}
-function car(x,z,color,school=false){const o=DriveScenery.vehicle(color);o.position.set(x,.12,z);o.rotation.y=Math.PI/2;scene.add(o);o.updateMatrixWorld(true);for(const child of [...o.children])scene.attach(child);scene.remove(o);if(school){B(x,.78,z,.22,.12,.26,'#f5eed7');sign('ȘCOALA',x-.12,.78,z,.3,'#ffffff','#176091');}}
+function car(x,z,color,school=false){const o=DriveScenery.vehicle(color);o.scale.setScalar(W.vehicleScale||1);o.position.set(x,.12,z);o.rotation.y=Math.PI/2;scene.add(o);o.updateMatrixWorld(true);for(const child of [...o.children])scene.attach(child);scene.remove(o);if(school){B(x,.78,z,.22,.12,.26,'#f5eed7');sign('ȘCOALA',x-.12,.78,z,.3,'#ffffff','#176091');}}
 function window(x,y,z,w=.9,h=.65){B(x,y,z,.05,h+.08,w+.08,'#d8ddd4');B(x-.035,y,z,.02,h,w,glass);B(x-.05,y,z,.03,h,.025,'#d8ddd4');}
 function parking(x,z,count=3){for(let i=0;i<=count;i++)B(x,.17,z+i*1.15,1.6,.018,.045,materials.white);B(x+.8,.17,z+count*.575,.045,.018,count*1.15,materials.white);}
 for(const p of W.services){const x=p.x+(p.type==='training'?0:.8),z=p.z;if(p.type==='training'){B(20, .65,27.5,1.4,1.2,1.8,'#a9ada0');B(20,1.3,27.5,1.6,.15,2,'#356956');window(19.27,.8,27.5,.65,.45);sign('POLIGON',19.2,1.35,27.5,1.5);continue;}

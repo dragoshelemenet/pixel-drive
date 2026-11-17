@@ -15,7 +15,14 @@ for(let d=0;d<4;d++){const v=W.V[d],r=W.right(d);for(let k=0;k<3;k++)box(j.x-v.x
 }else for(let d=0;d<4;d++){const v=W.V[d],r=W.right(d);if(!W.neighbor(j,(d+2)%4))continue;for(let n=-4;n<=4;n++)box(j.x-v.x*2+r.x*n*.35,.12,j.z-v.z*2+r.z*n*.35,d%2?.64:.18,.015,d%2?.18:.64,materials.white);}}
 // Reusable neighborhood art, with detailed geometry batched by spatial cell below.
 const art=DriveScenery.build({T,W,scene,box,mat,materials,windows});
-const signFaces=[];for(const q of W.signs){box(q.x,.65,q.z,.045,1.3,.045,'#9a9b94');const face=new T.Sprite(new T.SpriteMaterial({map:DriveVisuals.sign(q.kind),transparent:true,depthTest:true}));face.scale.set(.8,.8,1);face.position.set(q.x,1.35,q.z);scene.add(face);signFaces.push(face);}
+const signFaces=[];for(const q of W.signs){if(W.realMap){
+ const u=W.mapData.projection.gameUnitsPerMeter,h=2.2*u,size=.65*u;
+ box(q.x,h/2,q.z,.055*u,h,.055*u,'#9a9b94');
+ const face=new T.Mesh(new T.PlaneGeometry(size,size),new T.MeshBasicMaterial({map:DriveVisuals.sign(q.kind),transparent:true,side:T.DoubleSide}));
+ const v=q.angle!==undefined?{x:Math.cos(q.angle),z:Math.sin(q.angle)}:W.vector(q.d,q);
+ face.position.set(q.x,h,q.z);face.rotation.y=Math.atan2(-v.x,-v.z);scene.add(face);
+ }else{box(q.x,.65,q.z,.045,1.3,.045,'#9a9b94');const face=new T.Sprite(new T.SpriteMaterial({map:DriveVisuals.sign(q.kind),transparent:true,depthTest:true}));face.scale.set(.8,.8,1);face.position.set(q.x,1.35,q.z);scene.add(face);signFaces.push(face);}}
+
 for(const b of W.parkingBays){box(b.x,.08,b.z,b.w,.06,b.h,materials.road);for(let z=-b.h/2;z<=b.h/2;z+=1.15)box(b.x,.12,b.z+z,b.w-.12,.014,.035,materials.white);box(b.x+b.w/2-.05,.12,b.z,.035,.014,b.h,materials.white);}
 DriveServices.build({T,W,scene,box,mat,materials});
 // Keep the original practice campus unchanged; Viscri uses its mapped meadow.
@@ -94,20 +101,20 @@ const frustum=new T.Frustum(),projection=new T.Matrix4();
 const lampPositions=lamps.map(l=>l.position.clone());lamps.forEach(l=>scene.remove(l));
 const localLights=Array.from({length:4},()=>{const l=new T.PointLight('#ffd394',0,7,2);scene.add(l);return l;});
 let minimap,wholeMap=true,lastWidth=0,lastHeight=0;function draw(canvas,s,dt){if(unavailable)return fallback.draw(canvas,s,dt);if(!renderer){try{renderer=new T.WebGLRenderer({canvas,antialias:true});}catch(e){unavailable=true;return fallback.draw(canvas,s,dt);}renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMappingExposure=1.05;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.toneMapping=T.ACESFilmicToneMapping;camera=new T.PerspectiveCamera(36,16/9,.1,180);minimap=document.createElement('canvas');minimap.width=320;minimap.height=320;minimap.onclick=()=>wholeMap=!wholeMap;minimap.setAttribute('aria-label','Hartă: școală, benzinărie, salon auto, atelier, poligon și obiectiv. Click pentru zoom.');minimap.style='position:absolute;right:18px;bottom:18px;width:220px;height:220px;cursor:pointer;z-index:3;background:#14251cdd;border:1px solid #9aa491;border-radius:8px';canvas.parentNode.append(minimap);}
-const w=canvas.clientWidth||1280,h=canvas.clientHeight||720;if(w!==lastWidth||h!==lastHeight){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastWidth=w;lastHeight=h;}const p=s.player;if(s.time<lastTime)rainy=Math.random()<.35;lastTime=s.time;const rainTarget=rainy&&s.time>50&&s.time<170?1:0;wetness+=(rainTarget-wetness)*(1-Math.exp(-dt*.35));rainCloud.visible=wetness>.02;rainCloud.material.opacity=.65*wetness;rainCloud.position.set(p.x,0,p.z);if(rainCloud.visible){for(let i=1;i<drops.length;i+=3){drops[i]-=dt*9;if(drops[i]<0)drops[i]=20;}rainGeo.attributes.position.needsUpdate=true;}materials.road.roughness=.85-.58*wetness;const model=window.DriveCareer?.model()||0;player.scale.set(1+model*.08,1+(model===2?.2:0),1+model*.12);const elevation=window.DriveTraining?.elevation(p.x,p.z)||0;player.position.set(p.x,elevation,p.z);player.rotation.y=-p.angle-Math.PI/2;updateTurnLamps(p,s.time);if(window.DriveCareer)player.children[0].material.color.set(DriveCareer.color());
+const w=canvas.clientWidth||1280,h=canvas.clientHeight||720;if(w!==lastWidth||h!==lastHeight){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastWidth=w;lastHeight=h;}const p=s.player;if(s.time<lastTime)rainy=Math.random()<.35;lastTime=s.time;const rainTarget=rainy&&s.time>50&&s.time<170?1:0;wetness+=(rainTarget-wetness)*(1-Math.exp(-dt*.35));rainCloud.visible=wetness>.02;rainCloud.material.opacity=.65*wetness;rainCloud.position.set(p.x,0,p.z);if(rainCloud.visible){for(let i=1;i<drops.length;i+=3){drops[i]-=dt*9;if(drops[i]<0)drops[i]=20;}rainGeo.attributes.position.needsUpdate=true;}materials.road.roughness=.85-.58*wetness;const model=window.DriveCareer?.model()||0;player.scale.set((W.vehicleScale||1)*(1+model*.08),(W.vehicleScale||1)*(1+(model===2?.2:0)),(W.vehicleScale||1)*(1+model*.12));const elevation=window.DriveTraining?.elevation(p.x,p.z)||0;player.position.set(p.x,elevation,p.z);player.rotation.y=-p.angle-Math.PI/2;updateTurnLamps(p,s.time);if(window.DriveCareer)player.children[0].material.color.set(DriveCareer.color());
 // Lazy car mesh creation. Traffic far away keeps its simulation state but does
 // not create GPU geometry until the player approaches that street.
 for(const t of s.traffic){
  const dx=t.x-p.x,dz=t.z-p.z,near=dx*dx+dz*dz<(DriveTraining.active()?68:62)**2;
  let mesh=traffic.get(t.id);
  if(!near){if(mesh)mesh.visible=false;continue;}
- if(!mesh){mesh=vehicle(t.color);traffic.set(t.id,mesh);scene.add(mesh);}
+ if(!mesh){mesh=vehicle(t.color);mesh.scale.setScalar(W.vehicleScale||1);traffic.set(t.id,mesh);scene.add(mesh);}
  mesh.visible=true;mesh.position.set(t.x,0,t.z);mesh.rotation.y=-t.angle-Math.PI/2;
 }
 for(const [id,mesh] of traffic)if(!s.traffic.some(t=>t.id===id)){
  mesh.visible=false;scene.remove(mesh);traffic.delete(id);
 }while(people.length<s.pedestrians.length){const g=new T.Group();box(0,.3,0,.13,.42,.12,'#527798',g);const head=new T.Mesh(new T.SphereGeometry(.09,8,6),mat('#d2af8c'));head.position.y=.62;g.add(head);scene.add(g);people.push(g);}s.pedestrians.forEach((v,i)=>people[i].position.set(v.x,0,v.z));
-if(heading===null||s.time<.1)heading=p.angle;const delta=Math.atan2(Math.sin(p.angle-heading),Math.cos(p.angle-heading));heading+=delta*(1-Math.exp(-5*dt));const fx=Math.cos(heading),fz=Math.sin(heading);camera.position.set(p.x-fx*8.5,16.5,p.z-fz*8.5);camera.lookAt(p.x+fx*3,0,p.z+fz*3);
+if(heading===null||s.time<.1)heading=p.angle;const delta=Math.atan2(Math.sin(p.angle-heading),Math.cos(p.angle-heading));heading+=delta*(1-Math.exp(-5*dt));const fx=Math.cos(heading),fz=Math.sin(heading);camera.position.set(p.x-fx*(W.realMap?5.8:8.5),W.realMap?9.2:16.5,p.z-fz*(W.realMap?5.8:8.5));camera.lookAt(p.x+fx*3,0,p.z+fz*3);
 if(window.DriveTraining?.active()){const look=DriveCabin.look();camera.fov=64;camera.updateProjectionMatrix();const ex=p.x-Math.sin(p.angle)*(look.offsetX||0)-Math.cos(p.angle)*(look.offsetZ||0),ez=p.z+Math.cos(p.angle)*(look.offsetX||0)-Math.sin(p.angle)*(look.offsetZ||0),ey=1.12+elevation+(look.offsetY||0);camera.position.set(ex,ey,ez);camera.lookAt(ex+Math.cos(p.angle+look.yaw)*12*Math.cos(look.pitch),ey+Math.sin(look.pitch)*12,ez+Math.sin(p.angle+look.yaw)*12*Math.cos(look.pitch));player.visible=false;}else {player.visible=true;camera.fov=36;camera.updateProjectionMatrix();}
 // A sustained late-afternoon sun fades smoothly into dusk, rather than losing its shadows immediately.
 const dusk=T.MathUtils.smoothstep(s.time,150,660),night=T.MathUtils.smoothstep(s.time,330,780);

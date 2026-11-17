@@ -40,7 +40,8 @@
  let state=null,frames=[],lastCapture=-1000,event=null,checkpoint=null,clip=[],clipStart=0,mode='replay',runId=0;
  const CAPTURE_EVERY=205,KEEP_MS=9000,CLIP_MS=6500;
  const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
- const clone=x=>JSON.parse(JSON.stringify(x));
+ // Immutable route/topology references may contain cycles; actor state must not.
+ const clone=actors=>actors.map(({j,route,orbit,...state})=>({...JSON.parse(JSON.stringify(state)),...(j?{j}:{}),...(route?{route}:{}),...(orbit?{orbit}:{})}));
  function capture(s,canvas,now,force=false,overrideKmh=null){
   if(!force&&now-lastCapture<CAPTURE_EVERY)return;
   lastCapture=now;
@@ -254,7 +255,7 @@
    }
    s.player.angle=Math.atan2(v.z,v.x);
    // Preserve a right-side vehicle for a teachable repeat if no one is there.
-   if(e.kind==='right'&&!s.traffic.some(t=>t.d===(e.direction+3)%4&&
+   if(e.kind==='right'&&!W.realMap&&!s.traffic.some(t=>t.d===(e.direction+3)%4&&
       Math.hypot(t.x-j.x,t.z-j.z)<8)){
     const incoming=(e.direction+3)%4,iv=W.vector(incoming,j),ir=W.right(incoming,j);
     s.traffic.push({id:9000+e.id,x:j.x-iv.x*6+ir.x*W.LANE,

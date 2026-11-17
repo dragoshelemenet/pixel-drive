@@ -31,15 +31,15 @@
  function aheadJunction(p){const d=W.heading(p.angle,p.x,p.z),v=W.vector(d,p);return W.junctions.map(j=>({j,d,a:(j.x-p.x)*v.x+(j.z-p.z)*v.z,l:Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x)})).filter(t=>t.a>-.9&&t.a<12&&t.l<2.5).sort((a,b)=>a.a-b.a)[0];}
  function context(s){
   const p=s.player,d=W.heading(p.angle,p.x,p.z),v=W.vector(d,p);
-  const landmark=W.landmarks?.map(l=>({l,distance:Math.hypot(l.x-p.x,l.z-p.z)})).filter(x=>x.distance<4.5).sort((a,b)=>a.distance-b.distance)[0];
+  const landmark=W.landmarks?.filter(l=>topics[l.kind]).map(l=>({l,distance:Math.hypot(l.x-p.x,l.z-p.z)})).filter(x=>x.distance<4.5).sort((a,b)=>a.distance-b.distance)[0];
   if(landmark){const key=landmark.l.kind==='busStop'?'busStop':landmark.l.kind;return {...topics[key],key,distance:landmark.distance,landmark:landmark.l};}
   const round=W.roundabouts.find(j=>Math.hypot(j.x-p.x,j.z-p.z)<5.8);
   if(round){const dist=Math.hypot(round.x-p.x,round.z-p.z);return {...topics.roundabout,title:dist<4?'În giratoriu · semnalizează ieșirea':topics.roundabout.title,key:'roundabout',distance:Math.max(0,dist-4),j:round};}
   const ped=s.pedestrians.find(t=>t.crossing&&(t.x-p.x)*v.x+(t.z-p.z)*v.z>0&&Math.hypot(t.x-p.x,t.z-p.z)<5);
   if(ped)return {...topics.crossing,key:'crossing',distance:Math.hypot(ped.x-p.x,ped.z-p.z)};
   const near=aheadJunction(p);
-  if(near){let key=near.j.type;if(key==='signal')key=W.light(near.j,near.d,s.time);else if((key==='stop'||key==='yield')&&d%2)key=W.signs.some(q=>q.kind==='priorityIntersection'&&q.j===near.j.id&&q.d===d)?'priorityIntersection':'priority';return {...topics[key],key,j:near.j,d,distance:Math.max(0,near.a-2.5)};}
-  const sign=W.signs.filter(t=>t.d===d&&(t.x-p.x)*v.x+(t.z-p.z)*v.z>0&&Math.hypot(t.x-p.x,t.z-p.z)<8).sort((a,b)=>Math.hypot(a.x-p.x,a.z-p.z)-Math.hypot(b.x-p.x,b.z-p.z))[0];
+  if(near&&(topics[near.j.type]||near.j.type==='signal')){let key=near.j.type;if(key==='signal')key=W.light(near.j,near.d,s.time);else if((key==='stop'||key==='yield')&&d%2)key=W.signs.some(q=>q.kind==='priorityIntersection'&&q.j===near.j.id&&q.d===d)?'priorityIntersection':'priority';return {...topics[key],key,j:near.j,d,distance:Math.max(0,near.a-2.5)};}
+  const sign=W.signs.filter(t=>topics[t.kind]&&t.d===d&&(t.x-p.x)*v.x+(t.z-p.z)*v.z>0&&Math.hypot(t.x-p.x,t.z-p.z)<8).sort((a,b)=>Math.hypot(a.x-p.x,a.z-p.z)-Math.hypot(b.x-p.x,b.z-p.z))[0];
   if(sign)return {...topics[sign.kind],key:sign.kind,distance:Math.hypot(sign.x-p.x,sign.z-p.z)};
   return {...topics.drive,key:'drive',distance:null};
  }

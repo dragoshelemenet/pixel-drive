@@ -109,6 +109,13 @@
   if(aiMotion<.008&&playerToward>.015)return 'player';
   return 'uncertain';
  }
+ // Oriented rectangles allow vehicles in opposite lanes to pass without
+ // the old broad circular trigger registering a collision across the centreline.
+ function vehicleBody(actor,player=false){const scale=W.vehicleScale||1,model=player?(window.DriveCareer?.model()||0):0;return {x:actor.x,z:actor.z,angle:actor.angle,halfLength:.55*scale*(1+model*.12),halfWidth:.29*scale*(1+model*.08)};}
+ function bodiesOverlap(a,b){const axes=[{x:Math.cos(a.angle),z:Math.sin(a.angle)},{x:-Math.sin(a.angle),z:Math.cos(a.angle)},{x:Math.cos(b.angle),z:Math.sin(b.angle)},{x:-Math.sin(b.angle),z:Math.cos(b.angle)}];
+ const radius=(v,o)=>Math.abs(v.x*Math.cos(o.angle)+v.z*Math.sin(o.angle))*o.halfLength+Math.abs(-v.x*Math.sin(o.angle)+v.z*Math.cos(o.angle))*o.halfWidth;
+ return axes.every(v=>Math.abs((a.x-b.x)*v.x+(a.z-b.z)*v.z)<radius(v,a)+radius(v,b));
+ }
  function handleAICollision(s,car,old){
   const p=s.player;
   const blame=aiCollisionResponsibility(s,car,old,{x:p.x,z:p.z});
@@ -155,7 +162,7 @@
   for(let guard=0;guard<pts.length+1;guard++){
    let ni=i+dir;if(ni<0||ni>=pts.length){if(['yes','1','-1'].includes(t.route.oneway)){i=dir>0?0:pts.length-1;}else dir*=-1;ni=i+dir;progress=0;}
    const a=pts[i],b=pts[ni];if(!a||!b)break;const dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);if(len<.001){i=ni;continue;}
-   const move=Math.min(step,len-progress);progress+=move;step-=move;const f=progress/len,lane=Math.min(W.LANE,t.route.width*.22);t.x=a[0]+dx*f-dz/len*lane;t.z=a[1]+dz*f+dx/len*lane;t.angle=Math.atan2(dz,dx);
+   const move=Math.min(step,len-progress);progress+=move;step-=move;const f=progress/len,lane=t.route.width*.25;t.x=a[0]+dx*f-dz/len*lane;t.z=a[1]+dz*f+dx/len*lane;t.angle=Math.atan2(dz,dx);
    if(progress>=len-1e-6){i=ni;progress=0;if(step>1e-6)continue;}break;
   }
   t.routeIndex=i;t.routeProgress=progress;t.routeDirection=dir;t.d=W.heading(t.angle,t.x,t.z);
@@ -363,9 +370,10 @@
   const nx=p.x+Math.cos(p.angle)*p.speed*dt,nz=p.z+Math.sin(p.angle)*p.speed*dt;
   // Four corners prevent the body from crossing curbs and central islands.
   const forward={x:Math.cos(p.angle),z:Math.sin(p.angle)},right={x:-forward.z,z:forward.x};
-  let valid=true;for(const a of [-.45,.45])for(const b of [-.22,.22])if(!W.roadAt(nx+forward.x*a+right.x*b,nz+forward.z*a+right.z*b,.02))valid=false;
+  const body=W.realMap?vehicleBody(p,true):{halfLength:.45,halfWidth:.22};
+  let valid=true;for(const a of [-body.halfLength,body.halfLength])for(const b of [-body.halfWidth,body.halfWidth])if(!W.roadAt(nx+forward.x*a+right.x*b,nz+forward.z*a+right.z*b,.02))valid=false;
   if(valid){p.x=nx;p.z=nz;s.distance+=Math.hypot(nx-old.x,nz-old.z);}else if(Math.abs(p.speed)>.08)collision(s,'Coliziune cu bordura sau un obstacol.');
-  for(const t of s.traffic)if(Math.hypot(t.x-p.x,t.z-p.z)<.75){handleAICollision(s,t,old);break;}
+  for(const t of s.traffic)if((W.realMap?bodiesOverlap(vehicleBody(p,true),vehicleBody(t)):Math.hypot(t.x-p.x,t.z-p.z)<.75)){handleAICollision(s,t,old);break;}
   for(const ped of s.pedestrians)if(ped.crossing&&Math.hypot(ped.x-p.x,ped.z-p.z)<.43){s.failed=true;s.score=0;p.speed=0;s.message='Ai lovit un pieton. Oprește înainte de trecere și acordă prioritate.';}
   if(!s.violationEvent)checkReverse(s,old);
   if(!s.violationEvent)checkRules(s,old);
@@ -432,5 +440,5 @@
   else{s.mission.phase='complete';s.score+=200;s.message='Cursă completă! Ai învățat preluarea, coborârea și parcarea.';}
   s.messageUntil=s.time+5;return{type:'mission',phase:s.mission.phase};
  }
- window.DriveSimulation={create,update,penalize,collision,crossPath,trafficConflict,checkRules,checkTurnSignal,checkReverse,reverseProhibition,objective,interact,driveSettings:{initialAcceleration:0.22,reverseAcceleration:0.28}};
+ window.DriveSimulation={vehicleBody,bodiesOverlap,create,update,penalize,collision,crossPath,trafficConflict,checkRules,checkTurnSignal,checkReverse,reverseProhibition,objective,interact,driveSettings:{initialAcceleration:0.22,reverseAcceleration:0.28}};
 })();

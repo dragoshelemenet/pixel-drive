@@ -23,7 +23,7 @@
  function vector(d,point){const ideal=V[d]||V[0];if(point?.links){const n=point.links[d]?.node;if(n){const l=Math.hypot(n.x-point.x,n.z-point.z)||1;return{x:(n.x-point.x)/l,z:(n.z-point.z)/l};}}
   const q=point&&Number.isFinite(point.x)?point:{x:size/2,z:size/2},n=nearest(q);if(n){let x=n.tangent.x,z=n.tangent.z;if(x*ideal.x+z*ideal.z<0){x=-x;z=-z;}return{x,z};}return ideal;}
  const heading=a=>angleDir(a),right=(d,p)=>{const v=vector(d,p);return{x:-v.z,z:v.x};};
- function roadAt(x,z,margin=0){const n=nearest({x,z});if(n&&n.d<=n.segment.width/2-margin)return true;if(Math.abs(x-start[0])<2+margin&&Math.abs(z-start[1])<2.3+margin)return true;return Math.abs(x-W.trainingCenter.x)<=13-margin&&Math.abs(z-W.trainingCenter.z)<=6-margin;}
+ function roadAt(x,z,margin=0){const n=nearest({x,z});if(n&&n.d<=n.segment.width/2-margin)return true;return Math.abs(x-W.trainingCenter.x)<=13-margin&&Math.abs(z-W.trainingCenter.z)<=6-margin;}
  const rounds=roads.filter(r=>r.type==='roundabout');
  const poi=(name)=>D.pois.find(p=>p.name===name)?.position;
  const pickup=poi('Punct gastronomic local')||[213.165,157.603];
@@ -44,18 +44,30 @@
   {id:'parking',kind:'parking',name:'Parcare la intrarea în sat',x:start[0],z:start[1]},
   ...D.pois.filter(p=>p.name&&['cafe','restaurant','museum','attraction','guest_house','bakery','convenience','kindergarten'].includes(p.type)).map((p,i)=>({id:'poi-'+p.id,kind:p.type,name:p.name,x:p.position[0],z:p.position[1]}))
  ];
- const signs=[];const kinds=['stop','yield','priorityIntersection','children','roadworks','slippery','bump','limit30','limit50','roundabout'];
- const mainRoads=roads.filter(r=>['secondary','residential','unclassified','living_street'].includes(r.type));
- for(let i=0;i<Math.min(18,junctions.length);i++){const j=junctions[(i*2+3)%junctions.length],dirs=Object.keys(j.links).map(Number);if(!dirs.length)continue;const d=dirs[i%dirs.length],v=vector(d,j),r=right(d,j),kind=kinds[i%kinds.length];signs.push({id:'learn-'+i,kind,x:j.x-v.x*1.8+r.x*1.55,z:j.z-v.z*1.8+r.z*1.55,d,j:j.id,training:true});}
+ // Unverified road signs must not be scattered randomly across the settlement.
+ const signs=[];
  // Keep only explicit numeric limits and OSM's urban value. RO:rural can span
  // mapped ways that enter the built-up village, so it is not treated as 90
  // km/h throughout the clipped game map; the simulation defaults to 50 there.
  const postedLimit=r=>{const n=Number.parseInt(r.maxspeed,10);if(Number.isFinite(n))return n;if(r.maxspeed==='RO:urban')return 50;return null;};
- for(const r of roads){const limit=postedLimit(r);if(!limit||r.points.length<3)continue;const i=Math.floor(r.points.length/2),a=r.points[i-1],b=r.points[i+1]||r.points[i],p=r.points[i],d=angleDir(Math.atan2(b[1]-a[1],b[0]-a[0]));signs.push({id:'osm-limit-'+r.id,kind:'limit'+limit,x:p[0],z:p[1],d,osm:true});}
- const scenarios=signs.slice(0,8).map((q,i)=>{const j=junctions.find(j=>j.id===q.j);return{kind:q.kind,x:j?.x||q.x,z:j?.z||q.z,junctionId:j?.id,title:['Oprire la STOP','Cedează trecerea','Prioritate în intersecție','Zonă cu copii','Lucrări pe drum','Carosabil alunecos','Drum cu denivelări','Limită de viteză'][i],hint:'Urmează drumul real din Viscri și studiază indicatorul cu I înainte de manevră.'};});
+ // These limit boards illustrate way tags, not surveyed sign-node positions.
+ const unit=D.projection.gameUnitsPerMeter;
+ const inside=(ps,x,z)=>{let yes=false;for(let i=0,j=ps.length-1;i<ps.length;j=i++)if((ps[i][1]>z)!==(ps[j][1]>z)&&x<(ps[j][0]-ps[i][0])*(z-ps[i][1])/(ps[j][1]-ps[i][1])+ps[i][0])yes=!yes;return yes;};
+ const clearSign=(x,z)=>!segmentList.some(s=>{const t=Math.max(0,Math.min(s.len,(x-s.a.x)*s.dx+(z-s.a.z)*s.dz));return Math.hypot(x-s.a.x-s.dx*t,z-s.a.z-s.dz*t)<s.width/2+.2*unit;})&&!D.buildings.some(b=>inside(b.points,x,z));
+ for(const r of roads){const limit=postedLimit(r);if(![30,50,90].includes(limit))continue;
+  const dirs=r.oneway==='-1'?[-1]:['yes','1','true'].includes(r.oneway)?[1]:[1,-1];
+  for(const direction of dirs){const pts=direction===1?r.points:[...r.points].reverse();let placed=false;
+   for(let i=1;i<pts.length&&!placed;i++){const a=pts[i-1],b=pts[i],len=Math.hypot(b[0]-a[0],b[1]-a[1]);if(len<.01)continue;const vx=(b[0]-a[0])/len,vz=(b[1]-a[1])/len;
+    for(const f of [.25,.5,.75]){const offset=r.width/2+.65*unit,x=a[0]+vx*len*f-vz*offset,z=a[1]+vz*len*f+vx*offset;if(!clearSign(x,z))continue;
+     signs.push({id:'way-limit-'+r.id+'-'+direction,kind:'limit'+limit,x,z,d:angleDir(Math.atan2(vz,vx)),angle:Math.atan2(vz,vx),source:'way-maxspeed',surveyed:false,osm:true});placed=true;break;}
+   }
+  }
+ }
+ // Use road-aligned, safe starts for speed practice instead of intersection-centre spawns.
+ const scenarios=roads.filter(r=>postedLimit(r)&&r.points.length>2).slice(0,8).map(r=>{const a=r.points[0],b=r.points[1],len=Math.hypot(b[0]-a[0],b[1]-a[1])||1,vx=(b[0]-a[0])/len,vz=(b[1]-a[1])/len;return{kind:'speed',x:(a[0]+b[0])/2-vz*r.width/4,z:(a[1]+b[1])/2+vx*r.width/4,angle:Math.atan2(vz,vx),title:'Viteză adaptată · Viscri',hint:'Respectă limita sectorului. Indicatoarele de viteză sunt reprezentări ale datelor drumului, nu poziții verificate în teren.'};});
  const startTangent=nearest({x:start[0],z:start[1]})?.tangent||vector(1,{x:start[0],z:start[1]});
  if(startTangent.x<0){startTangent.x=-startTangent.x;startTangent.z=-startTangent.z;}
- const W={realMap:true,mapData:D,SIZE:size,HALF:.65,LANE:.2,AXES:[],V,right,vector,heading,neighbor:neighbors,junctions,roundabouts:rounds,signs,services,landmarks,parkingBays:[{id:'public-parking',x:start[0],z:start[1],w:4,h:4.6,kind:'parking'}],scenarios,roads,footways,buildings:D.buildings,areas:D.areas,pois:D.pois,playerStart:{x:start[0],z:start[1],angle:Math.atan2(startTangent.z,startTangent.x)},trainingCenter:{x:trainingCenter[0],z:trainingCenter[1]},roadAt,nearestRoad:nearest,
+ const W={realMap:true,vehicleScale:0.67,serviceScale:0.5,mapData:D,SIZE:size,HALF:.65,LANE:.2,AXES:[],V,right,vector,heading,neighbor:neighbors,junctions,roundabouts:rounds,signs,services,landmarks,parkingBays:[],scenarios,roads,footways,buildings:D.buildings,areas:D.areas,pois:D.pois,playerStart:{x:start[0],z:start[1],angle:Math.atan2(startTangent.z,startTangent.x)},trainingCenter:{x:trainingCenter[0],z:trainingCenter[1]},roadAt,nearestRoad:nearest,
   light:(j,d,time)=>'green',pedGreen:()=>true,
   speedLimitAt:(x,z)=>{const n=nearest({x,z});return n?postedLimit(n.segment.road):null;},
   mapAttribution:'© OpenStreetMap contributors · ODbL 1.0',mapAttributionUrl:'https://www.openstreetmap.org/copyright'};
