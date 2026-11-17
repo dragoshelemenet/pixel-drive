@@ -6,7 +6,7 @@
  // Keep each rendered OSM way segment small enough for the existing 8-unit
  // scenery streamer. Overlap the final vertex so the road remains continuous.
  const lineParts=(points,maxLength=8)=>{const parts=[];for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/maxLength));for(let k=0;k<n;k++)parts.push([[a[0]+(b[0]-a[0])*k/n,a[1]+(b[1]-a[1])*k/n],[a[0]+(b[0]-a[0])*(k+1)/n,a[1]+(b[1]-a[1])*(k+1)/n]]);}return parts;};
- const roads=D.roads.map(r=>({...r,parts:lineParts(r.points),segments:[],bounds:[]}));
+ const roads=D.roads.map(r=>({...r,sourceWidth:r.width,width:Math.max(r.width,(['track','service'].includes(r.type)?3.5:6.5)*D.projection.gameUnitsPerMeter),parts:lineParts(r.points),segments:[],bounds:[]}));
  const footways=D.footways.map(f=>({...f,parts:lineParts(f.points)}));
  const cells=new Map(),cellSize=10,segmentList=[];
  for(const r of roads)for(const part of r.parts)for(let i=1;i<part.length;i++){

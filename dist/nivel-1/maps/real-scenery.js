@@ -1,6 +1,6 @@
 /* Viscri-only OSM geometry builder. Uses Pixel Drive surfaces and scene chunk batching. */
 (()=>{
-function build({W,scene,windows}){
+function build({W,scene,windows,deferBuildings=false}){
  const T=THREE,D=W.mapData;
  const color=(c,r=.95,type=null)=>new T.MeshStandardMaterial({color:c,map:type?DriveSurfaces.textures[type]:null,bumpMap:type?DriveSurfaces.textures[type]:null,bumpScale:type==='tile'?.035:type==='brick'?.018:.012,roughness:r,side:T.DoubleSide});
  const asphalt=color('#a0a19b',.92,'asphalt'),setts=color('#e0e0d6',.95),gravel=color('#8b877b',1),pathMat=color('#a79d87',.95),wallColors=['#c8b99a','#d5c8a7','#bdae91','#d7d1bb','#bda98d'].map(c=>color(c,.9,'brick')),roofColors=['#a94e38','#b75e43','#843d32','#ab6446','#746256'].map(c=>color(c,.9,'tile'));
@@ -36,7 +36,7 @@ function build({W,scene,windows}){
  // Footprints are copied from mapped building ways; façades and red-tile roofs
  // are generated in the established low-poly Pixel Drive art style.
  let seed=817;const rnd=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
- DriveBuildingKit.build({T,scene,buildings:D.buildings,nearestRoad:W.nearestRoad,windows,canPlaceDetail:(x,z,id)=>{
+ if(!deferBuildings)DriveBuildingKit.build({T,scene,buildings:D.buildings,nearestRoad:W.nearestRoad,windows,canPlaceDetail:(x,z,id)=>{
   const road=W.nearestRoad({x,z});if(road&&road.d<road.segment.width/2+.15)return false;
   if(D.buildings.some(b=>b.id!==id&&horizontalContains(b.points,x,z)))return false;
   return !W.serviceSites.some(site=>{const p=W.serviceSiteLocal([x,z],site);return p.x>-.5&&p.x<10.5&&Math.abs(p.z)<5.5;})&&!W.roadAt(x,z);

@@ -63,6 +63,16 @@ for(const city of ['viscri','original']){
  c.DriveScenery.build({W,scene,box,materials,windows});const before=scene.children.length;c.DriveServices.build({T,W,scene,box,mat:col=>new T.MeshStandardMaterial({color:col}),materials});assert(scene.children.length-before>200,'detailed services, not plaques');
  let vertices=0;scene.updateMatrixWorld(true);scene.traverse(o=>{if(!o.isMesh)return;const a=o.geometry.attributes.position;vertices+=a.count;for(let i=0;i<a.array.length;i++)assert(Number.isFinite(a.array[i]),'finite geometry');});
  if(W.realMap){const kitScene=new T.Scene();c.DriveBuildingKit.build({T,scene:kitScene,buildings:[{id:6,type:'house',points:[[0,0],[4,0],[4,2],[0,2],[0,0]]}],nearestRoad:()=>({x:2,z:-2}),windows:[]});const roofs=kitScene.children.filter(o=>o.material.map===c.DriveSurfaces.textures.tile&&o.geometry.attributes.position.count>6);assert(roofs.some(o=>{const a=o.geometry.attributes.position;let min=Infinity,max=-Infinity;for(let i=0;i<a.count;i++){min=Math.min(min,a.getY(i));max=Math.max(max,a.getY(i));}return max-min>.2;}),'rectangular footprint roof has raised ridge');}
+ if(W.realMap){
+  c.load('maps/building-stream');const streamed=new T.Scene(),liveWindows=[],stream=c.DriveBuildingStream.create({T,W,scene:streamed,windows:liveWindows});
+  assert.equal(stream.stats().resident,0,'no building geometry at startup');
+  const visible={intersectsBox:()=>true};let maxResident=0;
+  for(const b of W.buildings.filter((_,i)=>i%15===0)){const p=new T.Vector3(b.points[0][0],0,b.points[0][1]);for(let i=0;i<4;i++)stream.update(p,visible);maxResident=Math.max(maxResident,stream.stats().resident);assert(stream.stats().resident<=48);}
+  assert(stream.stats().built>10);assert(stream.stats().evicted>0,'distant architecture must be released');
+  stream.update(new T.Vector3(-1000,0,-1000),visible);assert.equal(stream.stats().resident,0);assert.equal(liveWindows.length,0);assert.equal(streamed.children.length,0);
+  console.log(JSON.stringify({streaming:stream.stats(),maxResident}));stream.dispose();
+  for(const r of W.roads)assert(r.width>=r.sourceWidth&&r.width>=(['track','service'].includes(r.type)?3.5:6.5)*W.mapData.projection.gameUnitsPerMeter);
+ }
  const meshCount=scene.children.length,serviceMeshCount=meshCount-before;
  const chunks=new Map();let oversized=0;scene.updateMatrixWorld(true);for(const o of [...scene.children]){if(!o.isMesh)continue;const bounds=new T.Box3().setFromObject(o),size=bounds.getSize(new T.Vector3());if(size.x>16||size.z>16){oversized++;continue;}const key=Math.floor(o.position.x/8)+','+Math.floor(o.position.z/8)+(W.realMap&&o.userData.detail?':detail':'');if(!chunks.has(key))chunks.set(key,new T.Group());chunks.get(key).add(o);}
  let batched=0;for(const group of chunks.values()){c.DriveScenery.batch(group);batched+=group.children.length;}if(W.realMap)assert.equal(oversized,0,'all map scenery must fit streamer bounds');
