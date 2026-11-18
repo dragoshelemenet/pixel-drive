@@ -1,1 +1,8 @@
-{"version":60,"name":"Pixel Drive","baseline":"c656424","releaseDate":"2026-11-18"}
+{
+  "version": 62,
+  "name": "Pixel Drive",
+  "baseline": "38818a8",
+  "releaseDate": "2026-11-18",
+  "status": "reference-lot-preview",
+  "savedAt": "2026-11-18 19:37:24 EET"
+}

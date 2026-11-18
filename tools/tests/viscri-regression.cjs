@@ -96,8 +96,9 @@ for(const city of ['viscri','original']){
  const box=(x,y,z,w,h,d,m)=>{const o=new T.Mesh(new T.BoxGeometry(w,h,d),typeof m==='string'?new T.MeshStandardMaterial({color:m}):m);o.position.set(x,y,z);scene.add(o);return o};
  if(W.realMap){
   const joined=new T.Scene(),data={areas:[],buildings:[]},testW={mapData:data,roads:[{type:'residential',surface:'asphalt',width:1,points:[[0,0],[5,0],[5,5]]}],footways:[],nearestRoad:()=>null,serviceSites:[],roadAt:()=>false};
-  c.DriveRealScenery.build({W:testW,scene:joined,windows:[]});assert.equal(joined.children.length,4);
-  const before=joined.children[1],after=joined.children[3];
+  c.DriveRealScenery.build({W:testW,scene:joined,windows:[]});const pavement=joined.children.filter(o=>o.userData.surface==='pavement');assert.equal(pavement.length,2);
+  assert(joined.children.some(o=>o.userData.surface==='marking'),'paved roads have paint');
+  const before=pavement[0],after=pavement[1];
   for(const [a,b] of [[2,0],[3,1]]){const pa=new T.Vector3().fromBufferAttribute(before.geometry.attributes.position,a).add(before.position),pb=new T.Vector3().fromBufferAttribute(after.geometry.attributes.position,b).add(after.position);assert(pa.distanceTo(pb)<1e-6,'road bend must share joined edge');assert(Math.abs(before.geometry.attributes.uv.getY(a)-after.geometry.attributes.uv.getY(b))<1e-6,'road texture must remain continuous at bend');}
  }
  c.DriveScenery.build({W,scene,box,materials,windows});const before=scene.children.length;c.DriveServices.build({T,W,scene,box,mat:col=>new T.MeshStandardMaterial({color:col}),materials});assert(scene.children.length-before>200,'detailed services, not plaques');

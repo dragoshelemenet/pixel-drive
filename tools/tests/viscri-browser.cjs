@@ -17,6 +17,9 @@ const fs=require('fs'),path=require('path'),assert=require('assert');
   assert(await page.evaluate(()=>!!document.querySelector('#scene').getContext('webgl2')),'real WebGL context');
   await page.waitForTimeout(1500);
   if(city==='viscri'){
+   await page.evaluate(()=>{__state.paused=true;});await page.waitForTimeout(1800);await page.screenshot({path:path.join(out,'reference-lot-spawn.png')});
+   await page.locator('#reference-inspect').click();await page.waitForTimeout(1800);await page.screenshot({path:path.join(out,'reference-house-close.png')});await page.locator('#reference-inspect').click();
+   await page.evaluate(()=>{__state.paused=false;});
    const start=await page.evaluate(()=>({...__state.player}));
    await page.locator('#scene').focus();await page.keyboard.down('w');
    await page.waitForFunction(start=>Math.hypot(__state.player.x-start.x,__state.player.z-start.z)>.05,start,{timeout:20000});await page.keyboard.up('w');

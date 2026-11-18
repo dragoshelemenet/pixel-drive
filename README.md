@@ -1,13 +1,19 @@
-# Pixel Drive v60
+# Pixel Drive v62 — reference lot preview
+
+Pentru actualizare în Codespaces: vezi `INSTALL.md` (instrucțiuni în română).
 
 Complete browser game: Viscri and the original city, school, passenger missions,
 traffic, fuel, navigation, quizzes and mobile controls.
 
+In Viscri you start beside the first reference lot. Use **Vezi casa** to inspect
+the house, then **Înapoi la condus** to drive. This is an initial reconstruction,
+not a finished 1:1 model; see CHANGELOG-v62.md for the remaining differences.
+
 ## Run the downloaded release
 
-1. Extract `Pixel-Drive-Viscri-v60.zip` into a new folder. This is the full game,
+1. Extract `Pixel-Drive-Viscri-v62-preview.zip` into a new folder. This is the full game,
    not an incremental patch; the old v59 installer is not needed.
-2. Open a terminal in the extracted `pixel-drive-v60` folder.
+2. Open a terminal in the extracted `pixel-drive-v62` folder.
 3. Check the release: `python3 tools/verify-release.py`
 4. Run: `python3 -m http.server 8000 --bind 127.0.0.1 --directory dist`
 5. Visit http://127.0.0.1:8000/nivel-1/ in Chrome or another WebGL-capable browser.
@@ -30,6 +36,7 @@ I interacts, P pauses. The on-screen controls support mobile layouts.
 With Node.js installed, from the release root:
 
 ```
+node tools/tests/surface-regression.cjs
 node tools/tests/collision-regression.cjs
 node tools/tests/viscri-regression.cjs
 ```
@@ -57,4 +64,4 @@ records: simulation time, car model, proposed footprint, collider ID/type/polygo
 road state and collision count. The record does not pretend to know GPU visibility.
 Remove the query parameter to disable the overlay and event recording.
 
-See `CHANGELOG-v60.md` for causes, changed files, measured results and limitations.
+See `CHANGELOG-v62.md` for causes, changed files, measured results and limitations.

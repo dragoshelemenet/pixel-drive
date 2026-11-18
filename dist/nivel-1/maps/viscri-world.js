@@ -106,5 +106,11 @@
  safeStarts();
  DriveServiceLayout.apply(W);
  DriveRoadSafety.apply(W);
+ // First compact reference lot: Street View camera, June 2025.
+ // WGS84 -> existing map projection; no image pixels enter the shipped assets.
+ const ref={lat:46.0539931,lon:25.09201905};
+ const center={x:192+(ref.lon-25.0915)*111320*Math.cos(46.053*Math.PI/180)*.165,z:192-(ref.lat-46.053)*111320*.165};
+ W.referenceLot={id:'lot-001',center,radius:5,sourceCamera:ref,approxLengthMeters:60};
+ W.playerStart=W.safePose({...center,angle:-.671654},[],{keep:false});
  window.DriveWorld= W;
 })();
