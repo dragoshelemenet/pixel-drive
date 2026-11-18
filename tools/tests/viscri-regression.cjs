@@ -8,7 +8,7 @@ function context(city){
  const ctx={console,document:doc,localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},performance:{now:()=>10000},Math,Set,Map,Date,Uint8Array,Float32Array,Uint16Array,Uint32Array,setTimeout,clearTimeout,requestAnimationFrame(){},Image:class{}};ctx.window=ctx;vm.createContext(ctx);ctx.load=f=>vm.runInContext(fs.readFileSync(path.join(root,f+'.js'),'utf8'),ctx,{filename:f});ctx.elements=elements;ctx.store=store;return ctx;
 }
 for(const city of ['viscri','original']){
- const c=context(city);for(const f of ['maps/viscri-data','maps/service-layout','maps/viscri-world','world','rules','simulation'])c.load(f);
+ const c=context(city);for(const f of ['maps/viscri-data','maps/service-layout','maps/road-safety','maps/viscri-world','world','rules','simulation'])c.load(f);
  const W=c.DriveWorld,S=c.DriveSimulation;
  assert.equal(!!W.realMap,city==='viscri');
  if(W.realMap){assert.equal(W.buildings.length,449);assert(W.realTrafficRoutes.length>5);
@@ -29,7 +29,15 @@ for(const city of ['viscri','original']){
   }
   assert(!W.roadAt(-100,-100),'off-map terrain must stay blocked');console.log(JSON.stringify({roadSamples,checks:'render/collision agreement passed'}));
   assert.equal(W.vehicleScale,.67);assert.equal(W.serviceScale,.5);
-  assert(W.signs.length>0);assert(W.signs.every(q=>q.source==='way-maxspeed'&&q.surveyed===false));
+  assert(W.signs.length>0);assert(W.signs.every(q=>['way-maxspeed','virtual-service-exit'].includes(q.source)&&q.surveyed===false));
+  for(const q of W.signs.filter(q=>q.source==='way-maxspeed'))assert(q.reason==='map-entry'||q.previousLimits.some(n=>n!==Number(q.kind.slice(5))),'speed board requires an actual limit change');
+  assert(W.yieldApproaches.length>0,'virtual exits need yield boards');
+  for(const q of W.yieldApproaches){const s=S.create(),site=q.site,point=x=>({x:site.x+site.ux*x,z:site.z+site.uz*x});
+   const old=point(-.1);Object.assign(s.player,point(-.15),{angle:q.angle,speed:.3});
+   const n=W.nearestRoad(q.exit),v=n.tangent;s.traffic=[{x:q.exit.x-v.x*2,z:q.exit.z-v.z*2,angle:Math.atan2(v.z,v.x),speed:.5}];S.checkRules(s,old);assert(s.violationEvent?.key.startsWith('yield-exit-'),'traffic approaching virtual exit requires yield');
+   s.violationEvent=null;s.ruleCooldown={};s.traffic=[];S.checkRules(s,old);assert(!s.violationEvent,'empty exit must not penalize');
+  }
+
   for(const q of W.signs)for(const r of W.roads)for(const part of r.parts){const a=part[0],b=part[1],dx=b[0]-a[0],dz=b[1]-a[1],len2=dx*dx+dz*dz,t=Math.max(0,Math.min(1,((q.x-a[0])*dx+(q.z-a[1])*dz)/len2));assert(Math.hypot(q.x-a[0]-dx*t,q.z-a[1]-dz*t)>r.width/2,'sign intersects road '+q.id);}
   const a=S.vehicleBody({x:0,z:0,angle:0}),b=S.vehicleBody({x:0,z:.52,angle:Math.PI});assert(!S.bodiesOverlap(a,b),'opposite lanes must not collide');b.z=.1;assert(S.bodiesOverlap(a,b),'actual vehicle contact must collide');
   const saved=W.landmarks;W.landmarks=[{kind:'museum',x:10,z:10},{kind:'parking',x:11,z:10}];assert.equal(c.DriveRules.context({player:{x:10,z:10,angle:0},pedestrians:[],time:0}).key,'parking');W.landmarks=saved;
@@ -54,6 +62,31 @@ for(const city of ['viscri','original']){
  c.elements.find(e=>e.id==='driving-replay').querySelector('#dr-retry').onclick();
  assert(!c.DriveReplay.open());assert(!replayState.paused);assert.equal(replayState.traffic[0].x,originalX);assert.equal(replayState.traffic[0].j,j);if(route)assert.equal(replayState.traffic[0].route,route);
  S.update(replayState,{},.016);
+ if(W.realMap){
+  let retries=0;
+  // Start the public replay flow with a failed checkpoint inside real footprints.
+  for(const building of W.buildings.filter((_,i)=>i%12===0)){
+   const ps=building.points,p={x:ps.reduce((n,p)=>n+p[0],0)/ps.length,z:ps.reduce((n,p)=>n+p[1],0)/ps.length,angle:Math.PI/3,speed:0,indicator:0};
+   const s=S.create();s.traffic=[];s.pedestrians=[];s.player=p;s.collisions=4;s.failed=true;
+   c.DriveReplay.onFrame(s,{},12000+retries*1000);
+   s.violationEvent={id:10+retries,key:'collision',kind:'collision',direction:1,junctionId:W.junctions[retries%W.junctions.length].id,limit:50,player:{...p}};
+   c.DriveReplay.onFrame(s,{},12300+retries*1000);assert(c.DriveReplay.open());c.elements.find(e=>e.id==='driving-replay').querySelector('#dr-retry').onclick();
+   assert(W.poseFits(s.player,s.traffic,1.6),'retry must leave a clear launch corridor');const start={...s.player},count=s.collisions;
+   for(let k=0;k<180;k++)S.update(s,{w:true},1/60);
+   assert.equal(s.collisions,count,'retry must not immediately collide');assert(!s.failed);assert(Math.hypot(s.player.x-start.x,s.player.z-start.z)>.9);retries++;
+  }
+  let missions=0;const mission=S.create();mission.traffic=[];mission.pedestrians=[];
+  for(const id of ['pickup','dropoff','parking']){const target=W.landmarks.find(l=>l.id===id);assert(W.poseFits(target,[],1.6));assert(!W.roadAt(target.passenger.x,target.passenger.z));assert(!W.obstacleAt(target.passenger));assert(W.connectedRoads.has(W.roads.find(r=>r.id===target.roadId)));
+   Object.assign(mission.player,target,{x:target.x-Math.cos(target.angle),z:target.z-Math.sin(target.angle),speed:0});const count=mission.collisions;
+   for(let k=0;k<180;k++)S.update(mission,{w:true},1/60);mission.player.speed=0;
+   assert.equal(mission.collisions,count);assert.equal(S.interact(mission)?.type,'mission');missions++;
+   const route=W.routeRoad(W.playerStart,target);assert(route.length>1,'road route must reach mission');
+   for(let i=1;i<route.length;i++){const a=route[i-1],b=route[i],len=Math.hypot(b.x-a.x,b.z-a.z);for(let d=0;d<len;d+=.2)assert(!W.obstacleAt({x:a.x+(b.x-a.x)*d/len,z:a.z+(b.z-a.z)*d/len,angle:Math.atan2(b.z-a.z,b.x-a.x)}),'route must clear actual buildings');}
+   for(let i=1;i<route.length;i++)for(let t=0;t<=1;t+=.1)assert(W.roadAt(route[i-1].x+(route[i].x-route[i-1].x)*t,route[i-1].z+(route[i].z-route[i-1].z)*t),'navigation must follow road, not chords through houses');
+  }
+  console.log(JSON.stringify({safeRetries:retries,missionApproaches:missions,signs:W.signs.length,yieldExits:W.yieldApproaches.length}));
+ }
+
  let s=S.create();s.pedestrians=[];
  if(W.realMap){s.player.x=10;s.player.z=10;s.traffic=s.traffic.slice(0,1);const t=s.traffic[0],x=t.x,z=t.z;let traveled=0;for(let i=0;i<240;i++){const px=t.x,pz=t.z;S.update(s,{},1/60);traveled+=Math.hypot(t.x-px,t.z-pz);}assert(traveled>2,'traffic must advance beyond first frame');assert(Number.isFinite(t.routeProgress));}
  s=S.create();s.traffic=[];s.pedestrians=[];s.player.speed=.6;for(let i=0;i<100;i++){s.paused=false;S.update(s,{s:true},1/60);}assert.equal(s.player.speed,0,'held brake must not reverse');S.update(s,{},1/60);S.update(s,{s:true},1/60);assert(s.player.speed<0,'fresh S press reverses');
@@ -83,6 +116,14 @@ for(const city of ['viscri','original']){
   stream.update(new T.Vector3(-1000,0,-1000),visible);assert.equal(stream.stats().resident,0);assert.equal(liveWindows.length,0);assert.equal(streamed.children.length,0);
   console.log(JSON.stringify({streaming:stream.stats(),maxResident}));stream.dispose();
   for(const r of W.roads)assert(r.width>=r.sourceWidth&&r.width>=(['track','service'].includes(r.type)?3.5:6.5)*W.mapData.projection.gameUnitsPerMeter);
+ }
+ if(W.realMap){
+  c.load('maps/region-stream');const local=new T.Scene(),art=c.DriveRealScenery.build({W,scene:local,windows:[],deferBuildings:true,stream:true});assert.equal(local.children.length,0,'no environment geometry at startup');assert(art.recipes.length>100);
+  const stream=c.DriveRegionStream.create({T,scene:local,recipes:art.recipes}),shown={intersectsBox:()=>true},hidden={intersectsBox:()=>false};
+  const start=new T.Vector3(W.playerStart.x,0,W.playerStart.z);for(let i=0;i<20;i++)stream.update(start,[shown]);assert(stream.stats().resident>0);assert(stream.stats().resident<stream.stats().total/3,'only nearby regions loaded');
+  stream.update(start,[hidden]);assert.equal(stream.stats().visible,0,'nothing outside all views may render');
+  for(const b of W.buildings.filter((_,i)=>i%20===0)){const p=new T.Vector3(b.points[0][0],0,b.points[0][1]);for(let i=0;i<3;i++)stream.update(p,[shown]);assert(stream.stats().resident<=96);}
+  stream.update(new T.Vector3(-1000,0,-1000),[shown]);assert.equal(stream.stats().resident,0);assert.equal(local.children.length,0);console.log(JSON.stringify({regions:stream.stats()}));stream.dispose();
  }
  const meshCount=scene.children.length,serviceMeshCount=meshCount-before;
  const chunks=new Map();let oversized=0;scene.updateMatrixWorld(true);for(const o of [...scene.children]){if(!o.isMesh)continue;const bounds=new T.Box3().setFromObject(o),size=bounds.getSize(new T.Vector3());if(size.x>16||size.z>16){oversized++;continue;}const key=Math.floor(o.position.x/8)+','+Math.floor(o.position.z/8)+(W.realMap&&o.userData.detail?':detail':'');if(!chunks.has(key))chunks.set(key,new T.Group());chunks.get(key).add(o);}

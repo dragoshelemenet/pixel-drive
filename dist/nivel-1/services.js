@@ -7,6 +7,7 @@ if(W.realMap){
  localBox((1.1-s.access)/2,.12,0,1.1+s.access,.08,2.2,materials.road);
  group.scale.setScalar(s.scale||1);group.position.set(s.x,0,s.z);group.rotation.y=-Math.atan2(s.uz,s.ux);scene.add(group);group.updateMatrixWorld(true);for(const child of [...group.children])scene.attach(child);scene.remove(group);
  }
+ if(W.includeCourse===false)return;
  const a=W.trainingAccess.a,b=W.trainingAccess.b,dx=b.x-a.x,dz=b.z-a.z;
  const drive=box((a.x+b.x)/2,.1,(a.z+b.z)/2,Math.hypot(dx,dz),.08,2.4,materials.road);drive.rotation.y=-Math.atan2(dz,dx);
  const kiosk=new T.Group(),kb=(x,y,z,w,h,d,m)=>{const o=new T.Mesh(new T.BoxGeometry(w,h,d),typeof m==='string'?mat(m):m);o.position.set(x,y,z);o.castShadow=o.receiveShadow=true;kiosk.add(o);return o;};

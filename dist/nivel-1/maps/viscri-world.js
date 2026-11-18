@@ -70,19 +70,6 @@
  // mapped ways that enter the built-up village, so it is not treated as 90
  // km/h throughout the clipped game map; the simulation defaults to 50 there.
  const postedLimit=r=>{const n=Number.parseInt(r.maxspeed,10);if(Number.isFinite(n))return n;if(r.maxspeed==='RO:urban')return 50;return null;};
- // These limit boards illustrate way tags, not surveyed sign-node positions.
- const unit=D.projection.gameUnitsPerMeter;
- const inside=(ps,x,z)=>{let yes=false;for(let i=0,j=ps.length-1;i<ps.length;j=i++)if((ps[i][1]>z)!==(ps[j][1]>z)&&x<(ps[j][0]-ps[i][0])*(z-ps[i][1])/(ps[j][1]-ps[i][1])+ps[i][0])yes=!yes;return yes;};
- const clearSign=(x,z)=>!segmentList.some(s=>{const t=Math.max(0,Math.min(s.len,(x-s.a.x)*s.dx+(z-s.a.z)*s.dz));return Math.hypot(x-s.a.x-s.dx*t,z-s.a.z-s.dz*t)<s.width/2+.2*unit;})&&!D.buildings.some(b=>inside(b.points,x,z));
- for(const r of roads){const limit=postedLimit(r);if(![30,50,90].includes(limit))continue;
-  const dirs=r.oneway==='-1'?[-1]:['yes','1','true'].includes(r.oneway)?[1]:[1,-1];
-  for(const direction of dirs){const pts=direction===1?r.points:[...r.points].reverse();let placed=false;
-   for(let i=1;i<pts.length&&!placed;i++){const a=pts[i-1],b=pts[i],len=Math.hypot(b[0]-a[0],b[1]-a[1]);if(len<.01)continue;const vx=(b[0]-a[0])/len,vz=(b[1]-a[1])/len;
-    for(const f of [.25,.5,.75]){const offset=r.width/2+.65*unit,x=a[0]+vx*len*f-vz*offset,z=a[1]+vz*len*f+vx*offset;if(!clearSign(x,z))continue;
-     signs.push({id:'way-limit-'+r.id+'-'+direction,kind:'limit'+limit,x,z,d:angleDir(Math.atan2(vz,vx)),angle:Math.atan2(vz,vx),source:'way-maxspeed',surveyed:false,osm:true});placed=true;break;}
-   }
-  }
- }
  // Use road-aligned, safe starts for speed practice instead of intersection-centre spawns.
  // Reserve the whole largest selectable car, plus a clear launch corridor.
  // Narrow roads need a centred start; a fixed quarter-width offset clips curbs.
@@ -118,5 +105,6 @@
  W.scenarios=scenarios;
  safeStarts();
  DriveServiceLayout.apply(W);
+ DriveRoadSafety.apply(W);
  window.DriveWorld= W;
 })();

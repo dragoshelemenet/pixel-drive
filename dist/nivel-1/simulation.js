@@ -61,6 +61,7 @@
       cruise:1.3,phase:'approach',stopTime:0,color:'#48a2d5',tutorial:true});
    }
   }
+  if(W.realMap){Object.assign(s.player,W.safePose(s.player,[],{keep:true}));s.traffic=s.traffic.filter(t=>Math.hypot(t.x-s.player.x,t.z-s.player.z)>2.5);}
   return s;
  }
  function penalize(s,points,text,key,delay=3,meta=null){
@@ -217,6 +218,11 @@
  function checkRules(s,old){
   const p=s.player,d=W.heading(p.angle,p.x,p.z),v=W.vector(d,p);
   if(W.realMap&&W.speedLimitAt)s.limit=W.speedLimitAt(p.x,p.z)||50;
+  if(W.realMap)for(const q of W.yieldApproaches||[]){
+   const a=W.serviceSiteLocal([old.x,old.z],q.site),b=W.serviceSiteLocal([p.x,p.z],q.site);
+   if(a.x>=-.24&&b.x<-.24&&Math.abs(b.z)<1.2&&Math.cos(p.angle-q.angle)>.5&&s.traffic.some(t=>{const dx=q.exit.x-t.x,dz=q.exit.z-t.z;return t.speed>.05&&Math.hypot(dx,dz)<3.5&&dx*Math.cos(t.angle)+dz*Math.sin(t.angle)>0;}))
+    penalize(s,80,'Cedează trecerea la ieșirea din incinta amenajată.','yield-exit-'+q.id,8,{kind:'yield'});
+  }
   for(const j of W.junctions){
    const along=(j.x-p.x)*v.x+(j.z-p.z)*v.z,lateral=Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x),before=(j.x-old.x)*v.x+(j.z-old.z)*v.z;
    if(lateral<1.6&&before>0&&along<=0&&p.speed>0)s.limit=50;
@@ -372,6 +378,7 @@
   const forward={x:Math.cos(p.angle),z:Math.sin(p.angle)},right={x:-forward.z,z:forward.x};
   const body=W.realMap?vehicleBody(p,true):{halfLength:.45,halfWidth:.22};
   let valid=true;for(const a of [-body.halfLength,body.halfLength])for(const b of [-body.halfWidth,body.halfWidth])if(!W.roadAt(nx+forward.x*a+right.x*b,nz+forward.z*a+right.z*b,.02))valid=false;
+  if(valid&&W.realMap&&W.obstacleAt({...body,x:nx,z:nz,angle:p.angle}))valid=false;
   if(valid){p.x=nx;p.z=nz;s.distance+=Math.hypot(nx-old.x,nz-old.z);}else if(Math.abs(p.speed)>.08)collision(s,'Coliziune cu bordura sau un obstacol.');
   for(const t of s.traffic)if((W.realMap?bodiesOverlap(vehicleBody(p,true),vehicleBody(t)):Math.hypot(t.x-p.x,t.z-p.z)<.75)){handleAICollision(s,t,old);break;}
   for(const ped of s.pedestrians)if(ped.crossing&&Math.hypot(ped.x-p.x,ped.z-p.z)<.43){s.failed=true;s.score=0;p.speed=0;s.message='Ai lovit un pieton. Oprește înainte de trecere și acordă prioritate.';}
@@ -425,7 +432,7 @@
   const target=W.landmarks.find(l=>l.id===id);
   if(!target)return{phase:'complete',title:'Cursă completă',text:'Ai dus pasagerul la destinație și ai parcat în locul marcat.',target:null,distance:null};
   const copy={
-   pickup:['Preia pasagerul','Mergi la zona albastră de preluare. Oprește complet și apasă I.'],
+   pickup:['Preia pasagerul',W.realMap?'Urmează marcajul de pe drum. Oprește pe dreapta lângă pasager și apasă I.':'Mergi la zona albastră de preluare. Oprește complet și apasă I.'],
    dropoff:['Du pasagerul la destinație','Urmează marcajul albastru. Oprește în zona de coborâre și apasă I.'],
    park:['Parchează regulamentar','Mergi la locul marcat cu P. Oprește în interior și apasă I.']
   }[s.mission.phase];
@@ -433,12 +440,17 @@
  }
  function interact(s){
   if(s.scenario&&!s.scenario.complete)return null;
-  const o=objective(s);if(!o.target||o.distance>2.25)return null;
+  const o=objective(s);if(!o.target||o.distance>(W.realMap?(o.target.stopRadius||.8):2.25))return null;
+  if(W.realMap&&!W.poseFits(s.player,[],0))return null;
   if(Math.abs(s.player.speed)>.04){s.message='Oprește complet în zona marcată, apoi apasă I.';s.messageUntil=s.time+3;return{type:'need-stop'};}
   if(s.mission.phase==='pickup'){s.mission.phase='dropoff';s.score+=100;s.message='Pasager preluat. Urmează marcajul pentru destinație.';}
   else if(s.mission.phase==='dropoff'){s.mission.phase='park';s.score+=100;s.message='Pasagerul a coborât în siguranță. Acum parchează la P.';}
   else{s.mission.phase='complete';s.score+=200;s.message='Cursă completă! Ai învățat preluarea, coborârea și parcarea.';}
   s.messageUntil=s.time+5;return{type:'mission',phase:s.mission.phase};
  }
- window.DriveSimulation={vehicleBody,bodiesOverlap,create,update,penalize,collision,crossPath,trafficConflict,checkRules,checkTurnSignal,checkReverse,reverseProhibition,objective,interact,driveSettings:{initialAcceleration:0.22,reverseAcceleration:0.28}};
+ function recoverPosition(s){if(!W.realMap)return;
+  const pose=W.safePose(s.player,s.traffic,{corridor:1.6});Object.assign(s.player,pose,{speed:0,indicator:0});
+  s.brakeKeyHeld=false;s.brakeKeyMode=null;s.turnWatch=null;s.collisions=Math.min(s.collisions,3);
+ }
+ window.DriveSimulation={recoverPosition,vehicleBody,bodiesOverlap,create,update,penalize,collision,crossPath,trafficConflict,checkRules,checkTurnSignal,checkReverse,reverseProhibition,objective,interact,driveSettings:{initialAcceleration:0.22,reverseAcceleration:0.28}};
 })();

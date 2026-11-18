@@ -16,6 +16,14 @@ const fs=require('fs'),path=require('path'),assert=require('assert');
   assert.equal(await page.evaluate(()=>DriveQuizBank.questions.length),1208);
   assert(await page.evaluate(()=>!!document.querySelector('#scene').getContext('webgl2')),'real WebGL context');
   await page.waitForTimeout(1500);
+  if(city==='viscri'){
+   const load=await page.evaluate(()=>({navigationMs:Math.round(performance.now()),...DriveRender.stats}));assert(load.environment.resident<load.environment.total/3);assert(load.buildings.resident<49);console.log(JSON.stringify({initialStreaming:load}));
+   await page.evaluate(()=>{const s=__state,b=DriveWorld.buildings[100],ps=b.points;s.traffic=[];s.pedestrians=[];Object.assign(s.player,{x:ps.reduce((n,p)=>n+p[0],0)/ps.length,z:ps.reduce((n,p)=>n+p[1],0)/ps.length,speed:0});s.collisions=4;s.failed=true;s.violationEvent={id:900,key:'collision',kind:'collision',direction:1,junctionId:DriveWorld.junctions[5].id,limit:50,player:{...s.player}};DriveReplay.onFrame(s,document.querySelector('#scene'),performance.now());});
+   await page.locator('#driving-replay[open]').waitFor();await page.locator('#dr-retry').click();
+   assert(await page.evaluate(()=>DriveWorld.poseFits(__state.player,__state.traffic,1.6)));
+   const launch=await page.evaluate(()=>{const s=__state,start={...s.player},collisions=s.collisions;for(let i=0;i<180;i++)DriveSimulation.update(s,{w:true},1/60);s.paused=true;return{distance:Math.hypot(s.player.x-start.x,s.player.z-start.z),collisions:s.collisions-collisions,failed:s.failed};});assert(launch.distance>.9&&launch.collisions===0&&!launch.failed);console.log(JSON.stringify({retryFromBuilding:launch}));
+   for(const id of ['pickup','dropoff']){await page.evaluate(id=>{const stop=DriveWorld.landmarks.find(l=>l.id===id);Object.assign(__state.player,stop,{speed:0});__state.scenario=null;__state.mission.phase=id;__state.paused=true;},id);await page.waitForTimeout(1800);await page.screenshot({path:path.join(out,city+'-'+id+'.png')});}
+  }
   // Capture actual running renderer at a repeatable location; freeze simulation, not rendering.
   await page.evaluate(()=>{__state.paused=true;});
   await page.screenshot({path:path.join(out,city+'-road.png')});

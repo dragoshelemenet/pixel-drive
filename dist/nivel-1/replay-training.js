@@ -37,7 +37,7 @@
  dialog.addEventListener('cancel',e=>e.preventDefault());
  const display=dialog.querySelector('#dr-canvas'),g=display.getContext('2d');
  const $=id=>dialog.querySelector('#'+id);
- let state=null,frames=[],lastCapture=-1000,event=null,checkpoint=null,clip=[],clipStart=0,mode='replay',runId=0;
+ let recordingState=null,state=null,frames=[],lastCapture=-1000,event=null,checkpoint=null,clip=[],clipStart=0,mode='replay',runId=0;
  const CAPTURE_EVERY=205,KEEP_MS=9000,CLIP_MS=6500;
  const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
  // Immutable route/topology references may contain cycles; actor state must not.
@@ -68,10 +68,13 @@
   while(frames.length&&now-frames[0].at>KEEP_MS)frames.shift();
  }
  function selectCheckpoint(s,report){
+  // Recorded positions are eligible only when the whole car and launch corridor
+  // are clear. A failed frame must never become a respawn checkpoint.
+  const eligible=W.realMap?frames.filter(f=>W.poseFits(f.player,f.traffic,1.6)):frames;
   const j=W.junctions.find(q=>q.id===report.junctionId);
   if(j&&report.direction!==null){
    const d=report.direction,v=W.vector(d,j),line=report.kind==='round'?4.35:(W.realMap?.65:2.55);
-   const candidates=frames.filter(f=>{
+   const candidates=eligible.filter(f=>{
     const p=f.player,along=(j.x-p.x)*v.x+(j.z-p.z)*v.z;
     const lateral=Math.abs((j.x-p.x)*v.z-(j.z-p.z)*v.x);
     return along>line+1.6&&along<line+8&&lateral<1.5;
@@ -83,11 +86,11 @@
    }
   }
   if(report.kind==='reverse'){
-   const safe=frames.filter(f=>f.player.speed>=-.025&&
+   const safe=eligible.filter(f=>f.player.speed>=-.025&&
      !window.DriveSimulation?.reverseProhibition(f.player));
    if(safe.length)return safe.at(-1);
   }
-  return frames.find(f=>f.at>=(frames.at(-1)?.at||0)-3000)||frames[0]||null;
+  return eligible.find(f=>f.at>=(frames.at(-1)?.at||0)-3000)||eligible[0]||null;
  }
  function drawUnavailable(){
   g.fillStyle='#101e18';g.fillRect(0,0,720,405);g.fillStyle='#f4eed7';g.textAlign='center';
@@ -246,7 +249,7 @@
    s.player={...snap.player,speed:0,indicator:0};
    s.traffic=clone(snap.traffic);s.pedestrians=clone(snap.pedestrians);
   }else{s.player={...e.player,speed:0,indicator:0};}
-  if(j&&e.direction!==null){
+  if(j&&e.direction!==null&&!W.realMap){
    const v=W.vector(e.direction,j),right=W.right(e.direction,j),line=e.kind==='round'?4.35:(W.realMap?.65:2.55);
    const along=(j.x-s.player.x)*v.x+(j.z-s.player.z)*v.z;
    if(along<line+2||along>line+8){
@@ -263,6 +266,7 @@
       speed:0,cruise:1.4,phase:'approach',stopTime:0,color:'#56a5df',tutorial:true});
    }
   }else if(e.kind==='speed')s.limit=e.limit;
+  window.DriveSimulation?.recoverPosition(s);
   s.turnWatch=null;
   s.reverseDistanceM=0;s.forwardRecoveryM=0;
   s.retraining={kind:e.kind,junctionId:e.junctionId,direction:e.direction,turnSign:e.turnSign,
@@ -281,6 +285,7 @@
  $('dr-example').addEventListener('click',()=>play('demo'));
  $('dr-retry').addEventListener('click',restartCorrectly);
  window.DriveReplay={onFrame(s,canvas,now){
+   if(recordingState!==s){recordingState=s;frames=[];lastCapture=-1000;}
    // Preserve the last instant even if a collision has already set speed=0.
    if(s.violationEvent){const report=s.violationEvent;
      if(!dialog.open)capture(s,canvas,now,true,report.speedKmh);

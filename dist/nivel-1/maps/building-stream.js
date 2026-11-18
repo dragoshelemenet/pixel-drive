@@ -13,11 +13,11 @@ function create({T,W,scene,windows}){
   for(const g of geometries)if(!liveGeometry.has(g))g.dispose();
   e.group=group;e.geometries=liveGeometry;e.materials=materials;e.windows=localWindows;windows.push(...localWindows);scene.add(group);built++;
  }
- function update(position,frustum,night=0,mirrors=false){
+ function update(position,frustum,night=0){
   const wanted=[];
   for(const e of entries){const distance=e.bounds.distanceToPoint(position);e.distance=distance;
    if(e.group&&distance>28)release(e);
-   const visible=distance<20&&(distance<7||mirrors||frustum.intersectsBox(e.bounds));
+   const views=Array.isArray(frustum)?frustum:[frustum];const visible=distance<24&&views.some(f=>f.intersectsBox(e.bounds));
    if(e.group)e.group.visible=visible;
    if(visible)wanted.push(e);
   }
