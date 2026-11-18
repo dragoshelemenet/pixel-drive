@@ -13,13 +13,13 @@ function create({T,scene,recipes,retainMaterials=[]}){
   cell.group=group;cell.ownedMaterials=owned;cell.ownedTextures=privateTextures;scene.add(group);resident.add(cell);built++;lastBuildMs=clock()-start;
  }
  function update(position,frustums){const now=clock(),wanted=[];
-  for(const cell of cells.values()){const distance=cell.bounds.distanceToPoint(position),visible=distance<30&&frustums.some(f=>f.intersectsBox(cell.bounds));
+  for(const cell of cells.values()){const distance=cell.bounds.distanceToPoint(position),visible=distance<3||(distance<30&&frustums.some(f=>f.intersectsBox(cell.bounds)));
    if(cell.group){cell.group.visible=visible;if(visible)cell.lastSeen=now;else if(distance>38||now-cell.lastSeen>4000)release(cell);}
    if(visible)wanted.push({cell,distance});
   }
   wanted.sort((a,b)=>a.distance-b.distance);
   const start=clock();let count=0;
-  for(const {cell} of wanted){if(cell.group)continue;build(cell);cell.lastSeen=now;if(++count>=2||clock()-start>3)break;}
+  for(const {cell,distance} of wanted){if(cell.group)continue;build(cell);cell.lastSeen=now;count++;if(distance>=3&&(count>=2||clock()-start>3))break;}
   if(resident.size>96){const far=[...resident].sort((a,b)=>b.bounds.distanceToPoint(position)-a.bounds.distanceToPoint(position));for(const cell of far.slice(0,resident.size-96))release(cell);}
  }
  return{update,dispose:()=>[...resident].forEach(release),stats:()=>({total:cells.size,resident:resident.size,visible:[...resident].filter(c=>c.group.visible).length,built,evicted,lastBuildMs})};

@@ -17,13 +17,15 @@ function create({T,W,scene,windows}){
   const wanted=[];
   for(const e of entries){const distance=e.bounds.distanceToPoint(position);e.distance=distance;
    if(e.group&&distance>28)release(e);
-   const views=Array.isArray(frustum)?frustum:[frustum];const visible=distance<24&&views.some(f=>f.intersectsBox(e.bounds));
+   const views=Array.isArray(frustum)?frustum:[frustum];const visible=distance<3||(distance<24&&views.some(f=>f.intersectsBox(e.bounds)));
    if(e.group)e.group.visible=visible;
    if(visible)wanted.push(e);
   }
   wanted.sort((a,b)=>a.distance-b.distance);
-  // One building per frame; no full-village geometry construction or merging.
-  const next=wanted.slice(0,48).find(e=>!e.group);if(next)construct(next);
+  // Load immediate solids first; otherwise construct one distant building per frame.
+  const urgent=wanted.filter(e=>e.distance<3&&!e.group);
+  for(const e of urgent)construct(e);
+  const next=wanted.slice(0,48).find(e=>!e.group);if(next&&!urgent.length)construct(next);
   // Bound retained geometry even in dense parts of the village.
   const loaded=entries.filter(e=>e.group).sort((a,b)=>a.distance-b.distance);
   for(const e of loaded.slice(48))release(e);

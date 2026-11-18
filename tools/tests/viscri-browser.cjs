@@ -4,8 +4,8 @@
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const fs=require('fs'),path=require('path'),assert=require('assert');
 (async()=>{
- const out=process.env.OUTPUT_DIR||'/tmp/pixel-v54-frames';fs.mkdirSync(out,{recursive:true});
- const browser=await chromium.launch({executablePath:process.env.CHROMIUM||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-webgl','--enable-unsafe-swiftshader']});
+ const out=process.env.OUTPUT_DIR||'/tmp/pixel-drive-frames';fs.mkdirSync(out,{recursive:true});
+ const browser=await chromium.launch({executablePath:process.env.CHROMIUM||(process.platform==='darwin'?'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome':undefined),headless:true,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-webgl','--enable-unsafe-swiftshader']});
  const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{if(!localStorage.getItem('pixel-drive-city'))localStorage.setItem('pixel-drive-city','viscri');let sim;Object.defineProperty(window,'DriveSimulation',{configurable:true,get:()=>sim,set(v){sim=v;const create=v.create;v.create=(...args)=>{const s=create(...args);window.__state=s;return s;};}});});
  const base=process.env.BASE_URL||'http://127.0.0.1:8766';
@@ -17,6 +17,10 @@ const fs=require('fs'),path=require('path'),assert=require('assert');
   assert(await page.evaluate(()=>!!document.querySelector('#scene').getContext('webgl2')),'real WebGL context');
   await page.waitForTimeout(1500);
   if(city==='viscri'){
+   const start=await page.evaluate(()=>({...__state.player}));
+   await page.locator('#scene').focus();await page.keyboard.down('w');
+   await page.waitForFunction(start=>Math.hypot(__state.player.x-start.x,__state.player.z-start.z)>.05,start,{timeout:20000});await page.keyboard.up('w');
+   assert(await page.evaluate(start=>Math.hypot(__state.player.x-start.x,__state.player.z-start.z)>.05,start),'keyboard driving moves the player');
    const load=await page.evaluate(()=>({navigationMs:Math.round(performance.now()),...DriveRender.stats}));assert(load.environment.resident<load.environment.total/3);assert(load.buildings.resident<49);console.log(JSON.stringify({initialStreaming:load}));
    await page.evaluate(()=>{const s=__state,b=DriveWorld.buildings[100],ps=b.points;s.traffic=[];s.pedestrians=[];Object.assign(s.player,{x:ps.reduce((n,p)=>n+p[0],0)/ps.length,z:ps.reduce((n,p)=>n+p[1],0)/ps.length,speed:0});s.collisions=4;s.failed=true;s.violationEvent={id:900,key:'collision',kind:'collision',direction:1,junctionId:DriveWorld.junctions[5].id,limit:50,player:{...s.player}};DriveReplay.onFrame(s,document.querySelector('#scene'),performance.now());});
    await page.locator('#driving-replay[open]').waitFor();await page.locator('#dr-retry').click();
@@ -49,5 +53,6 @@ const fs=require('fs'),path=require('path'),assert=require('assert');
  await page.setViewportSize({width:390,height:844});await page.evaluate(()=>{__state.paused=true;});
  await page.locator('[data-indicator="1"]').click();assert.equal(await page.evaluate(()=>__state.player.indicator),1);
  await page.screenshot({path:path.join(out,'viscri-mobile.png')});
+ await page.goto(base+'/nivel-1/?collision-debug=1');await page.waitForFunction(()=>DriveCollisionDebug&&DriveRender.stats);await page.waitForTimeout(1000);await page.screenshot({path:path.join(out,'collision-debug.png')});
  assert.deepEqual(errors,[]);console.log(JSON.stringify({switchRoundTrip:'passed',mobileIndicator:'passed',pageErrors:errors}));await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});

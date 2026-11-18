@@ -1,12 +1,6 @@
-/* CPU regression tests. Real Three.js geometry; DOM is stubbed, not a visual test. */
-const fs=require('fs'),vm=require('vm'),assert=require('assert'),path=require('path');
-const root=path.resolve(__dirname,'../../dist/nivel-1');
-function context(city){
- const store=new Map([['pixel-drive-city',city]]),elements=[];
- function element(tag){const nodes=new Map();return{tag,open:false,dataset:{},style:{},classList:{toggle(){}},append(){},appendChild(){},addEventListener(k,fn){this["on"+k]=fn;},toDataURL(){return "data:image/png;base64,";},setAttribute(){},showModal(){this.open=true},close(){this.open=false},getContext(){return new Proxy({createRadialGradient:()=>({addColorStop(){}}),measureText:()=>({width:100})},{get:(o,k)=>o[k]||(()=>{})});},querySelector(k){if(!nodes.has(k))nodes.set(k,element(k));return nodes.get(k)},querySelectorAll(){return[]},nodes};}
- const doc=element('document');doc.body=element('body');doc.getElementById=()=>null;doc.createElement=tag=>{const e=element(tag);elements.push(e);return e};
- const ctx={console,document:doc,localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},performance:{now:()=>10000},Math,Set,Map,Date,Uint8Array,Float32Array,Uint16Array,Uint32Array,setTimeout,clearTimeout,requestAnimationFrame(){},Image:class{}};ctx.window=ctx;vm.createContext(ctx);ctx.load=f=>vm.runInContext(fs.readFileSync(path.join(root,f+'.js'),'utf8'),ctx,{filename:f});ctx.elements=elements;ctx.store=store;return ctx;
-}
+/* CPU integration regression; real geometry, stubbed DOM. */
+const {context}=require('./game-context.cjs');
+const assert=require('assert');
 for(const city of ['viscri','original']){
  const c=context(city);for(const f of ['maps/viscri-data','maps/service-layout','maps/road-safety','maps/viscri-world','world','rules','simulation'])c.load(f);
  const W=c.DriveWorld,S=c.DriveSimulation;
@@ -65,7 +59,8 @@ for(const city of ['viscri','original']){
  if(W.realMap){
   let retries=0;
   // Start the public replay flow with a failed checkpoint inside real footprints.
-  for(const building of W.buildings.filter((_,i)=>i%12===0)){
+  for(const building of W.buildings.filter((_,i)=>i%8===0)){
+   c.DriveCareer={model:()=>retries%4};
    const ps=building.points,p={x:ps.reduce((n,p)=>n+p[0],0)/ps.length,z:ps.reduce((n,p)=>n+p[1],0)/ps.length,angle:Math.PI/3,speed:0,indicator:0};
    const s=S.create();s.traffic=[];s.pedestrians=[];s.player=p;s.collisions=4;s.failed=true;
    c.DriveReplay.onFrame(s,{},12000+retries*1000);
@@ -75,6 +70,7 @@ for(const city of ['viscri','original']){
    for(let k=0;k<180;k++)S.update(s,{w:true},1/60);
    assert.equal(s.collisions,count,'retry must not immediately collide');assert(!s.failed);assert(Math.hypot(s.player.x-start.x,s.player.z-start.z)>.9);retries++;
   }
+  delete c.DriveCareer;
   let missions=0;const mission=S.create();mission.traffic=[];mission.pedestrians=[];
   for(const id of ['pickup','dropoff','parking']){const target=W.landmarks.find(l=>l.id===id);assert(W.poseFits(target,[],1.6));assert(!W.roadAt(target.passenger.x,target.passenger.z));assert(!W.obstacleAt(target.passenger));assert(W.connectedRoads.has(W.roads.find(r=>r.id===target.roadId)));
    Object.assign(mission.player,target,{x:target.x-Math.cos(target.angle),z:target.z-Math.sin(target.angle),speed:0});const count=mission.collisions;
@@ -110,10 +106,13 @@ for(const city of ['viscri','original']){
  if(W.realMap){
   c.load('maps/building-stream');const streamed=new T.Scene(),liveWindows=[],stream=c.DriveBuildingStream.create({T,W,scene:streamed,windows:liveWindows});
   assert.equal(stream.stats().resident,0,'no building geometry at startup');
+  const colliderIds=JSON.stringify(W.collisionShapes.map(q=>q.id));
   const visible={intersectsBox:()=>true};let maxResident=0;
   for(const b of W.buildings.filter((_,i)=>i%15===0)){const p=new T.Vector3(b.points[0][0],0,b.points[0][1]);for(let i=0;i<4;i++)stream.update(p,visible);maxResident=Math.max(maxResident,stream.stats().resident);assert(stream.stats().resident<=48);}
   assert(stream.stats().built>10);assert(stream.stats().evicted>0,'distant architecture must be released');
   stream.update(new T.Vector3(-1000,0,-1000),visible);assert.equal(stream.stats().resident,0);assert.equal(liveWindows.length,0);assert.equal(streamed.children.length,0);
+  for(let visit=0;visit<3;visit++){const b=W.buildings[0],p=new T.Vector3(b.points[0][0],0,b.points[0][1]);stream.update(p,{intersectsBox:()=>false});assert(stream.stats().resident>0,'nearby solids load even behind camera');stream.update(new T.Vector3(-1000,0,-1000),visible);assert.equal(stream.stats().resident,0);}
+  assert.equal(JSON.stringify(W.collisionShapes.map(q=>q.id)),colliderIds,'streaming does not duplicate or remove world solids');
   console.log(JSON.stringify({streaming:stream.stats(),maxResident}));stream.dispose();
   for(const r of W.roads)assert(r.width>=r.sourceWidth&&r.width>=(['track','service'].includes(r.type)?3.5:6.5)*W.mapData.projection.gameUnitsPerMeter);
  }
@@ -121,7 +120,7 @@ for(const city of ['viscri','original']){
   c.load('maps/region-stream');const local=new T.Scene(),art=c.DriveRealScenery.build({W,scene:local,windows:[],deferBuildings:true,stream:true});assert.equal(local.children.length,0,'no environment geometry at startup');assert(art.recipes.length>100);
   const stream=c.DriveRegionStream.create({T,scene:local,recipes:art.recipes}),shown={intersectsBox:()=>true},hidden={intersectsBox:()=>false};
   const start=new T.Vector3(W.playerStart.x,0,W.playerStart.z);for(let i=0;i<20;i++)stream.update(start,[shown]);assert(stream.stats().resident>0);assert(stream.stats().resident<stream.stats().total/3,'only nearby regions loaded');
-  stream.update(start,[hidden]);assert.equal(stream.stats().visible,0,'nothing outside all views may render');
+  stream.update(start,[hidden]);assert(stream.stats().visible>0,'immediate surroundings stay loaded even when looking away');assert(stream.stats().visible<stream.stats().resident,'distant invisible cells remain culled');
   for(const b of W.buildings.filter((_,i)=>i%20===0)){const p=new T.Vector3(b.points[0][0],0,b.points[0][1]);for(let i=0;i<3;i++)stream.update(p,[shown]);assert(stream.stats().resident<=96);}
   stream.update(new T.Vector3(-1000,0,-1000),[shown]);assert.equal(stream.stats().resident,0);assert.equal(local.children.length,0);console.log(JSON.stringify({regions:stream.stats()}));stream.dispose();
  }

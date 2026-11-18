@@ -2,28 +2,36 @@
 (()=>{
 const contains=(ps,x,z)=>{let yes=false;for(let i=0,j=ps.length-1;i<ps.length;j=i++)if((ps[i][1]>z)!==(ps[j][1]>z)&&x<(ps[j][0]-ps[i][0])*(z-ps[i][1])/(ps[j][1]-ps[i][1])+ps[i][0])yes=!yes;return yes;};
 function apply(W){
- const obstacles=new Map(),size=8;
- const add=points=>{const xs=points.map(p=>p[0]),zs=points.map(p=>p[1]);for(let x=Math.floor((Math.min(...xs)-1)/size);x<=Math.floor((Math.max(...xs)+1)/size);x++)for(let z=Math.floor((Math.min(...zs)-1)/size);z<=Math.floor((Math.max(...zs)+1)/size);z++){const key=x+','+z;if(!obstacles.has(key))obstacles.set(key,[]);obstacles.get(key).push(points);}};
- W.buildings.forEach(b=>add(b.points));
+ const obstacles=new Map(),colliders=[],size=8;
+ const add=(points,type='building',id=type+'-'+colliders.length)=>{const collider={id,type,points};colliders.push(collider);const xs=points.map(p=>p[0]),zs=points.map(p=>p[1]);for(let x=Math.floor((Math.min(...xs)-1)/size);x<=Math.floor((Math.max(...xs)+1)/size);x++)for(let z=Math.floor((Math.min(...zs)-1)/size);z<=Math.floor((Math.max(...zs)+1)/size);z++){const key=x+','+z;if(!obstacles.has(key))obstacles.set(key,[]);obstacles.get(key).push(collider);}};
+ W.buildings.forEach(b=>add(b.points,'building','building-'+b.id));
  // Solid service buildings and parked cars. The entrance/interaction lane stays clear.
- for(const site of W.serviceSites){const rect=(x0,x1,z0,z1)=>add([[x0,z0],[x1,z0],[x1,z1],[x0,z1]].map(([x,z])=>[site.x+(x*site.ux-z*site.uz)*site.scale,site.z+(x*site.uz+z*site.ux)*site.scale]));
-  rect(4.15,9.2,-4.6,4.6);
-  const parked=site.type==='school'?[[2.5,-2.9],[2.5,2]]:site.type==='cars'?[[2.5,-2.9],[2.5,.5]]:site.type==='custom'?[[2.7,-1.6]]:[];
-  for(const [x,z] of parked)rect(x-.56,x+.56,z-.32,z+.32);
-  if(site.type==='fuel')for(const z of [-1.45,1.45])rect(2.6,3.4,z-.65,z+.65);
+ for(const site of W.serviceSites){const rect=(x0,x1,z0,z1,type='service')=>add([[x0,z0],[x1,z0],[x1,z1],[x0,z1]].map(([x,z])=>[site.x+(x*site.ux-z*site.uz)*site.scale,site.z+(x*site.uz+z*site.ux)*site.scale]),type);
+  // Ground-level walls, not the canopy/roof or the entire paved plot.
+  if(site.type==='fuel')rect(5.25,8.75,-2.2,3.2);
+  if(site.type==='school'){rect(4.3,8.8,-3.25,3.25);rect(3.45,4.35,-.7,.7,'step');}
+  if(site.type==='custom'){rect(4.19,8.75,-3.3,3.3);for(const z of [-1.7,1.7])rect(3.2,4.2,z-1.2,z+1.2,'step');rect(2.95,3.45,2.65,3.35,'cabinet');}
+  if(site.type==='cars'){rect(4.25,4.35,-3.5,3.5);rect(8.54,8.76,-3.5,3.5);}
+  rect(8.99,9.11,-4.65,4.65,'wall');
+  for(const z of [-4.6,4.6])rect(1.1,9.1,z-.06,z+.06,'wall');
+  const parked=site.type==='school'?[[2.5,-2.9],[2.5,2]]:site.type==='cars'?[[2.5,-2.9],[2.5,.5],[5.7,-2],[5.7,1.7]]:site.type==='custom'?[[2.7,-1.6]]:[];
+  const l=.55*(W.vehicleScale||1)/site.scale,w=.29*(W.vehicleScale||1)/site.scale;
+  for(const [x,z] of parked)rect(x-l,x+l,z-w,z+w,'parked-car');
+  if(site.type==='fuel'){for(const z of [-1.45,1.45])rect(2.65,3.35,z-.6,z+.6,'pump');for(const x of [1.65,4.15])for(const z of [-2.45,2.45])rect(x-.045,x+.045,z-.045,z+.045,'column');rect(1.725,1.875,-4.225,-3.575,'fuel-sign');}
  }
- function blocked(p){const halfL=p.halfLength??.55*.67*1.36,halfW=p.halfWidth??.29*.67*1.24,pad=.07,c=Math.cos(p.angle),s=Math.sin(p.angle);
+ function hit(p,pad=.07,onlyId=null){const halfL=p.halfLength??.55*.67*1.36,halfW=p.halfWidth??.29*.67*1.24,c=Math.cos(p.angle),s=Math.sin(p.angle);
   const local=point=>[(point[0]-p.x)*c+(point[1]-p.z)*s,-(point[0]-p.x)*s+(point[1]-p.z)*c];
-  for(const points of obstacles.get(Math.floor(p.x/size)+','+Math.floor(p.z/size))||[]){
-   if(contains(points,p.x,p.z))return true;
-   for(const a of [-halfL-pad,halfL+pad])for(const b of [-halfW-pad,halfW+pad])if(contains(points,p.x+c*a-s*b,p.z+s*a+c*b))return true;
+  for(const collider of obstacles.get(Math.floor(p.x/size)+','+Math.floor(p.z/size))||[]){if(onlyId&&collider.id!==onlyId)continue;const {points}=collider;
+   if(contains(points,p.x,p.z))return collider;
+   for(const a of [-halfL-pad,halfL+pad])for(const b of [-halfW-pad,halfW+pad])if(contains(points,p.x+c*a-s*b,p.z+s*a+c*b))return collider;
    const ps=points.map(local),l=halfL+pad,w=halfW+pad;
    for(let i=0;i<ps.length;i++){const a=ps[i],b=ps[(i+1)%ps.length];let lo=0,hi=1;
     for(const [v,d,mn,mx] of [[a[0],b[0]-a[0],-l,l],[a[1],b[1]-a[1],-w,w]]){if(Math.abs(d)<1e-9){if(v<mn||v>mx){hi=-1;break;}}else{const t0=(mn-v)/d,t1=(mx-v)/d;lo=Math.max(lo,Math.min(t0,t1));hi=Math.min(hi,Math.max(t0,t1));}}
-    if(lo<=hi)return true;
+    if(lo<=hi)return collider;
    }
-  }return false;
+  }return null;
  }
+ const blocked=(p,pad=.07)=>!!hit(p,pad);
  function fits(p,traffic=[],corridor=0){if(!Number.isFinite(p.x+p.z+p.angle))return false;
   const c=Math.cos(p.angle),s=Math.sin(p.angle),l=p.halfLength??.55*.67*1.36,w=p.halfWidth??.29*.67*1.24;
   for(let d=0;d<=corridor+.001;d+=.2){const q={...p,x:p.x+c*d,z:p.z+s*d};if(blocked(q))return false;
@@ -73,7 +81,7 @@ function apply(W){
   const sorted=candidates.slice().sort((a,b)=>cost(a)-cost(b));const p=sorted.find(p=>fits(p,traffic,corridor));
   if(!p)throw new Error('No traffic-clear retry position');return{...p};
  }
- W.poseFits=fits;W.obstacleAt=blocked;W.safePose=safePose;W.safeRoadPoses=candidates;W.connectedRoads=connected;
+ W.obstacleHit=hit;W.collisionShapes=colliders;W.poseFits=fits;W.obstacleAt=blocked;W.safePose=safePose;W.safeRoadPoses=candidates;W.connectedRoads=connected;
  W.playerStart=safePose(W.playerStart,[],{keep:false});
  for(const lesson of W.scenarios)Object.assign(lesson,safePose(lesson,[],{keep:false}));
  // Stop near the requested landmark, outside junctions and commercial entrances.

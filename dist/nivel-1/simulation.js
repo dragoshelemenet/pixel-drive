@@ -75,7 +75,7 @@
   if(s.score===0){s.failed=true;s.player.speed=0;}
   return true;
  }
- function collision(s,kind){if(s.time-s.lastPenalty<2||s.failed)return;const impactKmh=Math.round(Math.abs(s.player.speed)*21.6);s.lastPenalty=s.time;s.collisions++;penalize(s,120,kind,'collision',0,{kind:'collision',speedKmh:impactKmh});s.player.speed=0;if(s.collisions>=4){s.failed=true;s.message='Patru coliziuni. Reîncearcă traseul cu viteză mai mică.';}}
+ function collision(s,kind,distinct=false){if((!distinct&&s.time-s.lastPenalty<2)||s.failed)return;const impactKmh=Math.round(Math.abs(s.player.speed)*21.6);s.lastPenalty=s.time;s.collisions++;penalize(s,120,kind,'collision',0,{kind:'collision',speedKmh:impactKmh});s.player.speed=0;if(s.collisions>=4){s.failed=true;s.message='Patru coliziuni. Reîncearcă traseul cu viteză mai mică.';}}
  // Collision attribution is a SIMULATION heuristic, not a legal finding.
  // It compares both agents' movements and the local traffic priority.
  // If uncertain, do not blame/punish the player automatically.
@@ -345,7 +345,7 @@
   pedestrians(s,dt);
   for(const car of s.traffic){car.prevX=car.x;car.prevZ=car.z;}
   traffic(s,dt);
-  const p=s.player,old={x:p.x,z:p.z};
+  const p=s.player,old={x:p.x,z:p.z,angle:p.angle};
   // v42: mild launch and distinct resistance near the posted speed limit.
   // Never cap speed automatically: speeding remains possible (and educationally penalised).
   const speedKmh=Math.abs(p.speed)*21.6;
@@ -374,12 +374,33 @@
   if(input.space)p.speed=p.speed>0?Math.max(0,p.speed-6*dt):Math.min(0,p.speed+6*dt);
   const steering=(input.d?1:0)-(input.a?1:0);if(Math.abs(p.speed)>.01)p.angle+=steering*1.35*clamp(p.speed/1.1,-1,1)*dt;
   const nx=p.x+Math.cos(p.angle)*p.speed*dt,nz=p.z+Math.sin(p.angle)*p.speed*dt;
-  // Four corners prevent the body from crossing curbs and central islands.
-  const forward={x:Math.cos(p.angle),z:Math.sin(p.angle)},right={x:-forward.z,z:forward.x};
-  const body=W.realMap?vehicleBody(p,true):{halfLength:.45,halfWidth:.22};
-  let valid=true;for(const a of [-body.halfLength,body.halfLength])for(const b of [-body.halfWidth,body.halfWidth])if(!W.roadAt(nx+forward.x*a+right.x*b,nz+forward.z*a+right.z*b,.02))valid=false;
-  if(valid&&W.realMap&&W.obstacleAt({...body,x:nx,z:nz,angle:p.angle}))valid=false;
-  if(valid){p.x=nx;p.z=nz;s.distance+=Math.hypot(nx-old.x,nz-old.z);}else if(Math.abs(p.speed)>.08)collision(s,'Coliziune cu bordura sau un obstacol.');
+  // Road containment is a driving boundary, never proof of a physical impact.
+  const body=vehicleBody(p,true),proposed={...body,x:nx,z:nz};
+  if(W.realMap){
+   const hit=W.obstacleHit(proposed,0);
+   // Keep the contact latched across rejected frames. Clear only after moving
+   // away; holding the accelerator against one object is one incident.
+   const near=s.staticContact&&W.obstacleHit({...body,angle:old.angle},.2,s.staticContact);
+   if(!near||near.id!==s.staticContact)s.staticContact=null;
+   if(hit){
+    p.angle=old.angle;
+    if(s.staticContact!==hit.id&&Math.abs(p.speed)>.08){collision(s,'Coliziune cu un obstacol.',true);s.staticContact=hit.id;}
+    p.speed=0;
+    if(s.collisionDebug){s.collisionDebug.push({time:s.time,model:window.DriveCareer?.model()||0,vehicle:proposed,objectId:hit.id,objectType:hit.type,points:hit.points,road:W.roadAt(nx,nz),collisions:s.collisions});if(s.collisionDebug.length>100)s.collisionDebug.shift();}
+   }else{
+    // A narrow shoulder allows corners to overhang bends. Beyond it, stop
+    // without damage; accept movements back toward the road after recovery.
+    const onRoad=W.roadAt(nx,nz,-.35);
+    const current=!onRoad&&W.nearestRoad(p),next=!onRoad&&W.nearestRoad({x:nx,z:nz});
+    const returning=current&&next&&next.d<current.d;
+    if(onRoad||returning){p.x=nx;p.z=nz;s.distance+=Math.hypot(nx-old.x,nz-old.z);}
+    else{p.angle=old.angle;p.speed=0;s.message='Marginea zonei de condus · revino spre drum.';s.messageUntil=s.time+2;}
+   }
+  }else{
+   const forward={x:Math.cos(p.angle),z:Math.sin(p.angle)},right={x:-forward.z,z:forward.x};
+   let valid=true;for(const a of [-.45,.45])for(const b of [-.22,.22])if(!W.roadAt(nx+forward.x*a+right.x*b,nz+forward.z*a+right.z*b,.02))valid=false;
+   if(valid){p.x=nx;p.z=nz;s.distance+=Math.hypot(nx-old.x,nz-old.z);}else{p.angle=old.angle;if(Math.abs(p.speed)>.08)collision(s,'Coliziune cu bordura sau un obstacol.');p.speed=0;}
+  }
   for(const t of s.traffic)if((W.realMap?bodiesOverlap(vehicleBody(p,true),vehicleBody(t)):Math.hypot(t.x-p.x,t.z-p.z)<.75)){handleAICollision(s,t,old);break;}
   for(const ped of s.pedestrians)if(ped.crossing&&Math.hypot(ped.x-p.x,ped.z-p.z)<.43){s.failed=true;s.score=0;p.speed=0;s.message='Ai lovit un pieton. Oprește înainte de trecere și acordă prioritate.';}
   if(!s.violationEvent)checkReverse(s,old);
@@ -450,7 +471,7 @@
  }
  function recoverPosition(s){if(!W.realMap)return;
   const pose=W.safePose(s.player,s.traffic,{corridor:1.6});Object.assign(s.player,pose,{speed:0,indicator:0});
-  s.brakeKeyHeld=false;s.brakeKeyMode=null;s.turnWatch=null;s.collisions=Math.min(s.collisions,3);
+  s.staticContact=null;s.brakeKeyHeld=false;s.brakeKeyMode=null;s.turnWatch=null;s.collisions=Math.min(s.collisions,3);
  }
  window.DriveSimulation={recoverPosition,vehicleBody,bodiesOverlap,create,update,penalize,collision,crossPath,trafficConflict,checkRules,checkTurnSignal,checkReverse,reverseProhibition,objective,interact,driveSettings:{initialAcceleration:0.22,reverseAcceleration:0.28}};
 })();
